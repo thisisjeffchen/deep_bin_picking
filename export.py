@@ -16,14 +16,12 @@ except:
         logging.info('Failed to import mayavi')
 
 indir= "/home/dealmaker/projects/dex-net/meshes"
-urfdir = "/home/dealmaker/projects/dex-net/meshes/urdf"
 
 for root, dirs, filenames in os.walk (indir):
     for f in filenames:
-        mesh = trimesh.load (os.path.join(root, f))
-        trimesh.io.export.export_urdf(mesh, urfdir)
         print f
-
-        
+        mesh = trimesh.load (os.path.join(root, f))
+        p = os.path.join(root, "urdf", f.split(".")[0], "")
+        trimesh.io.export.export_urdf(mesh, str(p))        
 
 print ("hello now")

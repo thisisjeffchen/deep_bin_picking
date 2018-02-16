@@ -1,0 +1,564 @@
+<robot name="root">
+  <link name="link_turbine_housing_convex_piece_0">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-9.39E-06"/>
+      <inertia ixx="-2.41E-09" ixy="-9.59E-12" ixz="1.39E-11" iyy="-1.56E-09" iyz="7.79E-10" izz="-1.63E-09"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link_turbine_housing_convex_piece_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.52E-05"/>
+      <inertia ixx="-1.96E-08" ixy="1.01E-11" ixz="1.54E-10" iyy="-1.84E-08" iyz="-1.06E-09" izz="-3.04E-09"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_1.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_1.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_1_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_0"/>
+    <child link="link_turbine_housing_convex_piece_1"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_2">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.52E-06"/>
+      <inertia ixx="-1.12E-10" ixy="8.81E-11" ixz="-6.78E-11" iyy="-5.20E-12" iyz="1.05E-10" izz="-5.42E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_2.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_2.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_2_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_1"/>
+    <child link="link_turbine_housing_convex_piece_2"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_3">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.11E-06"/>
+      <inertia ixx="-7.38E-11" ixy="-8.88E-11" ixz="5.40E-11" iyy="-3.18E-11" iyz="8.77E-11" izz="-4.59E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_3.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_3.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_3_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_2"/>
+    <child link="link_turbine_housing_convex_piece_3"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_4">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.50E-06"/>
+      <inertia ixx="-4.19E-09" ixy="-3.54E-10" ixz="9.96E-10" iyy="-4.07E-09" iyz="1.38E-09" izz="-8.52E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_4.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_4.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_4_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_3"/>
+    <child link="link_turbine_housing_convex_piece_4"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_5">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.44E-06"/>
+      <inertia ixx="-1.91E-09" ixy="-1.04E-10" ixz="-1.04E-09" iyy="-2.41E-09" iyz="-1.65E-10" izz="-6.39E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_5.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_5.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_5_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_4"/>
+    <child link="link_turbine_housing_convex_piece_5"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_6">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.50E-06"/>
+      <inertia ixx="-3.09E-09" ixy="-5.01E-11" ixz="-5.09E-10" iyy="-3.11E-09" iyz="-2.71E-10" izz="-1.97E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_6.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_6.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_6_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_5"/>
+    <child link="link_turbine_housing_convex_piece_6"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_7">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-6.47E-07"/>
+      <inertia ixx="-8.91E-10" ixy="1.70E-10" ixz="-4.35E-10" iyy="-9.97E-10" iyz="3.30E-10" izz="-3.68E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_7.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_7.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_7_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_6"/>
+    <child link="link_turbine_housing_convex_piece_7"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_8">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.84E-06"/>
+      <inertia ixx="-3.21E-09" ixy="1.99E-10" ixz="-5.50E-10" iyy="-2.95E-09" iyz="1.08E-09" izz="-5.32E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_8.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_8.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_8_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_7"/>
+    <child link="link_turbine_housing_convex_piece_8"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_9">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.05E-06"/>
+      <inertia ixx="-4.91E-10" ixy="-2.57E-11" ixz="-5.61E-10" iyy="-1.03E-09" iyz="-7.18E-13" izz="-6.10E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_9.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_9.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_9_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_8"/>
+    <child link="link_turbine_housing_convex_piece_9"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_10">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-9.07E-07"/>
+      <inertia ixx="-6.36E-11" ixy="3.68E-12" ixz="-2.13E-10" iyy="-3.99E-10" iyz="2.47E-11" izz="-3.81E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_10.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_10.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_10_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_9"/>
+    <child link="link_turbine_housing_convex_piece_10"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_11">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-9.61E-07"/>
+      <inertia ixx="-3.58E-10" ixy="1.51E-10" ixz="-1.02E-10" iyy="-1.35E-10" iyz="2.14E-10" izz="-4.37E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_11.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_11.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_11_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_10"/>
+    <child link="link_turbine_housing_convex_piece_11"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_12">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.08E-06"/>
+      <inertia ixx="-2.29E-09" ixy="3.19E-11" ixz="3.05E-10" iyy="-2.28E-09" iyz="-2.21E-10" izz="-1.18E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_12.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_12.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_12_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_11"/>
+    <child link="link_turbine_housing_convex_piece_12"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_13">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.50E-06"/>
+      <inertia ixx="-2.20E-09" ixy="1.11E-10" ixz="1.04E-09" iyy="-2.65E-09" iyz="-2.08E-10" izz="-5.91E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_13.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_13.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_13_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_12"/>
+    <child link="link_turbine_housing_convex_piece_13"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_14">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.17E-06"/>
+      <inertia ixx="-6.29E-10" ixy="2.57E-11" ixz="6.57E-10" iyy="-1.23E-09" iyz="-6.80E-13" izz="-6.76E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_14.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_14.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_14_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_13"/>
+    <child link="link_turbine_housing_convex_piece_14"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_15">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-9.42E-07"/>
+      <inertia ixx="-7.61E-11" ixy="-1.04E-11" ixz="2.29E-10" iyy="-4.37E-10" iyz="2.93E-11" izz="-4.08E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_15.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_15.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_15_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_14"/>
+    <child link="link_turbine_housing_convex_piece_15"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_16">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-5.38E-07"/>
+      <inertia ixx="-3.02E-10" ixy="-3.16E-11" ixz="2.25E-11" iyy="-8.59E-11" iyz="1.73E-10" izz="-2.28E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_16.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_16.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_16_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_15"/>
+    <child link="link_turbine_housing_convex_piece_16"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_17">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-7.72E-07"/>
+      <inertia ixx="-6.72E-10" ixy="1.87E-10" ixz="-2.94E-10" iyy="-6.29E-10" iyz="3.55E-10" izz="-4.14E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_17.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_17.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_17_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_16"/>
+    <child link="link_turbine_housing_convex_piece_17"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_18">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.27E-06"/>
+      <inertia ixx="-7.43E-10" ixy="2.57E-10" ixz="-2.81E-10" iyy="-5.47E-10" iyz="4.50E-10" izz="-6.44E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_18.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_18.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_18_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_17"/>
+    <child link="link_turbine_housing_convex_piece_18"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_19">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.48E-06"/>
+      <inertia ixx="-7.95E-10" ixy="-3.00E-10" ixz="4.31E-10" iyy="-8.44E-10" iyz="4.45E-10" izz="-6.37E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_19.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_19.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_19_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_18"/>
+    <child link="link_turbine_housing_convex_piece_19"/>
+  </joint>
+  <link name="link_turbine_housing_convex_piece_20">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.12E-06"/>
+      <inertia ixx="-8.50E-10" ixy="-2.85E-10" ixz="2.73E-10" iyy="-5.46E-10" iyz="4.78E-10" izz="-6.75E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_20.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="turbine_housing_convex_piece_20.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_turbine_housing_convex_piece_20_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_turbine_housing_convex_piece_19"/>
+    <child link="link_turbine_housing_convex_piece_20"/>
+  </joint>
+</robot>
