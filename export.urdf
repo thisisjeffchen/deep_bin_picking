@@ -1,0 +1,807 @@
+<robot name="root">
+  <link name="link_export_convex_piece_0">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="2.24E-07"/>
+      <inertia ixx="1.02E-10" ixy="-1.39E-14" ixz="5.54E-14" iyy="5.90E-11" iyz="4.79E-11" izz="4.35E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link_export_convex_piece_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.47E-07"/>
+      <inertia ixx="5.26E-11" ixy="-4.88E-13" ixz="3.39E-15" iyy="9.87E-13" iyz="2.15E-12" izz="5.20E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_1.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_1.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_1_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_0"/>
+    <child link="link_export_convex_piece_1"/>
+  </joint>
+  <link name="link_export_convex_piece_2">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.49E-08"/>
+      <inertia ixx="6.82E-12" ixy="3.71E-14" ixz="-3.10E-14" iyy="2.61E-12" iyz="-3.76E-12" izz="4.29E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_2.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_2.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_2_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_1"/>
+    <child link="link_export_convex_piece_2"/>
+  </joint>
+  <link name="link_export_convex_piece_3">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.56E-07"/>
+      <inertia ixx="6.59E-11" ixy="-2.83E-12" ixz="1.51E-11" iyy="6.86E-11" iyz="-1.16E-11" izz="6.02E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_3.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_3.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_3_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_2"/>
+    <child link="link_export_convex_piece_3"/>
+  </joint>
+  <link name="link_export_convex_piece_4">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.76E-07"/>
+      <inertia ixx="9.88E-11" ixy="-1.19E-11" ixz="1.85E-11" iyy="6.79E-11" iyz="-5.00E-11" izz="4.32E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_4.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_4.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_4_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_3"/>
+    <child link="link_export_convex_piece_4"/>
+  </joint>
+  <link name="link_export_convex_piece_5">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.39E-07"/>
+      <inertia ixx="5.87E-11" ixy="2.78E-12" ixz="-1.49E-11" iyy="6.15E-11" iyz="-1.07E-11" izz="5.99E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_5.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_5.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_5_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_4"/>
+    <child link="link_export_convex_piece_5"/>
+  </joint>
+  <link name="link_export_convex_piece_6">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.65E-07"/>
+      <inertia ixx="9.20E-11" ixy="1.21E-11" ixz="-1.88E-11" iyy="6.49E-11" iyz="-4.63E-11" izz="3.99E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_6.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_6.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_6_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_5"/>
+    <child link="link_export_convex_piece_6"/>
+  </joint>
+  <link name="link_export_convex_piece_7">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="9.98E-09"/>
+      <inertia ixx="1.40E-12" ixy="-1.37E-15" ixz="-1.26E-14" iyy="1.46E-12" iyz="1.31E-13" izz="6.41E-14"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_7.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_7.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_7_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_6"/>
+    <child link="link_export_convex_piece_7"/>
+  </joint>
+  <link name="link_export_convex_piece_8">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="4.23E-07"/>
+      <inertia ixx="7.00E-11" ixy="4.26E-11" ixz="-7.20E-12" iyy="3.37E-11" iyz="-1.67E-11" izz="1.06E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_8.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_8.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_8_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_7"/>
+    <child link="link_export_convex_piece_8"/>
+  </joint>
+  <link name="link_export_convex_piece_9">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="4.99E-07"/>
+      <inertia ixx="1.60E-10" ixy="4.48E-11" ixz="4.93E-11" iyy="1.23E-10" iyz="7.00E-11" izz="1.11E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_9.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_9.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_9_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_8"/>
+    <child link="link_export_convex_piece_9"/>
+  </joint>
+  <link name="link_export_convex_piece_10">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5.69E-08"/>
+      <inertia ixx="1.61E-11" ixy="-2.85E-12" ixz="4.07E-12" iyy="1.10E-11" iyz="-9.01E-12" izz="8.50E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_10.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_10.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_10_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_9"/>
+    <child link="link_export_convex_piece_10"/>
+  </joint>
+  <link name="link_export_convex_piece_11">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="3.08E-07"/>
+      <inertia ixx="6.90E-11" ixy="4.78E-12" ixz="-5.18E-11" iyy="1.06E-10" iyz="-9.29E-12" izz="4.54E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_11.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_11.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_11_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_10"/>
+    <child link="link_export_convex_piece_11"/>
+  </joint>
+  <link name="link_export_convex_piece_12">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="3.76E-07"/>
+      <inertia ixx="4.55E-11" ixy="-4.09E-11" ixz="5.48E-12" iyy="4.06E-11" iyz="-9.92E-12" izz="9.07E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_12.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_12.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_12_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_11"/>
+    <child link="link_export_convex_piece_12"/>
+  </joint>
+  <link name="link_export_convex_piece_13">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="2.17E-07"/>
+      <inertia ixx="6.00E-11" ixy="-7.00E-12" ixz="1.55E-12" iyy="3.53E-12" iyz="-1.33E-11" izz="6.05E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_13.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_13.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_13_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_12"/>
+    <child link="link_export_convex_piece_13"/>
+  </joint>
+  <link name="link_export_convex_piece_14">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="2.24E-07"/>
+      <inertia ixx="5.52E-11" ixy="-2.48E-11" ixz="-3.17E-11" iyy="6.32E-11" iyz="2.40E-11" izz="5.34E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_14.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_14.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_14_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_13"/>
+    <child link="link_export_convex_piece_14"/>
+  </joint>
+  <link name="link_export_convex_piece_15">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="4.84E-07"/>
+      <inertia ixx="2.06E-10" ixy="-1.76E-11" ixz="-2.32E-11" iyy="1.36E-10" iyz="8.46E-11" izz="8.79E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_15.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_15.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_15_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_14"/>
+    <child link="link_export_convex_piece_15"/>
+  </joint>
+  <link name="link_export_convex_piece_16">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="4.25E-07"/>
+      <inertia ixx="1.18E-11" ixy="-3.25E-12" ixz="-1.71E-11" iyy="3.81E-11" iyz="-1.89E-12" izz="4.35E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_16.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_16.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_16_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_15"/>
+    <child link="link_export_convex_piece_16"/>
+  </joint>
+  <link name="link_export_convex_piece_17">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.86E-07"/>
+      <inertia ixx="5.42E-11" ixy="-9.87E-12" ixz="1.79E-11" iyy="4.98E-11" iyz="-2.59E-11" izz="2.25E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_17.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_17.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_17_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_16"/>
+    <child link="link_export_convex_piece_17"/>
+  </joint>
+  <link name="link_export_convex_piece_18">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5.05E-07"/>
+      <inertia ixx="1.60E-10" ixy="2.84E-12" ixz="7.65E-11" iyy="2.03E-10" iyz="2.57E-13" izz="5.14E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_18.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_18.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_18_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_17"/>
+    <child link="link_export_convex_piece_18"/>
+  </joint>
+  <link name="link_export_convex_piece_19">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="2.42E-07"/>
+      <inertia ixx="6.50E-12" ixy="2.84E-12" ixz="1.23E-11" iyy="2.44E-11" iyz="-7.85E-13" izz="2.50E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_19.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_19.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_19_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_18"/>
+    <child link="link_export_convex_piece_19"/>
+  </joint>
+  <link name="link_export_convex_piece_20">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="3.26E-07"/>
+      <inertia ixx="6.24E-12" ixy="1.09E-11" ixz="-1.20E-11" iyy="3.93E-11" iyz="-7.82E-12" izz="5.37E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_20.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_20.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_20_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_19"/>
+    <child link="link_export_convex_piece_20"/>
+  </joint>
+  <link name="link_export_convex_piece_21">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.03E-07"/>
+      <inertia ixx="1.10E-11" ixy="1.09E-12" ixz="-8.76E-14" iyy="-8.30E-13" iyz="-2.40E-12" izz="1.28E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_21.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_21.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_21_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_20"/>
+    <child link="link_export_convex_piece_21"/>
+  </joint>
+  <link name="link_export_convex_piece_22">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.08E-07"/>
+      <inertia ixx="8.92E-12" ixy="6.10E-13" ixz="9.99E-13" iyy="6.01E-12" iyz="3.67E-12" izz="3.92E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_22.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_22.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_22_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_21"/>
+    <child link="link_export_convex_piece_22"/>
+  </joint>
+  <link name="link_export_convex_piece_23">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.58E-07"/>
+      <inertia ixx="3.88E-11" ixy="4.70E-12" ixz="-6.54E-12" iyy="2.57E-11" iyz="-2.21E-11" izz="1.91E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_23.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_23.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_23_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_22"/>
+    <child link="link_export_convex_piece_23"/>
+  </joint>
+  <link name="link_export_convex_piece_24">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="3.47E-07"/>
+      <inertia ixx="1.58E-10" ixy="2.52E-12" ixz="-2.27E-11" iyy="1.56E-10" iyz="-2.23E-11" izz="1.46E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_24.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_24.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_24_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_23"/>
+    <child link="link_export_convex_piece_24"/>
+  </joint>
+  <link name="link_export_convex_piece_25">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.12E-07"/>
+      <inertia ixx="9.34E-12" ixy="-7.00E-12" ixz="3.45E-12" iyy="5.60E-12" iyz="-5.86E-12" izz="1.61E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_25.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_25.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_25_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_24"/>
+    <child link="link_export_convex_piece_25"/>
+  </joint>
+  <link name="link_export_convex_piece_26">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.55E-07"/>
+      <inertia ixx="1.03E-12" ixy="-3.49E-13" ixz="9.78E-12" iyy="3.01E-11" iyz="-1.88E-12" izz="3.26E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_26.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_26.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_26_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_25"/>
+    <child link="link_export_convex_piece_26"/>
+  </joint>
+  <link name="link_export_convex_piece_27">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="3.43E-08"/>
+      <inertia ixx="5.75E-12" ixy="-3.72E-13" ixz="2.09E-12" iyy="6.41E-12" iyz="-1.35E-12" izz="9.15E-13"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_27.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_27.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_27_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_26"/>
+    <child link="link_export_convex_piece_27"/>
+  </joint>
+  <link name="link_export_convex_piece_28">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="3.58E-08"/>
+      <inertia ixx="1.13E-11" ixy="2.01E-12" ixz="-2.37E-12" iyy="6.81E-12" iyz="-6.54E-12" izz="6.46E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_28.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_28.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_28_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_27"/>
+    <child link="link_export_convex_piece_28"/>
+  </joint>
+  <link name="link_export_convex_piece_29">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5.40E-08"/>
+      <inertia ixx="9.48E-12" ixy="1.00E-12" ixz="-3.59E-12" iyy="1.03E-11" iyz="-2.97E-12" izz="2.20E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_29.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="export_convex_piece_29.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_export_convex_piece_29_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_export_convex_piece_28"/>
+    <child link="link_export_convex_piece_29"/>
+  </joint>
+</robot>
