@@ -1,27 +1,26 @@
-#import dexnet
-#import mayavi.mlab
+"""Converts obj export models to urdf models."""
 
-import copy
-import json
-import IPython
 import logging
-import numpy as np
 import os
+
 import trimesh
 
-try:
-        import mayavi.mlab as mv
-        import mayavi.mlab as mlab
-except:
-        logging.info('Failed to import mayavi')
+logging.basicConfig(level=logging.INFO)
 
-indir= "/home/dealmaker/projects/dex-net/meshes"
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+BULLET_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(ROOT_DIR))))
+DEXNET_DIR = os.path.join(os.path.dirname(BULLET_DIR), 'dex-net')
+IMPORT_DIR = os.path.join(DEXNET_DIR, 'meshes')
+EXPORT_DIR = os.path.join(ROOT_DIR, 'meshes', 'urdf')
 
-for root, dirs, filenames in os.walk (indir):
+logging.info(DEXNET_DIR)
+logging.info(EXPORT_DIR)
+for (root, dirs, filenames) in os.walk(IMPORT_DIR):
     for f in filenames:
-        print f
-        mesh = trimesh.load (os.path.join(root, f))
-        p = os.path.join(root, "urdf", f.split(".")[0], "")
-        trimesh.io.export.export_urdf(mesh, str(p))        
-
-print ("hello now")
+        logging.info('Loading {}'.format(f))
+        mesh = trimesh.load(os.path.join(root, f))
+        p = os.path.join(EXPORT_DIR, os.path.splitext(f)[0], '')
+        logging.info('Exporting to {}'.format(p))
+        os.makedirs(p)
+        trimesh.io.export.export_urdf(mesh, p)
+logging.info('Completed!')

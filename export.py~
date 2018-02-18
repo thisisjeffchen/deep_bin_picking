@@ -1,4 +1,0 @@
-import dexnet
-import mayavi.mlab
-
-print ("hello")
