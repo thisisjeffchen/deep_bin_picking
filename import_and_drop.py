@@ -1,66 +1,90 @@
-import pybullet as p
-from time import sleep
-import random
+"""Demo script to run a simulation."""
+
+import logging
 import os
+import random
+from time import sleep
+
+import pybullet as p
+
+logging.basicConfig(level=logging.INFO)
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+URDF_DIR = os.path.join(ROOT_DIR, 'meshes', 'urdf')
+
+GRAVITY = [0, 0, -10]
 
 physicsClient = p.connect(p.GUI)
 
-p.setGravity(0,0,-10)
-planeId = p.loadURDF("plane.urdf")
-urdf_dir = "./meshes/urdf"
+class Scene(object):
+    def __init__(self):
+        self.plane_id = None
+        self.item_ids = []
+        p.setGravity(*GRAVITY)
+        self.plane_id = p.loadURDF('plane.urdf')
 
-NUM = 20
-itemIds = []
+    def add_object(self, name, position, orientation):
+        logging.info('Adding object "{}"'.format(name))
+        file_path = os.path.join(URDF_DIR, name, name + '.urdf')
+        item_id = p.loadURDF(file_path, position, orientation)
+        logging.info('Object assigned id {}'.format(item_id))
+        self.item_ids.append(item_id)
+        (position, orientation) = p.getBasePositionAndOrientation(item_id)
+        return (item_id, position, orientation)
 
-dirs = os.listdir (urdf_dir)
+class ScenePopulator(object):
+    def __init__(self, scene, mean_position, mean_orientation):
+        self.scene = scene
+        self.mean_position = mean_position
+        self.mean_orientation = mean_orientation
+        self.object_database = os.listdir(URDF_DIR)
+        logging.info('Available objects: {}'.format(self.object_database))
 
-print dirs
-for i in range (NUM):
-        idx = random.randint (0, len (dirs) - 1)
-        cubeStartPos = [0.5, 0.5 ,2]
-        cubeStartOrientation = p.getQuaternionFromEuler([0,0,0])
-        d = dirs[idx]
-        f = d.split("/")[-1]
-        fn = os.path.join (urdf_dir, d, f + ".urdf")
-        print "Creating " + f
-                
-        itemId = p.loadURDF(fn,cubeStartPos, cubeStartOrientation)
-        #boxId = p.loadURDF("r2d2.urdf",cubeStartPos, cubeStartOrientation)
-        cubePos, cubeOrn = p.getBasePositionAndOrientation(itemId)
-        print "ItemId: " + str(itemId)
-        
-        itemIds.append(itemId)
+    def sample_position(self):
+        return self.mean_position
 
-        useRealTimeSimulation = 1
+    def sample_orientation(self):
+        return p.getQuaternionFromEuler(self.mean_orientation)
 
+    def sample_object(self):
+        return random.choice(self.object_database)
+
+    def add_object(self):
+        start_position = self.sample_position()
+        start_orientation = self.sample_orientation()
+        object_name = self.sample_object()
+        return self.scene.add_object(object_name, start_position, start_orientation)
+
+NUM_OBJECTS = 20
+scene = Scene()
+populator = ScenePopulator(scene, [0.5, 0.5, 2], [0, 0, 0])
+
+for i in range(NUM_OBJECTS):
+    (item_id, _, _) = populator.add_object()
+
+    useRealTimeSimulation = True
+    if (useRealTimeSimulation):
+        p.setRealTimeSimulation(1)
+
+    count = 0
+    while count < 100:
         if (useRealTimeSimulation):
-	        p.setRealTimeSimulation(1)
+            p.setGravity(*GRAVITY)
+            sleep(0.01)  # Time in seconds.
+        else:
+            p.stepSimulation()
+            count += 1
 
-        count = 0
-        while count < 100:
-	        if (useRealTimeSimulation):
-		        p.setGravity(0,0,-10)
-		        sleep(0.01) # Time in seconds.
-                else:
-                        p.stepSimulation()
-                count += 1
-
-print "All objects created"
-for itemId in itemIds:
-        cubePos, cubeOrn = p.getBasePositionAndOrientation(itemId)
-        print str(itemId) + "-pos: " + str(cubePos) + "-orn" + str(cubeOrn)
-        
-
-raw_input ("Press any key to end...")
-
-                
-
-                
-
-#find objects
-#randomly drop objects
-#wait for object to settle
-#drop another object
+print('All objects created')
+for itemId in scene.item_ids:
+    cubePos, cubeOrn = p.getBasePositionAndOrientation(itemId)
+    print(str(itemId) + '-pos: ' + str(cubePos) + '-orn' + str(cubeOrn))
 
 
+input('Press any key to end...')
 
+
+# find objects
+# randomly drop objects
+# wait for object to settle
+# drop another object
