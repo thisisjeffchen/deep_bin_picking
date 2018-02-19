@@ -24,6 +24,7 @@ class Scene(object):
         self.item_ids = []
         p.setGravity(*GRAVITY)
         self.plane_id = p.loadURDF('plane.urdf')
+        self.tray_id = p.loadURDF('tray/traybox.urdf', globalScaling=0.5)
 
     def add_object(self, name, position, orientation):
         logging.info('Adding object "{}"'.format(name))
@@ -81,20 +82,20 @@ def simulate():
     while count < 100:
         if (useRealTimeSimulation):
             p.setGravity(*GRAVITY)
-            sleep(0.01)  # Time in seconds.
+            sleep(0.001)  # Time in seconds.
         else:
             p.stepSimulation()
         count += 1
 
 
-NUM_OBJECTS = 40
+NUM_OBJECTS = 20
 scene = Scene()
-populator = ScenePopulator(scene, np.array([0, 0, 2]), np.array([0.2, 0.2, 2]))
+populator = ScenePopulator(scene, np.array([0, 0, 0.5]), np.array([0.05, 0.05, 0.5]))
 for i in range(NUM_OBJECTS):
     populator.add_object()
+    simulate()
 print('All objects created!')
 
-simulate()
 
 for item_id in scene.item_ids:
     cubePos, cubeOrn = p.getBasePositionAndOrientation(item_id)
