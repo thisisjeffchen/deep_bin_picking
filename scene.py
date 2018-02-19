@@ -4,24 +4,27 @@ import logging
 import math
 import os
 import random
-from time import sleep
 
 import numpy as np
-import pybullet as p
+
+import pybullet as pb
 
 logging.basicConfig(level=logging.INFO)
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 URDF_DIR = os.path.join(ROOT_DIR, 'meshes', 'urdf')
-GRIPPER_DIR = os.path.join (ROOT_DIR, 'meshes', 'grippers')
-GRIPPER = "yumi_metal_spline"
+GRIPPER_DIR = os.path.join(ROOT_DIR, 'meshes', 'grippers')
+GRIPPER = 'yumi_metal_spline'
 
-physicsClient = p.connect(p.GUI)  # Change p.GUI to p.DIRECT to run headlessly.
 
 class Scene(object):
     """Manages a scene and its contents."""
-    def __init__(self, gravity=[0, 0, -20], timestep=0.0001,
+
+    def __init__(self, client_mode=pb.GUI, gravity=[0, 0, -20], timestep=0.0001,
                  crate_wall_thickness=0.002, crate_wall_width=0.2, crate_wall_height=0.15):
+        """Set up scene parameters and fixed models."""
+        self.client_mode = client_mode
+        self.client_id = pb.connect(client_mode)
         self.gravity = gravity
         self.timestep = timestep
         self.crate_wall_thickness = crate_wall_thickness
@@ -29,14 +32,14 @@ class Scene(object):
         self.crate_wall_height = crate_wall_height
 
         # Simulation
-        p.setGravity(*gravity)
+        pb.setGravity(*gravity, physicsClientId=self.client_id)
         self.step = 0
         if timestep is not None:
-            p.setTimeStep(timestep)
+            pb.setTimeStep(timestep, physicsClientId=self.client_id)
 
         # Scene
         self.crate_side_ids = []
-        self.add_crate()
+        self._add_crate()
 
         # Gripper
         self.gripper_id = None
@@ -45,31 +48,52 @@ class Scene(object):
         self.item_ids = []
 
     def add_item(self, name, position, orientation):
+        """Add the specified item in the specified pose."""
         logging.info('Adding item "{}"'.format(name))
         file_path = os.path.join(URDF_DIR, name, name + '.urdf')
-        item_id = p.loadURDF(file_path, position, orientation)
+        item_id = pb.loadURDF(
+            file_path, position, orientation, physicsClientId=self.client_id
+        )
         logging.info('Item assigned object id {}'.format(item_id))
         self.item_ids.append(item_id)
-        (position, orientation) = p.getBasePositionAndOrientation(item_id)
+        (position, orientation) = pb.getBasePositionAndOrientation(
+            item_id, physicsClientId=self.client_id
+        )
         return (item_id, position, orientation)
 
-    def add_gripper(self):
-        logging.info('Adding gripper')
-        file_path = os.path.join(GRIPPER_DIR, GRIPPER, 'base.obj')
-        cubeStartOrientation = p.getQuaternionFromEuler([0, 0, 0])
-        orn = cubeStartOrientation
-        self.gripper_id = p.loadURDF(file_path, [0, 0, 3], orn)
-        logging.info('Gripper assigned id {}'.format(self.gripper_id))
-        pos, ori = p.getBasePositionAndOrientation(self.gripper_id)
-        return self.gripper_id, pos, ori
+    def get_item_pose(self, item_id, to_euler=False):
+        """Return the pose of the specified item."""
+        (position, orientation) = pb.getBasePositionAndOrientation(
+            item_id, physicsClientId=self.client_id
+        )
+        if to_euler:
+            orientation = pb.getEulerFromQuaternion(orientation)
+        return (position, orientation)
 
     def simulate(self, steps=None):
+        """Simulate physics for the specified number of steps."""
         initial_step = self.step
         while steps is None or self.step - initial_step < steps:
-            p.stepSimulation()
+            pb.stepSimulation(physicsClientId=self.client_id)
             self.step += 1
 
-    def add_crate_wall(self, side):
+    def _add_gripper(self):
+        """Add a gripper. Currently broken."""
+        logging.info('Adding gripper')
+        file_path = os.path.join(GRIPPER_DIR, GRIPPER, 'base.obj')
+        cube_start_orientation = pb.getQuaternionFromEuler([0, 0, 0])
+        self.gripper_id = pb.loadURDF(
+            file_path, [0, 0, 3], cube_start_orientation,
+            physicsClientId=self.client_id
+        )
+        logging.info('Gripper assigned id {}'.format(self.gripper_id))
+        pos, ori = pb.getBasePositionAndOrientation(
+            self.gripper_id, physicsClientId=self.client_id
+        )
+        return self.gripper_id, pos, ori
+
+    def _add_crate_wall(self, side):
+        """Add a crate wall in the specified side (0-3)."""
         if side % 2 == 0:
             x_length = self.crate_wall_thickness / 2
             y_length = self.crate_wall_width / 2
@@ -85,55 +109,65 @@ class Scene(object):
             y_center *= -1
         z_length = self.crate_wall_height / 2
         z_center = z_length
-        collision_shape_id = p.createCollisionShape(
-            p.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
-            collisionFramePosition=[x_center, y_center, z_center]
+        collision_shape_id = pb.createCollisionShape(
+            pb.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
+            collisionFramePosition=[x_center, y_center, z_center],
+            physicsClientId=self.client_id
         )
-        visual_shape_id = p.createVisualShape(
-            p.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
-            visualFramePosition=[x_center, y_center, z_center]
+        visual_shape_id = pb.createVisualShape(
+            pb.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
+            visualFramePosition=[x_center, y_center, z_center],
+            physicsClientId=self.client_id
 
         )
-        multibody_id = p.createMultiBody(
-            baseCollisionShapeIndex=collision_shape_id, baseVisualShapeIndex=visual_shape_id
+        multibody_id = pb.createMultiBody(
+            baseCollisionShapeIndex=collision_shape_id,
+            baseVisualShapeIndex=visual_shape_id,
+            physicsClientId=self.client_id
         )
         self.crate_side_ids.append(multibody_id)
 
-    def add_crate_floor(self):
+    def _add_crate_floor(self):
+        """Add a crate floor."""
         x_length = self.crate_wall_width / 2
         y_length = self.crate_wall_width / 2
         z_length = self.crate_wall_thickness / 2
-        collision_shape_id = p.createCollisionShape(
-            p.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
-            collisionFramePosition=[0, 0, 0]
+        collision_shape_id = pb.createCollisionShape(
+            pb.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
+            collisionFramePosition=[0, 0, 0], physicsClientId=self.client_id
         )
-        visual_shape_id = p.createVisualShape(
-            p.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
-            visualFramePosition=[0, 0, 0]
+        visual_shape_id = pb.createVisualShape(
+            pb.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
+            visualFramePosition=[0, 0, 0], physicsClientId=self.client_id
 
         )
-        multibody_id = p.createMultiBody(
-            baseCollisionShapeIndex=collision_shape_id, baseVisualShapeIndex=visual_shape_id
+        multibody_id = pb.createMultiBody(
+            baseCollisionShapeIndex=collision_shape_id,
+            baseVisualShapeIndex=visual_shape_id,
+            physicsClientId=self.client_id
         )
         self.crate_side_ids.append(multibody_id)
 
-    def add_crate(self):
+    def _add_crate(self):
+        """Add a complete crate."""
         print('Creating crate')
-        self.add_crate_floor()
+        self._add_crate_floor()
         for side in range(4):
-            self.add_crate_wall(side)
+            self._add_crate_wall(side)
 
-    def add_gripper(self):
-        pass
 
 class ScenePopulator(object):
     """Stochastically populates a Scene with items."""
-    def __init__(self, scene, min_items=15, max_items=25,
-                 mean_position=np.array([0, 0, 0.25]),
-                 position_ranges=np.array([0.1, 0.1, 0.1]),
-                 height_threshold=0.15):
+
+    def __init__(
+            self, scene, min_items=15, max_items=25,
+            mean_position=np.array([0, 0, 0.25]), position_ranges=np.array([0.1, 0.1, 0.1]),
+            sim_height_threshold=0.15, sim_check_interval=1000
+    ):
+        """Load the database of item models from the filesystem."""
         self.scene = scene
-        self.height_threshold = height_threshold
+        self.sim_height_threshold = sim_height_threshold
+        self.sim_check_interval = sim_check_interval
 
         # Random distribution parameters
         self.min_items = min_items
@@ -161,47 +195,59 @@ class ScenePopulator(object):
         ))
         logging.info('Available items: {}'.format(self.item_database))
 
-    def sample_num_items(self):
+    def _sample_num_items(self):
+        """Sample a uniform random distribution for the number of items to add."""
         return random.randint(self.min_items, self.max_items)
 
-    def sample_item(self):
+    def _sample_item(self):
+        """Sample a uniform random distribution for the item to add."""
         return random.choice(self.item_database)
 
-    def sample_position(self):
+    def _sample_position(self):
+        """Sample a uniform random distribution for the position of the item to add."""
         return np.random.uniform(self.mean_position - self.position_ranges / 2,
                                  self.mean_position + self.position_ranges / 2)
 
-    def sample_orientation(self):
-        return p.getQuaternionFromEuler([
-            random.uniform(0, 2 * math.pi) for _ in range(3)
-        ])
+    def _sample_orientation(self):
+        """Sample a uniform random distribution for the orientation of the item to add."""
+        euler = [random.uniform(0, 2 * math.pi) for _ in range(3)]
+        return pb.getQuaternionFromEuler(euler)
 
     def add_item(self):
+        """Add a random item to the scene."""
         return self.scene.add_item(
-            self.sample_item(), self.sample_position(), self.sample_orientation()
+            self._sample_item(), self._sample_position(), self._sample_orientation()
         )
-    def simulate_to(self, item_id, height_threshold):
+
+    def simulate_to(self, item_id, height_threshold, check_interval=1000):
+        """Simumlate the scene until the specified item has fallen below the specified height."""
         while True:
-            self.scene.simulate(steps=1000)
-            if p.getBasePositionAndOrientation(item_id)[0][2] < height_threshold:
+            self.scene.simulate(steps=check_interval)
+            pose = self.scene.get_item_pose(item_id)
+            if pose[0][2] < height_threshold:
                 return
 
     def add_items(self, num_items=None):
+        """Stochastically populate a scene by randomly dropping items into a crate."""
         if num_items is None:
-            num_items = self.sample_num_items()
+            num_items = self._sample_num_items()
         for i in range(num_items):
             (item_id, _, _) = self.add_item()
-            self.simulate_to(item_id, self.height_threshold)
+            self.simulate_to(
+                item_id, self.sim_height_threshold, self.sim_check_interval
+            )
+
 
 def main():
+    """Initialize and populate a random scene and simulate it."""
     scene = Scene()
     populator = ScenePopulator(scene)
     populator.add_items(num_items=5)
     print('All items created!')
 
     for item_id in scene.item_ids:
-        cubePos, cubeOrn = p.getBasePositionAndOrientation(item_id)
-        print(str(item_id) + '-pos: ' + str(cubePos) + '-orn' + str(cubeOrn))
+        (position, orientation) = scene.get_item_pose(item_id)
+        print(str(item_id) + '-pos: ' + str(position) + '-orn' + str(orientation))
 
     scene.simulate()
     input('Press any key to end...')
@@ -209,4 +255,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
