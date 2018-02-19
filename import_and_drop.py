@@ -14,15 +14,23 @@ logging.basicConfig(level=logging.INFO)
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 URDF_DIR = os.path.join(ROOT_DIR, 'meshes', 'urdf')
 
-GRAVITY = [0, 0, -10]
-
 physicsClient = p.connect(p.GUI)  # Change p.GUI to p.DIRECT to run headlessly.
 
 class Scene(object):
-    def __init__(self):
+    """Manages a scene and its contents."""
+    def __init__(self, gravity=[0, 0, -20], timestep=0.0001):
+        self.gravity = gravity
+        self.timestep = timestep
+
+        # Simulation
+        p.setGravity(*gravity)
+        self.step = 0
+        if timestep is not None:
+            p.setTimeStep(timestep)
+
+        # Items
         self.plane_id = None
         self.item_ids = []
-        p.setGravity(*GRAVITY)
         self.plane_id = p.loadURDF('plane.urdf')
         self.tray_id = p.loadURDF('tray/traybox.urdf', globalScaling=0.5)
 
@@ -35,11 +43,26 @@ class Scene(object):
         (position, orientation) = p.getBasePositionAndOrientation(item_id)
         return (item_id, position, orientation)
 
+    def simulate(self, steps=None):
+        initial_step = self.step
+        while steps is None or self.step - initial_step < steps:
+            p.stepSimulation()
+            self.step += 1
+
 class ScenePopulator(object):
-    def __init__(self, scene, mean_position, position_ranges):
+    """Stochastically populates a Scene with objects."""
+    def __init__(self, scene, min_objects=15, max_objects=25,
+                 mean_position=np.array([0, 0, 0.25]),
+                 position_ranges=np.array([0.1, 0.1, 0.1])):
         self.scene = scene
+
+        # Random distribution parameters
+        self.min_objects = min_objects
+        self.max_objects = max_objects
         self.mean_position = mean_position
         self.position_ranges = position_ranges
+
+        # Object loading
         self.full_object_database = sorted(os.listdir(URDF_DIR))
         self.excluded_objects = {
             '31340e691294a750d30ee0b5a9888c0b', '38dd2a8d2c984e2b6c1cd53dbc9f7b8e',
@@ -55,6 +78,9 @@ class ScenePopulator(object):
             self.full_object_database) - self.excluded_objects
         ))
         logging.info('Available objects: {}'.format(self.object_database))
+
+    def sample_num_objects(self):
+        return random.randint(self.min_objects, self.max_objects)
 
     def sample_object(self):
         return random.choice(self.object_database)
@@ -73,36 +99,32 @@ class ScenePopulator(object):
             self.sample_object(), self.sample_position(), self.sample_orientation()
         )
 
-def simulate():
-    useRealTimeSimulation = True
-    if (useRealTimeSimulation):
-        p.setRealTimeSimulation(1)
+    def simulate_to(self, object_id, height_threshold):
+        while True:
+            self.scene.simulate(steps=1000)
+            if p.getBasePositionAndOrientation(object_id)[0][2] < height_threshold:
+                return
 
-    count = 0
-    while count < 100:
-        if (useRealTimeSimulation):
-            p.setGravity(*GRAVITY)
-            sleep(0.001)  # Time in seconds.
-        else:
-            p.stepSimulation()
-        count += 1
+    def add_objects(self, num_objects=None, height_threshold=0.1):
+        if num_objects is None:
+            num_objects = self.sample_num_objects()
+        for i in range(num_objects):
+            (object_id, _, _) = populator.add_object()
+            populator.simulate_to(object_id, height_threshold)
 
 
-NUM_OBJECTS = 20
 scene = Scene()
-populator = ScenePopulator(scene, np.array([0, 0, 0.5]), np.array([0.05, 0.05, 0.5]))
-for i in range(NUM_OBJECTS):
-    populator.add_object()
-    simulate()
-populator.add_gripper ()
-print('All objects created!')
+populator = ScenePopulator(scene)
+populator.add_objects()
 
+print('All objects created!')
 
 for item_id in scene.item_ids:
     cubePos, cubeOrn = p.getBasePositionAndOrientation(item_id)
     print(str(item_id) + '-pos: ' + str(cubePos) + '-orn' + str(cubeOrn))
 
 
+scene.simulate()
 input('Press any key to end...')
 
 
