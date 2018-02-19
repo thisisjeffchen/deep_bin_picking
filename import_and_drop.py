@@ -13,6 +13,8 @@ logging.basicConfig(level=logging.INFO)
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 URDF_DIR = os.path.join(ROOT_DIR, 'meshes', 'urdf')
+GRIPPER_DIR = os.path.join (ROOT_DIR, 'meshes', 'grippers')
+GRIPPER = "yumi_metal_spline"
 
 physicsClient = p.connect(p.GUI)  # Change p.GUI to p.DIRECT to run headlessly.
 
@@ -30,6 +32,7 @@ class Scene(object):
 
         # Items
         self.plane_id = None
+        self.gripper_id = None
         self.item_ids = []
         self.plane_id = p.loadURDF('plane.urdf')
         self.tray_id = p.loadURDF('tray/traybox.urdf', globalScaling=0.5)
@@ -42,6 +45,15 @@ class Scene(object):
         self.item_ids.append(item_id)
         (position, orientation) = p.getBasePositionAndOrientation(item_id)
         return (item_id, position, orientation)
+
+    def add_gripper (self):
+        logging.info ('Adding gripper')
+        file_path = os.path.join(GRIPPER_DIR, GRIPPER, 'base.obj')
+        orn =  cubeStartOrientation = p.getQuaternionFromEuler([0,0,0])
+        self.gripper_id = p.loadURDF (file_path, [0, 0, 3], orn)
+        logging.info ('Gripper assigned id {}'.format (self.gripper_id))
+        pos, ori = p.getBasePositionAndOrientation (self.gripper_id)
+        return self.gripper_id, pos, ori
 
     def simulate(self, steps=None):
         initial_step = self.step
@@ -98,7 +110,7 @@ class ScenePopulator(object):
         return self.scene.add_object(
             self.sample_object(), self.sample_position(), self.sample_orientation()
         )
-
+        
     def simulate_to(self, object_id, height_threshold):
         while True:
             self.scene.simulate(steps=1000)
@@ -114,9 +126,12 @@ class ScenePopulator(object):
 
 
 scene = Scene()
+#TODO: export gripper to mesh and then import
+#scene.add_gripper ()
+
 populator = ScenePopulator(scene)
-populator.add_objects()
-#populator.add_gripper ()
+populator.add_objects(5)
+
 
 print('All objects created!')
 
