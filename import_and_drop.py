@@ -13,6 +13,8 @@ logging.basicConfig(level=logging.INFO)
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 URDF_DIR = os.path.join(ROOT_DIR, 'meshes', 'urdf')
+GRIPPER_DIR = os.path.join (ROOT_DIR, 'meshes', 'grippers')
+GRIPPER = "yumi_metal_spline"
 
 physicsClient = p.connect(p.GUI)  # Change p.GUI to p.DIRECT to run headlessly.
 
@@ -36,6 +38,9 @@ class Scene(object):
         self.crate_side_ids = []
         self.add_crate()
 
+        # Gripper
+        self.gripper_id = None
+
         # Items
         self.item_ids = []
 
@@ -47,6 +52,16 @@ class Scene(object):
         self.item_ids.append(item_id)
         (position, orientation) = p.getBasePositionAndOrientation(item_id)
         return (item_id, position, orientation)
+
+    def add_gripper(self):
+        logging.info('Adding gripper')
+        file_path = os.path.join(GRIPPER_DIR, GRIPPER, 'base.obj')
+        cubeStartOrientation = p.getQuaternionFromEuler([0, 0, 0])
+        orn = cubeStartOrientation
+        self.gripper_id = p.loadURDF(file_path, [0, 0, 3], orn)
+        logging.info('Gripper assigned id {}'.format(self.gripper_id))
+        pos, ori = p.getBasePositionAndOrientation(self.gripper_id)
+        return self.gripper_id, pos, ori
 
     def simulate(self, steps=None):
         initial_step = self.step
@@ -165,7 +180,6 @@ class ScenePopulator(object):
         return self.scene.add_item(
             self.sample_item(), self.sample_position(), self.sample_orientation()
         )
-
     def simulate_to(self, item_id, height_threshold):
         while True:
             self.scene.simulate(steps=1000)
@@ -182,13 +196,12 @@ class ScenePopulator(object):
 def main():
     scene = Scene()
     populator = ScenePopulator(scene)
-    populator.add_items()
+    populator.add_items(num_items=5)
     print('All items created!')
 
     for item_id in scene.item_ids:
         cubePos, cubeOrn = p.getBasePositionAndOrientation(item_id)
         print(str(item_id) + '-pos: ' + str(cubePos) + '-orn' + str(cubeOrn))
-
 
     scene.simulate()
     input('Press any key to end...')
