@@ -32,7 +32,7 @@ class Scene(object):
         self.plane_id = None
         self.item_ids = []
         self.plane_id = p.loadURDF('plane.urdf')
-        self.tray_id = p.loadURDF('tray/traybox.urdf', globalScaling=0.5)
+        self.add_crate()
 
     def add_item(self, name, position, orientation):
         logging.info('Adding item "{}"'.format(name))
@@ -48,6 +48,12 @@ class Scene(object):
         while steps is None or self.step - initial_step < steps:
             p.stepSimulation()
             self.step += 1
+
+    def add_crate(self):
+        self.tray_id = p.loadURDF('tray/traybox.urdf', globalScaling=0.5)
+
+    def add_gripper(self):
+        pass
 
 class ScenePopulator(object):
     """Stochastically populates a Scene with items."""
