@@ -35,13 +35,13 @@ class Scene(object):
         self.gripper_id = None
         self.item_ids = []
         self.plane_id = p.loadURDF('plane.urdf')
-        self.tray_id = p.loadURDF('tray/traybox.urdf', globalScaling=0.5)
+        self.add_crate()
 
-    def add_object(self, name, position, orientation):
-        logging.info('Adding object "{}"'.format(name))
+    def add_item(self, name, position, orientation):
+        logging.info('Adding item "{}"'.format(name))
         file_path = os.path.join(URDF_DIR, name, name + '.urdf')
         item_id = p.loadURDF(file_path, position, orientation)
-        logging.info('Object assigned id {}'.format(item_id))
+        logging.info('Item assigned object id {}'.format(item_id))
         self.item_ids.append(item_id)
         (position, orientation) = p.getBasePositionAndOrientation(item_id)
         return (item_id, position, orientation)
@@ -61,22 +61,28 @@ class Scene(object):
             p.stepSimulation()
             self.step += 1
 
+    def add_crate(self):
+        self.tray_id = p.loadURDF('tray/traybox.urdf', globalScaling=0.5)
+
+    def add_gripper(self):
+        pass
+
 class ScenePopulator(object):
-    """Stochastically populates a Scene with objects."""
-    def __init__(self, scene, min_objects=15, max_objects=25,
+    """Stochastically populates a Scene with items."""
+    def __init__(self, scene, min_items=15, max_items=25,
                  mean_position=np.array([0, 0, 0.25]),
                  position_ranges=np.array([0.1, 0.1, 0.1])):
         self.scene = scene
 
         # Random distribution parameters
-        self.min_objects = min_objects
-        self.max_objects = max_objects
+        self.min_items = min_items
+        self.max_items = max_items
         self.mean_position = mean_position
         self.position_ranges = position_ranges
 
-        # Object loading
-        self.full_object_database = sorted(os.listdir(URDF_DIR))
-        self.excluded_objects = {
+        # Item loading
+        self.full_item_database = sorted(os.listdir(URDF_DIR))
+        self.excluded_items = {
             '31340e691294a750d30ee0b5a9888c0b', '38dd2a8d2c984e2b6c1cd53dbc9f7b8e',
             '3c80c41399d2c92334fb047a3245866d', '3f497f8d7dd8922a57e59dddfaae7826',
             '4fcd289d3e82bb08588f04a271bfa5eb', '4fcd289d3e82bb08588f04a271bfa5eb',
@@ -86,16 +92,16 @@ class ScenePopulator(object):
             'c453274b341f8c4ec2b9bcaf66ea9919', 'dc0c4db824981b8cf29c5890b07f3a65',
             'pliers_standard'
         }
-        self.object_database = sorted(list(set(
-            self.full_object_database) - self.excluded_objects
+        self.item_database = sorted(list(set(
+            self.full_item_database) - self.excluded_items
         ))
-        logging.info('Available objects: {}'.format(self.object_database))
+        logging.info('Available items: {}'.format(self.item_database))
 
-    def sample_num_objects(self):
-        return random.randint(self.min_objects, self.max_objects)
+    def sample_num_items(self):
+        return random.randint(self.min_items, self.max_items)
 
-    def sample_object(self):
-        return random.choice(self.object_database)
+    def sample_item(self):
+        return random.choice(self.item_database)
 
     def sample_position(self):
         return np.random.uniform(self.mean_position - self.position_ranges / 2,
@@ -106,23 +112,22 @@ class ScenePopulator(object):
             random.uniform(0, 2 * math.pi) for _ in range(3)
         ])
 
-    def add_object(self):
-        return self.scene.add_object(
-            self.sample_object(), self.sample_position(), self.sample_orientation()
+    def add_item(self):
+        return self.scene.add_item(
+            self.sample_item(), self.sample_position(), self.sample_orientation()
         )
-        
     def simulate_to(self, object_id, height_threshold):
         while True:
             self.scene.simulate(steps=1000)
-            if p.getBasePositionAndOrientation(object_id)[0][2] < height_threshold:
+            if p.getBasePositionAndOrientation(item_id)[0][2] < height_threshold:
                 return
 
-    def add_objects(self, num_objects=None, height_threshold=0.1):
-        if num_objects is None:
-            num_objects = self.sample_num_objects()
-        for i in range(num_objects):
-            (object_id, _, _) = populator.add_object()
-            populator.simulate_to(object_id, height_threshold)
+    def add_items(self, num_items=None, height_threshold=0.1):
+        if num_items is None:
+            num_items = self.sample_num_items()
+        for i in range(num_items):
+            (item_id, _, _) = populator.add_item()
+            populator.simulate_to(item_id, height_threshold)
 
 
 scene = Scene()
@@ -131,8 +136,6 @@ scene = Scene()
 
 populator = ScenePopulator(scene)
 populator.add_objects(5)
-
-
 print('All objects created!')
 
 for item_id in scene.item_ids:
@@ -143,8 +146,3 @@ for item_id in scene.item_ids:
 scene.simulate()
 input('Press any key to end...')
 
-
-# find objects
-# randomly drop objects
-# wait for object to settle
-# drop another object
