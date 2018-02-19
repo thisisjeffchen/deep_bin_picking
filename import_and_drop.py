@@ -94,6 +94,7 @@ populator = ScenePopulator(scene, np.array([0, 0, 0.5]), np.array([0.05, 0.05, 0
 for i in range(NUM_OBJECTS):
     populator.add_object()
     simulate()
+populator.add_gripper ()
 print('All objects created!')
 
 
