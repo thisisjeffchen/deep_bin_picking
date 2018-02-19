@@ -116,6 +116,7 @@ class ScenePopulator(object):
 scene = Scene()
 populator = ScenePopulator(scene)
 populator.add_objects()
+#populator.add_gripper ()
 
 print('All objects created!')
 
