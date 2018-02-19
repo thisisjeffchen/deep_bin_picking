@@ -1,0 +1,24 @@
+<robot name="root">
+  <link name="link_d725f281dd89b828d03cf8c722f35752_convex_piece_0">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.45E-05"/>
+      <inertia ixx="1.06E-08" ixy="-3.38E-12" ixz="-1.56E-10" iyy="8.82E-09" iyz="6.42E-10" izz="1.88E-09"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="d725f281dd89b828d03cf8c722f35752_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="d725f281dd89b828d03cf8c722f35752_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+</robot>

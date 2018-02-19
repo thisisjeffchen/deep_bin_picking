@@ -14,7 +14,7 @@ URDF_DIR = os.path.join(ROOT_DIR, 'meshes', 'urdf')
 
 GRAVITY = [0, 0, -10]
 
-physicsClient = p.connect(p.GUI)
+physicsClient = p.connect(p.GUI)  # Change p.GUI to p.DIRECT to run headlessly.
 
 class Scene(object):
     def __init__(self):
@@ -37,7 +37,20 @@ class ScenePopulator(object):
         self.scene = scene
         self.mean_position = mean_position
         self.mean_orientation = mean_orientation
-        self.object_database = os.listdir(URDF_DIR)
+        self.full_object_database = sorted(os.listdir(URDF_DIR))
+        self.excluded_objects = {
+            '31340e691294a750d30ee0b5a9888c0b', '38dd2a8d2c984e2b6c1cd53dbc9f7b8e',
+            '3c80c41399d2c92334fb047a3245866d', '3f497f8d7dd8922a57e59dddfaae7826',
+            '4fcd289d3e82bb08588f04a271bfa5eb', '4fcd289d3e82bb08588f04a271bfa5eb',
+            '68582543c4c6d0bccfdfe3f21f42a111', '9a52843cc89cd208362be90aaa182ec6',
+            'a4584986b4baf1479a2840934f7f84bc', 'a86d587f38569fdf394a7890920ef7fd',
+            'bacef3777b91b02f29c5890b07f3a65', 'c09e3db27668639a69fba573ec0b31f3',
+            'c453274b341f8c4ec2b9bcaf66ea9919', 'dc0c4db824981b8cf29c5890b07f3a65',
+            'pliers_standard'
+        }
+        self.object_database = sorted(list(set(
+            self.full_object_database) - self.excluded_objects
+        ))
         logging.info('Available objects: {}'.format(self.object_database))
 
     def sample_position(self):
@@ -73,7 +86,7 @@ for i in range(NUM_OBJECTS):
             sleep(0.01)  # Time in seconds.
         else:
             p.stepSimulation()
-            count += 1
+        count += 1
 
 print('All objects created')
 for itemId in scene.item_ids:

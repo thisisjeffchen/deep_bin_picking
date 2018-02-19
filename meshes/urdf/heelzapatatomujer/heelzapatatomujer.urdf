@@ -1,0 +1,159 @@
+<robot name="root">
+  <link name="link_heelzapatatomujer_convex_piece_0">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.35E-05"/>
+      <inertia ixx="7.83E-09" ixy="-3.53E-10" ixz="-8.40E-10" iyy="7.09E-09" iyz="1.48E-09" izz="1.62E-09"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link_heelzapatatomujer_convex_piece_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.35E-05"/>
+      <inertia ixx="8.41E-09" ixy="4.89E-10" ixz="-1.18E-09" iyy="7.87E-09" iyz="-1.66E-09" izz="1.74E-09"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_1.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_1.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_heelzapatatomujer_convex_piece_1_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_heelzapatatomujer_convex_piece_0"/>
+    <child link="link_heelzapatatomujer_convex_piece_1"/>
+  </joint>
+  <link name="link_heelzapatatomujer_convex_piece_2">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.68E-06"/>
+      <inertia ixx="1.84E-09" ixy="-3.17E-11" ixz="-6.81E-10" iyy="2.09E-09" iyz="7.54E-11" izz="2.96E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_2.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_2.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_heelzapatatomujer_convex_piece_2_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_heelzapatatomujer_convex_piece_1"/>
+    <child link="link_heelzapatatomujer_convex_piece_2"/>
+  </joint>
+  <link name="link_heelzapatatomujer_convex_piece_3">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="6.67E-06"/>
+      <inertia ixx="8.91E-09" ixy="4.48E-10" ixz="1.79E-09" iyy="9.02E-09" iyz="1.81E-09" izz="1.18E-09"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_3.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_3.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_heelzapatatomujer_convex_piece_3_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_heelzapatatomujer_convex_piece_2"/>
+    <child link="link_heelzapatatomujer_convex_piece_3"/>
+  </joint>
+  <link name="link_heelzapatatomujer_convex_piece_4">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.99E-06"/>
+      <inertia ixx="2.08E-09" ixy="-2.16E-10" ixz="5.33E-10" iyy="2.01E-09" iyz="-6.62E-10" izz="4.79E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_4.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_4.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_heelzapatatomujer_convex_piece_4_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_heelzapatatomujer_convex_piece_3"/>
+    <child link="link_heelzapatatomujer_convex_piece_4"/>
+  </joint>
+  <link name="link_heelzapatatomujer_convex_piece_5">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="6.88E-06"/>
+      <inertia ixx="9.88E-09" ixy="-1.49E-10" ixz="1.76E-09" iyy="1.03E-08" iyz="-7.25E-10" izz="6.97E-10"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_5.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="heelzapatatomujer_convex_piece_5.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_heelzapatatomujer_convex_piece_5_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_heelzapatatomujer_convex_piece_4"/>
+    <child link="link_heelzapatatomujer_convex_piece_5"/>
+  </joint>
+</robot>

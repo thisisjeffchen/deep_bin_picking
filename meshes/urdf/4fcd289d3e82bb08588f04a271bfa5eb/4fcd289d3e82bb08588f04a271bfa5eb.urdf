@@ -1,0 +1,1617 @@
+<robot name="root">
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_0">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.93E-07"/>
+      <inertia ixx="-2.17E-11" ixy="-2.03E-11" ixz="-1.51E-11" iyy="-5.45E-11" iyz="-7.72E-12" izz="-5.28E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-4.27E-08"/>
+      <inertia ixx="-5.03E-11" ixy="-9.26E-12" ixz="2.37E-11" iyy="-5.65E-11" iyz="1.71E-11" izz="-1.99E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_1.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_1.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_1_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_0"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_1"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_2">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.12E-07"/>
+      <inertia ixx="-8.66E-11" ixy="-1.82E-12" ixz="-5.33E-12" iyy="-7.47E-11" iyz="-2.89E-11" izz="-1.37E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_2.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_2.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_2_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_1"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_2"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_3">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-9.77E-08"/>
+      <inertia ixx="-1.58E-11" ixy="1.06E-11" ixz="3.59E-12" iyy="-1.31E-11" iyz="-4.67E-12" izz="-2.18E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_3.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_3.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_3_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_2"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_3"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_4">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.67E-07"/>
+      <inertia ixx="-3.89E-11" ixy="1.41E-11" ixz="-2.00E-11" iyy="-5.23E-11" iyz="1.34E-11" izz="-3.19E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_4.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_4.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_4_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_3"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_4"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_5">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-6.45E-08"/>
+      <inertia ixx="-6.37E-11" ixy="2.33E-12" ixz="-1.93E-11" iyy="-6.89E-11" iyz="7.15E-12" izz="-7.18E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_5.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_5.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_5_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_4"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_5"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_6">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.17E-07"/>
+      <inertia ixx="-5.41E-11" ixy="6.42E-12" ixz="-3.58E-11" iyy="-8.14E-11" iyz="7.63E-12" izz="-3.05E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_6.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_6.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_6_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_5"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_6"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_7">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.70E-08"/>
+      <inertia ixx="-3.26E-11" ixy="-5.34E-12" ixz="-1.05E-11" iyy="-3.01E-11" iyz="-1.31E-11" izz="-1.10E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_7.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_7.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_7_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_6"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_7"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_8">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.91E-08"/>
+      <inertia ixx="-4.81E-11" ixy="-5.18E-12" ixz="-1.54E-11" iyy="-4.87E-11" iyz="-1.45E-11" izz="-1.05E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_8.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_8.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_8_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_7"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_8"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_9">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.57E-07"/>
+      <inertia ixx="-7.19E-11" ixy="-7.43E-12" ixz="-1.37E-11" iyy="-5.59E-11" iyz="-3.07E-11" izz="-2.44E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_9.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_9.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_9_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_8"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_9"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_10">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.23E-08"/>
+      <inertia ixx="-1.28E-11" ixy="-2.79E-14" ixz="-4.60E-14" iyy="-7.13E-12" iyz="-6.30E-12" izz="-5.65E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_10.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_10.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_10_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_9"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_10"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_11">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.09E-07"/>
+      <inertia ixx="-1.04E-10" ixy="5.30E-12" ixz="1.57E-11" iyy="-9.52E-11" iyz="-3.11E-11" izz="-1.47E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_11.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_11.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_11_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_10"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_11"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_12">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-5.60E-08"/>
+      <inertia ixx="-5.25E-11" ixy="4.34E-12" ixz="1.76E-11" iyy="-5.57E-11" iyz="-1.21E-11" izz="-9.61E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_12.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_12.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_12_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_11"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_12"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_13">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-3.61E-08"/>
+      <inertia ixx="-1.89E-11" ixy="2.97E-12" ixz="8.29E-12" iyy="-2.08E-11" iyz="-5.93E-12" izz="-6.37E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_13.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_13.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_13_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_12"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_13"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_14">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.87E-07"/>
+      <inertia ixx="-2.24E-10" ixy="5.26E-12" ixz="-3.91E-11" iyy="-2.30E-10" iyz="2.17E-11" izz="-1.84E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_14.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_14.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_14_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_13"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_14"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_15">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.34E-07"/>
+      <inertia ixx="-1.47E-10" ixy="4.43E-12" ixz="-1.11E-11" iyy="-1.28E-10" iyz="5.11E-11" izz="-2.38E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_15.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_15.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_15_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_14"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_15"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_16">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-6.69E-08"/>
+      <inertia ixx="-1.84E-11" ixy="2.10E-12" ixz="1.23E-12" iyy="-7.08E-12" iyz="-8.50E-12" izz="-1.30E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_16.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_16.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_16_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_15"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_16"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_17">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.06E-07"/>
+      <inertia ixx="-1.49E-11" ixy="1.55E-12" ixz="-7.22E-13" iyy="-5.56E-12" iyz="-4.61E-12" izz="-1.18E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_17.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_17.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_17_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_16"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_17"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_18">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.10E-07"/>
+      <inertia ixx="-8.54E-12" ixy="-1.22E-12" ixz="-2.90E-12" iyy="-7.46E-12" iyz="-3.14E-12" izz="-4.25E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_18.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_18.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_18_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_17"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_18"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_19">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.21E-07"/>
+      <inertia ixx="-1.48E-11" ixy="5.02E-12" ixz="-8.17E-12" iyy="-1.77E-11" iyz="4.23E-12" izz="-1.26E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_19.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_19.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_19_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_18"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_19"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_20">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.05E-07"/>
+      <inertia ixx="-1.39E-10" ixy="-1.56E-13" ixz="-1.98E-12" iyy="-1.37E-10" iyz="-1.37E-11" izz="-2.49E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_20.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_20.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_20_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_19"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_20"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_21">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.09E-07"/>
+      <inertia ixx="-4.00E-11" ixy="4.19E-12" ixz="-3.88E-12" iyy="-1.18E-11" iyz="1.11E-11" izz="-3.45E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_21.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_21.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_21_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_20"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_21"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_22">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.46E-08"/>
+      <inertia ixx="-1.03E-11" ixy="-1.04E-13" ixz="-7.04E-12" iyy="-1.51E-11" iyz="-1.59E-13" izz="-4.87E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_22.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_22.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_22_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_21"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_22"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_23">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-3.99E-08"/>
+      <inertia ixx="-4.37E-11" ixy="-1.16E-12" ixz="-2.16E-11" iyy="-5.45E-11" iyz="-2.19E-12" izz="-1.11E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_23.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_23.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_23_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_22"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_23"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_24">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-3.49E-08"/>
+      <inertia ixx="-4.98E-11" ixy="-2.10E-12" ixz="-1.98E-11" iyy="-5.73E-11" iyz="-4.90E-12" izz="-8.80E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_24.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_24.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_24_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_23"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_24"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_25">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.86E-08"/>
+      <inertia ixx="-4.76E-11" ixy="-2.81E-12" ixz="-1.57E-11" iyy="-5.15E-11" iyz="-8.13E-12" izz="-7.04E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_25.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_25.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_25_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_24"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_25"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_26">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-7.06E-08"/>
+      <inertia ixx="-4.29E-11" ixy="4.52E-12" ixz="5.88E-12" iyy="-2.85E-11" iyz="-2.03E-11" izz="-1.74E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_26.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_26.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_26_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_25"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_26"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_27">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-3.45E-08"/>
+      <inertia ixx="-1.79E-11" ixy="3.66E-12" ixz="5.77E-12" iyy="-1.56E-11" iyz="-7.87E-12" izz="-7.72E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_27.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_27.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_27_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_26"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_27"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_28">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.15E-07"/>
+      <inertia ixx="-3.68E-11" ixy="5.91E-13" ixz="-1.98E-11" iyy="-4.72E-11" iyz="2.82E-13" izz="-1.21E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_28.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_28.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_28_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_27"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_28"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_29">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-4.67E-08"/>
+      <inertia ixx="-1.65E-11" ixy="3.87E-12" ixz="-9.72E-12" iyy="-2.10E-11" iyz="5.59E-12" izz="-8.99E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_29.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_29.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_29_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_28"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_29"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_30">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.07E-07"/>
+      <inertia ixx="-6.07E-11" ixy="1.07E-11" ixz="-1.97E-11" iyy="-5.55E-11" iyz="2.50E-11" izz="-2.28E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_30.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_30.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_30_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_29"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_30"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_31">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.79E-07"/>
+      <inertia ixx="-2.17E-10" ixy="-4.82E-12" ixz="3.65E-11" iyy="-2.15E-10" iyz="2.93E-11" izz="-1.62E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_31.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_31.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_31_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_30"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_31"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_32">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-6.19E-08"/>
+      <inertia ixx="-8.38E-11" ixy="-6.38E-12" ixz="1.33E-11" iyy="-7.10E-11" iyz="3.25E-11" izz="-1.86E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_32.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_32.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_32_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_31"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_32"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_33">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-4.14E-08"/>
+      <inertia ixx="-3.46E-11" ixy="-2.79E-12" ixz="4.81E-12" iyy="-2.66E-11" iyz="1.51E-11" izz="-9.94E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_33.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_33.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_33_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_32"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_33"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_34">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-9.71E-08"/>
+      <inertia ixx="-7.51E-11" ixy="-1.10E-11" ixz="2.93E-11" iyy="-7.84E-11" iyz="2.52E-11" izz="-2.41E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_34.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_34.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_34_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_33"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_34"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_35">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-7.92E-08"/>
+      <inertia ixx="-4.94E-11" ixy="-3.73E-14" ixz="2.61E-11" iyy="-6.28E-11" iyz="-5.37E-15" izz="-1.45E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_35.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_35.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_35_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_34"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_35"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_36">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-4.38E-08"/>
+      <inertia ixx="-7.34E-11" ixy="-1.02E-11" ixz="2.49E-11" iyy="-7.30E-11" iyz="2.57E-11" izz="-2.07E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_36.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_36.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_36_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_35"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_36"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_37">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.40E-07"/>
+      <inertia ixx="-7.04E-11" ixy="-4.07E-12" ixz="1.57E-11" iyy="-7.41E-11" iyz="1.14E-11" izz="-1.02E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_37.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_37.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_37_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_36"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_37"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_38">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-3.94E-07"/>
+      <inertia ixx="-1.27E-10" ixy="1.35E-12" ixz="1.68E-11" iyy="-1.31E-10" iyz="-8.38E-12" izz="-6.38E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_38.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_38.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_38_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_37"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_38"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_39">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.05E-07"/>
+      <inertia ixx="-8.39E-11" ixy="2.90E-12" ixz="9.08E-12" iyy="-7.77E-11" iyz="-2.19E-11" izz="-9.18E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_39.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_39.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_39_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_38"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_39"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_40">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.81E-08"/>
+      <inertia ixx="-2.62E-11" ixy="-7.34E-14" ixz="-5.38E-12" iyy="-2.74E-11" iyz="-4.04E-13" izz="-1.16E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_40.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_40.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_40_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_39"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_40"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_41">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.64E-08"/>
+      <inertia ixx="-4.27E-11" ixy="-1.03E-12" ixz="-7.87E-12" iyy="-4.35E-11" iyz="-5.58E-12" izz="-2.34E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_41.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_41.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_41_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_40"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_41"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_42">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-6.85E-08"/>
+      <inertia ixx="-1.52E-11" ixy="2.79E-14" ixz="9.59E-14" iyy="-7.05E-12" iyz="-7.01E-12" izz="-8.42E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_42.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_42.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_42_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_41"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_42"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_43">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-5.61E-08"/>
+      <inertia ixx="-1.98E-11" ixy="-4.76E-12" ixz="-3.22E-12" iyy="-8.40E-12" iyz="-8.83E-12" izz="-1.51E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_43.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_43.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_43_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_42"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_43"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_44">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.04E-07"/>
+      <inertia ixx="-7.57E-11" ixy="-3.44E-13" ixz="-2.40E-13" iyy="-6.28E-11" iyz="-2.80E-11" izz="-1.35E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_44.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_44.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_44_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_43"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_44"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_45">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-8.25E-08"/>
+      <inertia ixx="-6.99E-11" ixy="-8.93E-12" ixz="-1.42E-11" iyy="-5.51E-11" iyz="-3.06E-11" izz="-2.36E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_45.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_45.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_45_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_44"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_45"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_46">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-8.40E-08"/>
+      <inertia ixx="-1.15E-10" ixy="-4.98E-12" ixz="-1.36E-11" iyy="-1.05E-10" iyz="-3.52E-11" izz="-1.49E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_46.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_46.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_46_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_45"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_46"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_47">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.38E-08"/>
+      <inertia ixx="-3.96E-11" ixy="-1.85E-12" ixz="-6.91E-12" iyy="-3.83E-11" iyz="-9.83E-12" izz="-4.04E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_47.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_47.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_47_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_46"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_47"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_48">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-4.68E-08"/>
+      <inertia ixx="-3.67E-11" ixy="1.34E-12" ixz="-2.08E-12" iyy="-2.62E-11" iyz="1.67E-11" izz="-1.12E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_48.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_48.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_48_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_47"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_48"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_49">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.70E-08"/>
+      <inertia ixx="-1.26E-11" ixy="1.13E-12" ixz="-1.31E-12" iyy="-7.50E-12" iyz="6.21E-12" izz="-5.72E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_49.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_49.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_49_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_48"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_49"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_50">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-9.32E-08"/>
+      <inertia ixx="-5.74E-12" ixy="1.52E-12" ixz="-1.76E-12" iyy="-4.51E-12" iyz="2.27E-12" izz="-3.43E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_50.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_50.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_50_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_49"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_50"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_51">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.19E-07"/>
+      <inertia ixx="-1.57E-10" ixy="-4.77E-12" ixz="5.73E-11" iyy="-1.76E-10" iyz="1.31E-11" izz="-2.44E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_51.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_51.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_51_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_50"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_51"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_52">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-6.17E-08"/>
+      <inertia ixx="-8.41E-11" ixy="-7.68E-12" ixz="4.17E-11" iyy="-1.03E-10" iyz="1.49E-11" izz="-2.46E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_52.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_52.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_52_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_51"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_52"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_53">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.92E-08"/>
+      <inertia ixx="-1.83E-11" ixy="5.11E-13" ixz="8.83E-12" iyy="-2.25E-11" iyz="-1.10E-12" izz="-4.43E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_53.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_53.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_53_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_52"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_53"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_54">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.83E-08"/>
+      <inertia ixx="-2.79E-11" ixy="-2.85E-12" ixz="1.55E-11" iyy="-3.57E-11" iyz="4.91E-12" izz="-9.98E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_54.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_54.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_54_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_53"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_54"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_55">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.93E-08"/>
+      <inertia ixx="-4.72E-11" ixy="-7.93E-12" ixz="2.31E-11" iyy="-5.49E-11" iyz="1.45E-11" izz="-1.78E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_55.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_55.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_55_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_54"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_55"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_56">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-3.27E-08"/>
+      <inertia ixx="-4.42E-11" ixy="-7.32E-12" ixz="1.50E-11" iyy="-4.20E-11" iyz="1.75E-11" izz="-1.51E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_56.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_56.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_56_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_55"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_56"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_57">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-2.23E-07"/>
+      <inertia ixx="-8.46E-11" ixy="2.79E-12" ixz="-9.82E-12" iyy="-8.21E-11" iyz="1.78E-11" izz="-7.09E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_57.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_57.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_57_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_56"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_57"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_58">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-1.07E-07"/>
+      <inertia ixx="-1.06E-10" ixy="1.12E-12" ixz="-9.27E-12" iyy="-1.06E-10" iyz="1.11E-11" izz="-2.70E-12"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_58.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_58.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_58_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_57"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_58"/>
+  </joint>
+  <link name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_59">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="-3.23E-08"/>
+      <inertia ixx="-5.35E-11" ixy="-5.64E-12" ixz="1.85E-11" iyy="-5.60E-11" iyz="1.50E-11" izz="-1.18E-11"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_59.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_59.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_59_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_58"/>
+    <child link="link_4fcd289d3e82bb08588f04a271bfa5eb_convex_piece_59"/>
+  </joint>
+</robot>

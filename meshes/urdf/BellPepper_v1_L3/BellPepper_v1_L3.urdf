@@ -1,0 +1,24 @@
+<robot name="root">
+  <link name="link_BellPepper_v1_L3_convex_piece_0">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="4.48E-05"/>
+      <inertia ixx="9.97E-09" ixy="5.70E-11" ixz="-2.49E-10" iyy="1.00E-08" iyz="-3.75E-10" izz="9.21E-09"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="BellPepper_v1_L3_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+      <material name="">
+        <color rgba="7.50E-01 7.50E-01 7.50E-01 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="BellPepper_v1_L3_convex_piece_0.obj" scale="1.0000E+00"/>
+      </geometry>
+    </collision>
+  </link>
+</robot>
