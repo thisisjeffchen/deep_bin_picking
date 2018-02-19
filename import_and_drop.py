@@ -1,10 +1,12 @@
 """Demo script to run a simulation."""
 
 import logging
+import math
 import os
 import random
 from time import sleep
 
+import numpy as np
 import pybullet as p
 
 logging.basicConfig(level=logging.INFO)
@@ -33,10 +35,10 @@ class Scene(object):
         return (item_id, position, orientation)
 
 class ScenePopulator(object):
-    def __init__(self, scene, mean_position, mean_orientation):
+    def __init__(self, scene, mean_position, position_ranges):
         self.scene = scene
         self.mean_position = mean_position
-        self.mean_orientation = mean_orientation
+        self.position_ranges = position_ranges
         self.full_object_database = sorted(os.listdir(URDF_DIR))
         self.excluded_objects = {
             '31340e691294a750d30ee0b5a9888c0b', '38dd2a8d2c984e2b6c1cd53dbc9f7b8e',
@@ -53,28 +55,24 @@ class ScenePopulator(object):
         ))
         logging.info('Available objects: {}'.format(self.object_database))
 
-    def sample_position(self):
-        return self.mean_position
-
-    def sample_orientation(self):
-        return p.getQuaternionFromEuler(self.mean_orientation)
-
     def sample_object(self):
         return random.choice(self.object_database)
 
+    def sample_position(self):
+        return np.random.uniform(self.mean_position - self.position_ranges / 2,
+                                 self.mean_position + self.position_ranges / 2)
+
+    def sample_orientation(self):
+        return p.getQuaternionFromEuler([
+            random.uniform(0, 2 * math.pi) for _ in range(3)
+        ])
+
     def add_object(self):
-        start_position = self.sample_position()
-        start_orientation = self.sample_orientation()
-        object_name = self.sample_object()
-        return self.scene.add_object(object_name, start_position, start_orientation)
+        return self.scene.add_object(
+            self.sample_object(), self.sample_position(), self.sample_orientation()
+        )
 
-NUM_OBJECTS = 20
-scene = Scene()
-populator = ScenePopulator(scene, [0.5, 0.5, 2], [0, 0, 0])
-
-for i in range(NUM_OBJECTS):
-    (item_id, _, _) = populator.add_object()
-
+def simulate():
     useRealTimeSimulation = True
     if (useRealTimeSimulation):
         p.setRealTimeSimulation(1)
@@ -88,10 +86,19 @@ for i in range(NUM_OBJECTS):
             p.stepSimulation()
         count += 1
 
-print('All objects created')
-for itemId in scene.item_ids:
-    cubePos, cubeOrn = p.getBasePositionAndOrientation(itemId)
-    print(str(itemId) + '-pos: ' + str(cubePos) + '-orn' + str(cubeOrn))
+
+NUM_OBJECTS = 40
+scene = Scene()
+populator = ScenePopulator(scene, np.array([0, 0, 2]), np.array([0.2, 0.2, 2]))
+for i in range(NUM_OBJECTS):
+    populator.add_object()
+print('All objects created!')
+
+simulate()
+
+for item_id in scene.item_ids:
+    cubePos, cubeOrn = p.getBasePositionAndOrientation(item_id)
+    print(str(item_id) + '-pos: ' + str(cubePos) + '-orn' + str(cubeOrn))
 
 
 input('Press any key to end...')
