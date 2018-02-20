@@ -15,8 +15,8 @@ Action = collections.namedtuple('Action', ['item_id', 'gripper_pose'])
 class CrateMDP(object):
     """An environment for the crate/bin-picking task with OpenAI gym-esque interface."""
 
-    def __init__(self, scene, scene_populator, sim_position_delta_threshold=0.002,
-                 sim_angle_delta_threshold=np.pi / 64):
+    def __init__(self, scene, scene_populator, sim_position_delta_threshold=0.004,
+                 sim_angle_delta_threshold=np.pi / 32):
         """Store the Scene and ScenePopulator to use for managing the environment."""
         self.scene = scene
         self.scene_populator = scene_populator
@@ -71,7 +71,7 @@ class CrateMDP(object):
 
 def main():
     """Run a baseline random policy on the CrateMDP environment."""
-    scene = Scene()
+    scene = Scene(show_gui=True)
     scene_populator = ScenePopulator(scene)
     env = CrateMDP(scene, scene_populator)
     discount = 0.9

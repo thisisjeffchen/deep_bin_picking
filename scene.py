@@ -35,13 +35,14 @@ class Scene(object):
     """Manages a scene and its contents."""
 
     def __init__(
-            self, client_mode=pb.GUI, gravity=[0, 0, -40], timestep_interval=0.0002,
-            crate_wall_thickness=0.002, crate_wall_width=0.2, crate_wall_height=0.15,
+            self, show_gui=False, gravity=[0, 0, -40], timestep_interval=0.0001,
+            crate_wall_thickness=0.002, crate_wall_width=0.15, crate_wall_height=0.15,
             freefall_height_thresholds=(-0.1, 1)
     ):
         """Set up scene parameters and fixed models."""
-        self.client_mode = client_mode
-        self.client_id = pb.connect(client_mode)
+        self.show_gui = show_gui
+        self.client_mode = pb.GUI if self.show_gui else pb.DIRECT
+        self.client_id = pb.connect(self.client_mode)
         self.gravity = gravity
         self.timestep_interval = timestep_interval
         self.crate_wall_thickness = crate_wall_thickness
@@ -133,7 +134,7 @@ class Scene(object):
         return self.step - initial_step
 
     def simulate_to_steady_state(self, position_delta_threshold, angle_delta_threshold,
-                                 check_interval=0.01):
+                                 check_interval=0.02):
         """Simulate physics until items have stopped moving."""
         num_timesteps = int(check_interval / self.timestep_interval)
         prev_poses = None
@@ -201,12 +202,14 @@ class Scene(object):
             collisionFramePosition=[x_center, y_center, z_center],
             physicsClientId=self.client_id
         )
-        visual_shape_id = pb.createVisualShape(
-            pb.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
-            visualFramePosition=[x_center, y_center, z_center],
-            rgbaColor=[1, 1, 1, 0.5],
-            physicsClientId=self.client_id
-        )
+        visual_shape_id = -1
+        if self.client_mode == pb.GUI:
+            visual_shape_id = pb.createVisualShape(
+                pb.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
+                visualFramePosition=[x_center, y_center, z_center],
+                rgbaColor=[1, 1, 1, 0.5],
+                physicsClientId=self.client_id
+            )
         multibody_id = pb.createMultiBody(
             baseCollisionShapeIndex=collision_shape_id,
             baseVisualShapeIndex=visual_shape_id,
@@ -223,11 +226,13 @@ class Scene(object):
             pb.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
             collisionFramePosition=[0, 0, 0], physicsClientId=self.client_id
         )
-        visual_shape_id = pb.createVisualShape(
-            pb.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
-            visualFramePosition=[0, 0, 0], physicsClientId=self.client_id
+        visual_shape_id = -1
+        if self.client_mode == pb.GUI:
+            visual_shape_id = pb.createVisualShape(
+                pb.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
+                visualFramePosition=[0, 0, 0], physicsClientId=self.client_id
 
-        )
+            )
         multibody_id = pb.createMultiBody(
             baseCollisionShapeIndex=collision_shape_id,
             baseVisualShapeIndex=visual_shape_id,
@@ -247,13 +252,13 @@ class ScenePopulator(object):
     """Stochastically populates a Scene with items."""
 
     def __init__(
-            self, scene, min_items=15, max_items=25,
-            mean_position=np.array([0, 0, 0.25]), position_ranges=np.array([0.1, 0.1, 0.1]),
+            self, scene, min_items=10, max_items=20,
+            mean_position=np.array([0, 0, 0.3]), position_ranges=np.array([0.05, 0.05, 0.1]),
             min_lateral_friction=0.4, max_lateral_friction=0.6,
             min_spinning_friction=0.0, max_spinning_friction=0.01,
             min_rolling_friction=0.0, max_rolling_friction=0.01,
             sim_height_timeout=1000, sim_height_threshold=0.15, sim_check_interval=100,
-            sim_position_delta_threshold=0.002, sim_angle_delta_threshold=np.pi / 64,
+            sim_position_delta_threshold=0.004, sim_angle_delta_threshold=np.pi / 32,
     ):
         """Load the database of item models from the filesystem."""
         self.scene = scene
@@ -281,13 +286,23 @@ class ScenePopulator(object):
             # Invalid objects
             '31340e691294a750d30ee0b5a9888c0b', '38dd2a8d2c984e2b6c1cd53dbc9f7b8e',
             '3c80c41399d2c92334fb047a3245866d', '3f497f8d7dd8922a57e59dddfaae7826',
-            '4fcd289d3e82bb08588f04a271bfa5eb', '4fcd289d3e82bb08588f04a271bfa5eb',
-            '68582543c4c6d0bccfdfe3f21f42a111', '9a52843cc89cd208362be90aaa182ec6',
-            'a4584986b4baf1479a2840934f7f84bc', 'a86d587f38569fdf394a7890920ef7fd',
-            'bacef3777b91b02f29c5890b07f3a65', 'c09e3db27668639a69fba573ec0b31f3',
-            'c453274b341f8c4ec2b9bcaf66ea9919', 'dc0c4db824981b8cf29c5890b07f3a65',
-            'pliers_standard'
+            '4fcd289d3e82bb08588f04a271bfa5eb', '68582543c4c6d0bccfdfe3f21f42a111',
+            '9a52843cc89cd208362be90aaa182ec6', 'a4584986b4baf1479a2840934f7f84bc',
+            'a86d587f38569fdf394a7890920ef7fd', 'bacef3777b91b02f29c5890b07f3a65',
+            'c09e3db27668639a69fba573ec0b31f3', 'c453274b341f8c4ec2b9bcaf66ea9919',
+            'dc0c4db824981b8cf29c5890b07f3a65', 'pliers_standard',
+            # Oversized objects
+            'f44301a26ca7f57c70d5704d62bc4186', 'a1106fcebabd81743dbb1d116dac64cc',
+            '8d3290b8f19761f4ea1322d8b306fad1', '9a65ee8f544ce558965094dba2eb878a',
+            '25f6f2002f9287ff6c142f9dd7073357',
+            # Excessively complex objects
+            '4fcd289d3e82bb08588f04a271bfa5eb1', '5d803107b8a9aec8724d867867ccd9fb',
+            '5e42608cac0cb5e94962fcaf2d60c3de', '20a5672ab6767a436fdde33224151fa5',
+            '6930c4d2e7e880b2e20e92c5b8147e4a', 'b6f30c63c946c286cf6897d8875cfd5e',
+            'b46ad21b7126049842ca7cc070f21ed3', 'ca95ce22929fd53a570c6c691c987a8',
+            'd85daabdcd4481becdd3fedfdba1457f', 'df1d8567cf192c61b2cc746911f13ff9'
         }
+        logging.debug('Excluding {} items'.format(len(self.excluded_items)))
         self.item_database = sorted(list(set(
             self.full_item_database) - self.excluded_items
         ))
@@ -366,7 +381,7 @@ class ScenePopulator(object):
 
 def main():
     """Initialize and populate a random scene and simulate it."""
-    scene = Scene()
+    scene = Scene(client_mode=pb.GUI)
 
     populator = ScenePopulator(scene)
     populator.add_items(num_items=10)
