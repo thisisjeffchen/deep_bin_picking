@@ -1,4 +1,4 @@
-"""Demo script to run a simulation."""
+"""Management of PyBullet scenes."""
 
 import logging
 import math
@@ -35,9 +35,9 @@ class Scene(object):
     """Manages a scene and its contents."""
 
     def __init__(
-            self, client_mode=pb.GUI, gravity=[0, 0, -40], timestep_interval=0.0001,
+            self, client_mode=pb.GUI, gravity=[0, 0, -40], timestep_interval=0.0002,
             crate_wall_thickness=0.002, crate_wall_width=0.2, crate_wall_height=0.15,
-            freefall_height_threshold=-0.1
+            freefall_height_thresholds=(-0.1, 1)
     ):
         """Set up scene parameters and fixed models."""
         self.client_mode = client_mode
@@ -47,7 +47,7 @@ class Scene(object):
         self.crate_wall_thickness = crate_wall_thickness
         self.crate_wall_width = crate_wall_width
         self.crate_wall_height = crate_wall_height
-        self.freefall_height_threshold = freefall_height_threshold
+        self.freefall_height_thresholds = freefall_height_thresholds
 
         # Simulation
         pb.setGravity(*gravity, physicsClientId=self.client_id)
@@ -102,12 +102,27 @@ class Scene(object):
     def remove_freefall_items(self):
         """Remove items inferred to be in freefall by their heights."""
         item_poses = self.get_item_poses(as_vector=False)
-        freefall_items = {id for (id, pose) in item_poses.items()
-                          if pose[0][2] < self.freefall_height_threshold}
+        item_heights = {id: pose[0][2] for (id, pose) in item_poses.items()}
+        freefall_items = {
+            id for (id, height) in item_heights.items()
+            if (height < self.freefall_height_thresholds[0]
+                or height > self.freefall_height_thresholds[1])
+        }
         for item_id in freefall_items:
             pb.removeBody(item_id, physicsClientId=self.client_id)
         self.item_ids -= freefall_items
         return freefall_items
+
+    def remove_item(self, item_id):
+        """Clear the scene of items to reset the scene."""
+        pb.removeBody(item_id, physicsClientId=self.client_id)
+        self.item_ids.remove(item_id)
+
+    def remove_all_items(self):
+        """Clear the scene of items to reset the scene."""
+        for item_id in self.item_ids:
+            pb.removeBody(item_id, physicsClientId=self.client_id)
+        self.item_ids = set()
 
     def simulate(self, steps=None):
         """Simulate physics for the specified number of steps."""
@@ -123,20 +138,23 @@ class Scene(object):
         num_timesteps = int(check_interval / self.timestep_interval)
         prev_poses = None
         poses = None
-        reached_steady_state = False
         initial_step = self.step
-        while not reached_steady_state:
+        freefall_removed_items = set()
+        while True:
             # Update poses
             prev_poses = poses
             poses = self.get_item_poses(to_euler=True, as_vector=True)
 
-            # Simmulate
+            # Simulate
             self.simulate(steps=num_timesteps)
             removed_items = self.remove_freefall_items()
             if removed_items:
                 logging.warn('Removed items in free-fall: {}'.format(removed_items))
+                freefall_removed_items |= removed_items
 
             # Check for steady state
+            if not self.item_ids:
+                break
             if prev_poses is None:
                 continue
             (position_deltas, angle_deltas) = compute_pose_deltas(poses, prev_poses)
@@ -146,7 +164,9 @@ class Scene(object):
             logging.debug('Max angle delta: {}'.format(max_angle_delta))
             reached_steady_state = (max_position_delta < position_delta_threshold
                                     and max_angle_delta < angle_delta_threshold)
-        return initial_step - self.step
+            if reached_steady_state:
+                break
+        return (initial_step - self.step, freefall_removed_items)
 
     def _add_gripper(self):
         """Add a gripper. Currently broken and unused."""
@@ -347,11 +367,19 @@ class ScenePopulator(object):
 def main():
     """Initialize and populate a random scene and simulate it."""
     scene = Scene()
+
     populator = ScenePopulator(scene)
-    populator.add_items(num_items=20)
+    populator.add_items(num_items=10)
     logging.info('Finished initializing scene.')
 
     print(scene.get_item_poses(to_euler=True))
+
+    input('Press any key to clear the scene...')
+    scene.remove_all_items()
+
+    input('Press any key to populate the scene again...')
+    populator.add_items()
+    logging.info('Finished initializing scene.')
 
     input('Press any key to end...')
 
