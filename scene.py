@@ -17,25 +17,42 @@ GRIPPER_DIR = os.path.join(ROOT_DIR, 'meshes', 'grippers')
 GRIPPER = 'yumi_metal_spline'
 
 
+def compute_pose_deltas(poses, prev_poses):
+    """Given two dicts of item poses, computes position and orientation deltas for each item."""
+    shared_items = set(poses.keys()) & set(prev_poses.keys())
+    position_deltas = {
+        item_id: np.array(poses[item_id][0]) - np.array(prev_poses[item_id][0])
+        for item_id in shared_items
+    }
+    angle_deltas = {
+        item_id: np.array(poses[item_id][1]) - np.array(prev_poses[item_id][1])
+        for item_id in shared_items
+    }
+    return (position_deltas, angle_deltas)
+
+
 class Scene(object):
     """Manages a scene and its contents."""
 
-    def __init__(self, client_mode=pb.GUI, gravity=[0, 0, -20], timestep=0.0001,
-                 crate_wall_thickness=0.002, crate_wall_width=0.2, crate_wall_height=0.15):
+    def __init__(
+            self, client_mode=pb.GUI, gravity=[0, 0, -40], timestep_interval=0.0001,
+            crate_wall_thickness=0.002, crate_wall_width=0.2, crate_wall_height=0.15,
+            freefall_height_threshold=-0.1
+    ):
         """Set up scene parameters and fixed models."""
         self.client_mode = client_mode
         self.client_id = pb.connect(client_mode)
         self.gravity = gravity
-        self.timestep = timestep
+        self.timestep_interval = timestep_interval
         self.crate_wall_thickness = crate_wall_thickness
         self.crate_wall_width = crate_wall_width
         self.crate_wall_height = crate_wall_height
+        self.freefall_height_threshold = freefall_height_threshold
 
         # Simulation
         pb.setGravity(*gravity, physicsClientId=self.client_id)
         self.step = 0
-        if timestep is not None:
-            pb.setTimeStep(timestep, physicsClientId=self.client_id)
+        pb.setTimeStep(timestep_interval, physicsClientId=self.client_id)
 
         # Scene
         self.crate_side_ids = []
@@ -45,30 +62,52 @@ class Scene(object):
         self.gripper_id = None
 
         # Items
-        self.item_ids = []
+        self.item_ids = set()
 
-    def add_item(self, name, position, orientation):
+    def add_item(self, name, position, orientation, lateral_friction=None,
+                 spinning_friction=None, rolling_friction=None):
         """Add the specified item in the specified pose."""
         logging.info('Adding item "{}"'.format(name))
         file_path = os.path.join(URDF_DIR, name, name + '.urdf')
-        item_id = pb.loadURDF(
-            file_path, position, orientation, physicsClientId=self.client_id
-        )
+        item_id = pb.loadURDF(file_path, position, orientation,
+                              physicsClientId=self.client_id)
+        for link_id in range(-1, pb.getNumJoints(item_id, physicsClientId=self.client_id)):
+            if lateral_friction is not None:
+                pb.changeDynamics(item_id, link_id, lateralFriction=lateral_friction)
+            if spinning_friction is not None:
+                pb.changeDynamics(item_id, link_id, spinningFriction=spinning_friction)
+            if rolling_friction is not None:
+                pb.changeDynamics(item_id, link_id, rollingFriction=rolling_friction)
         logging.info('Item assigned object id {}'.format(item_id))
-        self.item_ids.append(item_id)
+        self.item_ids.add(item_id)
         (position, orientation) = pb.getBasePositionAndOrientation(
             item_id, physicsClientId=self.client_id
         )
         return (item_id, position, orientation)
 
-    def get_item_pose(self, item_id, to_euler=False):
-        """Return the pose of the specified item."""
+    def get_pose(self, object_id, to_euler=False):
+        """Return the pose of the specified item as numpy arrays."""
         (position, orientation) = pb.getBasePositionAndOrientation(
-            item_id, physicsClientId=self.client_id
+            object_id, physicsClientId=self.client_id
         )
         if to_euler:
             orientation = pb.getEulerFromQuaternion(orientation)
-        return (position, orientation)
+        return (np.array(position), np.array(orientation))
+
+    def get_item_poses(self, to_euler=False, as_vector=False):
+        """Return the poses of all items as numpy arrays."""
+        return {item_id: self.get_pose(item_id, to_euler)
+                for item_id in self.item_ids}
+
+    def remove_freefall_items(self):
+        """Remove items inferred to be in freefall by their heights."""
+        item_poses = self.get_item_poses(as_vector=False)
+        freefall_items = {id for (id, pose) in item_poses.items()
+                          if pose[0][2] < self.freefall_height_threshold}
+        for item_id in freefall_items:
+            pb.removeBody(item_id, physicsClientId=self.client_id)
+        self.item_ids -= freefall_items
+        return freefall_items
 
     def simulate(self, steps=None):
         """Simulate physics for the specified number of steps."""
@@ -76,20 +115,48 @@ class Scene(object):
         while steps is None or self.step - initial_step < steps:
             pb.stepSimulation(physicsClientId=self.client_id)
             self.step += 1
+        return self.step - initial_step
+
+    def simulate_to_steady_state(self, position_delta_threshold, angle_delta_threshold,
+                                 check_interval=0.01):
+        """Simulate physics until items have stopped moving."""
+        num_timesteps = int(check_interval / self.timestep_interval)
+        prev_poses = None
+        poses = None
+        reached_steady_state = False
+        initial_step = self.step
+        while not reached_steady_state:
+            # Update poses
+            prev_poses = poses
+            poses = self.get_item_poses(to_euler=True, as_vector=True)
+
+            # Simmulate
+            self.simulate(steps=num_timesteps)
+            removed_items = self.remove_freefall_items()
+            if removed_items:
+                logging.warn('Removed items in free-fall: {}'.format(removed_items))
+
+            # Check for steady state
+            if prev_poses is None:
+                continue
+            (position_deltas, angle_deltas) = compute_pose_deltas(poses, prev_poses)
+            max_position_delta = np.max(np.abs(np.array(list(position_deltas.values()))))
+            max_angle_delta = np.max(np.abs(np.array(list(angle_deltas.values()))))
+            logging.debug('Max position delta: {}'.format(max_position_delta))
+            logging.debug('Max angle delta: {}'.format(max_angle_delta))
+            reached_steady_state = (max_position_delta < position_delta_threshold
+                                    and max_angle_delta < angle_delta_threshold)
+        return initial_step - self.step
 
     def _add_gripper(self):
-        """Add a gripper. Currently broken."""
+        """Add a gripper. Currently broken and unused."""
         logging.info('Adding gripper')
         file_path = os.path.join(GRIPPER_DIR, GRIPPER, 'base.obj')
         cube_start_orientation = pb.getQuaternionFromEuler([0, 0, 0])
-        self.gripper_id = pb.loadURDF(
-            file_path, [0, 0, 3], cube_start_orientation,
-            physicsClientId=self.client_id
-        )
+        self.gripper_id = pb.loadURDF(file_path, [0, 0, 3], cube_start_orientation,
+                                      physicsClientId=self.client_id)
         logging.info('Gripper assigned id {}'.format(self.gripper_id))
-        pos, ori = pb.getBasePositionAndOrientation(
-            self.gripper_id, physicsClientId=self.client_id
-        )
+        pos, ori = self.getPose(self.gripper_id, physicsClientId=self.client_id)
         return self.gripper_id, pos, ori
 
     def _add_crate_wall(self, side):
@@ -117,8 +184,8 @@ class Scene(object):
         visual_shape_id = pb.createVisualShape(
             pb.GEOM_BOX, halfExtents=[x_length, y_length, z_length],
             visualFramePosition=[x_center, y_center, z_center],
+            rgbaColor=[1, 1, 1, 0.5],
             physicsClientId=self.client_id
-
         )
         multibody_id = pb.createMultiBody(
             baseCollisionShapeIndex=collision_shape_id,
@@ -150,7 +217,7 @@ class Scene(object):
 
     def _add_crate(self):
         """Add a complete crate."""
-        print('Creating crate')
+        logging.info('Creating crate.')
         self._add_crate_floor()
         for side in range(4):
             self._add_crate_wall(side)
@@ -162,18 +229,31 @@ class ScenePopulator(object):
     def __init__(
             self, scene, min_items=15, max_items=25,
             mean_position=np.array([0, 0, 0.25]), position_ranges=np.array([0.1, 0.1, 0.1]),
-            sim_height_threshold=0.15, sim_check_interval=1000
+            min_lateral_friction=0.4, max_lateral_friction=0.6,
+            min_spinning_friction=0.0, max_spinning_friction=0.01,
+            min_rolling_friction=0.0, max_rolling_friction=0.01,
+            sim_height_timeout=1000, sim_height_threshold=0.15, sim_check_interval=100,
+            sim_position_delta_threshold=0.002, sim_angle_delta_threshold=np.pi / 64,
     ):
         """Load the database of item models from the filesystem."""
         self.scene = scene
+        self.sim_height_timeout = sim_height_timeout
         self.sim_height_threshold = sim_height_threshold
         self.sim_check_interval = sim_check_interval
+        self.sim_position_delta_threshold = sim_position_delta_threshold
+        self.sim_angle_delta_threshold = sim_angle_delta_threshold
 
         # Random distribution parameters
         self.min_items = min_items
         self.max_items = max_items
         self.mean_position = mean_position
         self.position_ranges = position_ranges
+        self.min_lateral_friction = min_lateral_friction
+        self.max_lateral_friction = max_lateral_friction
+        self.min_spinning_friction = min_spinning_friction
+        self.max_spinning_friction = max_spinning_friction
+        self.min_rolling_friction = min_rolling_friction
+        self.max_rolling_friction = max_rolling_friction
 
         # Item loading
         self.full_item_database = sorted(os.listdir(URDF_DIR))
@@ -186,14 +266,12 @@ class ScenePopulator(object):
             'a4584986b4baf1479a2840934f7f84bc', 'a86d587f38569fdf394a7890920ef7fd',
             'bacef3777b91b02f29c5890b07f3a65', 'c09e3db27668639a69fba573ec0b31f3',
             'c453274b341f8c4ec2b9bcaf66ea9919', 'dc0c4db824981b8cf29c5890b07f3a65',
-            'pliers_standard',
-            # Annoying objects
-            'f44301a26ca7f57c70d5704d62bc4186'
+            'pliers_standard'
         }
         self.item_database = sorted(list(set(
             self.full_item_database) - self.excluded_items
         ))
-        logging.info('Available items: {}'.format(self.item_database))
+        logging.debug('Available items: {}'.format(self.item_database))
 
     def _sample_num_items(self):
         """Sample a uniform random distribution for the number of items to add."""
@@ -213,43 +291,68 @@ class ScenePopulator(object):
         euler = [random.uniform(0, 2 * math.pi) for _ in range(3)]
         return pb.getQuaternionFromEuler(euler)
 
+    def _sample_lateral_friction(self):
+        """Sample a uniform random distribution for the lateral friction of the item to add."""
+        return random.uniform(self.min_lateral_friction, self.max_lateral_friction)
+
+    def _sample_spinning_friction(self):
+        """Sample a uniform random distribution for the spinning friction of the item to add."""
+        return random.uniform(self.min_spinning_friction, self.max_spinning_friction)
+
+    def _sample_rolling_friction(self):
+        """Sample a uniform random distribution for the rolling friction of the item to add."""
+        return random.uniform(self.min_rolling_friction, self.max_rolling_friction)
+
     def add_item(self):
         """Add a random item to the scene."""
         return self.scene.add_item(
-            self._sample_item(), self._sample_position(), self._sample_orientation()
+            self._sample_item(), self._sample_position(), self._sample_orientation(),
+            lateral_friction=self._sample_lateral_friction(),
+            spinning_friction=self._sample_spinning_friction(),
+            rolling_friction=self._sample_rolling_friction()
         )
 
-    def simulate_to(self, item_id, height_threshold, check_interval=1000):
-        """Simumlate the scene until the specified item has fallen below the specified height."""
-        while True:
+    def simulate_to_height(self, item_id, height_threshold, check_interval=1000):
+        """Simulate the scene until the specified item has fallen below the specified height."""
+        initial_step = self.scene.step
+        while self.scene.step - initial_step < self.sim_height_timeout:
             self.scene.simulate(steps=check_interval)
-            pose = self.scene.get_item_pose(item_id)
+            pose = self.scene.get_pose(item_id)
             if pose[0][2] < height_threshold:
-                return
+                return self.scene.step - initial_step
+        logging.warn('Timed out while waiting for item {} to fall into the crate.'
+                     .format(item_id))
 
     def add_items(self, num_items=None):
         """Stochastically populate a scene by randomly dropping items into a crate."""
         if num_items is None:
             num_items = self._sample_num_items()
+        logging.info('Adding {} items.'.format(num_items))
         for i in range(num_items):
             (item_id, _, _) = self.add_item()
-            self.simulate_to(
+            self.simulate_to_height(
                 item_id, self.sim_height_threshold, self.sim_check_interval
             )
+            removed_items = self.scene.remove_freefall_items()
+            if removed_items:
+                logging.warn('Removed items in free-fall: {}'.format(removed_items))
+        logging.info('Simulating to steady state.')
+        self.scene.simulate_to_steady_state(
+            position_delta_threshold=self.sim_position_delta_threshold,
+            angle_delta_threshold=self.sim_angle_delta_threshold
+        )
+        logging.info('Reached steady state.')
 
 
 def main():
     """Initialize and populate a random scene and simulate it."""
     scene = Scene()
     populator = ScenePopulator(scene)
-    populator.add_items(num_items=5)
-    print('All items created!')
+    populator.add_items(num_items=20)
+    logging.info('Finished initializing scene.')
 
-    for item_id in scene.item_ids:
-        (position, orientation) = scene.get_item_pose(item_id)
-        print(str(item_id) + '-pos: ' + str(position) + '-orn' + str(orientation))
+    print(scene.get_item_poses(to_euler=True))
 
-    scene.simulate()
     input('Press any key to end...')
 
 
