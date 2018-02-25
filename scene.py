@@ -330,6 +330,7 @@ class ScenePopulator(object):
         self.item_database = sorted(list(set(
             self.full_item_database) - self.excluded_items
         ))
+        print(self.item_database)
         logging.debug('Available items: {}'.format(self.item_database))
 
     def _sample_num_items(self):
