@@ -7,6 +7,8 @@ import random
 
 import numpy as np
 
+import dexnet
+
 from scene import Scene, ScenePopulator
 
 Action = collections.namedtuple('Action', ['item_id', 'gripper_pose'])
@@ -23,6 +25,12 @@ class CrateMDP(object):
         self.sim_remove_velocity = sim_remove_velocity
         self.sim_position_delta_threshold = sim_position_delta_threshold
         self.sim_angle_delta_threshold = sim_angle_delta_threshold
+
+        # params for collision checking: 
+        # NOTE: this is path dependent. 
+        # Assumes that this is running from the cs234_final folder
+        self.gripper = dexnet.grasping.RobotGripper.load('gripper', './meshes/grippers/baxter')
+        self.col_check = dexnet.grasping.GraspCollisionChecker(self.gripper)
 
     def _get_current_state(self):
         return self.scene.get_item_poses(to_euler=True)
@@ -80,6 +88,24 @@ class CrateMDP(object):
     def check_collisions(self, actions):
         """Filter the provided actions for actions which don't cause collisions."""
         # TODO: implement this.
+        # using dexnet collision checker: dexnet.grasping.GraspCollisionChecker
+        # grippers and graspables: other dexnet objects
+        # gripper = dexnet.grasping.robotgripper(name, mesh of gripper, 
+            # params = finger radius and grasp width, rigid transforms for gripper)
+            # I think we can just use gripper.obj files in place of this 
+            # since we have those saved? --> can maybe use load gripper
+        # autolab_core.RigidTransform(rotation matrix)
+        # graspable = dexnet.grasping.GraspableObject3D(sdf, mesh)--> I think we
+            # probably already have these declared somewhere for getting object 
+            # grasp poses out of dex net?
+        # self.col_check.add_graspable_object(graspable)  --> do this in init?
+        # for key in self.col_check.obj_names
+        # self.col_check.set_target_object(key) --> so we can pick which of our objects to grasp
+        # self.col_check.collides_along_approach(grasp, approach_dist, delta_approach)
+        # self.col_check.grasp_in_collision(tf of gripper wrt object)
+
+        
+
         return actions
 
 
