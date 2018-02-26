@@ -4,6 +4,7 @@ import collections
 import logging
 import math
 import random
+import dexnet
 
 import numpy as np
 
@@ -11,21 +12,33 @@ from scene import Scene, ScenePopulator
 
 Action = collections.namedtuple('Action', ['item_id', 'gripper_pose'])
 
+NUM_ITEMS = 1
+DEX_NET_PATH = "../dex-net/"
+DB_NAME = "dexnet_2.hdf5"
+GRIPPER_NAME = "yumi_metal_spline"
+GRIPPER_REL_PATH = "data/grippers/"
+GRASP_METRIC = "robust_ferrari_canny"
 
 class CrateMDP(object):
     """An environment for the crate/bin-picking task with OpenAI gym-esque interface."""
 
-    def __init__(self, scene, scene_populator, sim_remove_velocity=[0, 0, 2],
+    def __init__(self, scene, scene_populator, mdp = True, sim_remove_velocity=[0, 0, 2],
                  sim_position_delta_threshold=0.004, sim_angle_delta_threshold=np.pi / 32):
         """Store the Scene and ScenePopulator to use for managing the environment."""
         self.scene = scene
         self.scene_populator = scene_populator
+        self.mdp = mdp
         self.sim_remove_velocity = sim_remove_velocity
         self.sim_position_delta_threshold = sim_position_delta_threshold
         self.sim_angle_delta_threshold = sim_angle_delta_threshold
+        self.dn = dexnet.DexNet ()
+        self.dn.open_database (DEX_NET_PATH + DB_NAME, create_db = True) 
+        self.dn.open_dataset ('3dnet')
+        self.gripper_name = GRIPPER_NAME
 
     def _get_current_state(self):
-        return self.scene.get_item_poses(to_euler=True)
+        return {"poses": self.scene.get_item_poses(to_euler=True),
+                "dex": self.scene.item_ids }
 
     def _observe_current(self):
         """Generate observation of environment, namely the current state.
@@ -62,7 +75,7 @@ class CrateMDP(object):
     def reset(self):
         """Reset environment to state sampled from distribution of initial states."""
         self.scene.remove_all_items()
-        self.scene_populator.add_items()
+        self.scene_populator.add_items(num_items = NUM_ITEMS)
         return self._observe_current()
 
     def step(self, action):
@@ -80,6 +93,30 @@ class CrateMDP(object):
     def check_collisions(self, actions):
         """Filter the provided actions for actions which don't cause collisions."""
         # TODO: implement this.
+        if not self.mdp:
+            return []
+        #graspable = dn.dataset.graspable (dex_id)   
+        return actions
+    
+
+
+    def get_actions(self, state):
+        '''Gets all actions given the current state, this can only be used
+           in mdp mode ''' 
+        if not self.mdp:
+            return []
+        dex_keys = state["dex"]
+        poses = state["poses"]
+        actions = []
+
+        for item_id, pose in poses.items ():
+            dex_id = dex_keys[item_id]
+            grasps, metrics = self.dn.get_grasps (dex_id, GRIPPER_NAME, GRASP_METRIC)
+            actions.append ({"item_id": item_id,
+                             "dex_id": dex_id,
+                             "grasp" : grasps[0],
+                             "metric": metrics[0]})                                        
+        actions = self.check_collisions (actions)
         return actions
 
 
