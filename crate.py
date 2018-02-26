@@ -12,7 +12,7 @@ from scene import Scene, ScenePopulator
 
 Action = collections.namedtuple('Action', ['item_id', 'gripper_pose'])
 
-NUM_ITEMS = 1
+NUM_ITEMS = 10
 DEX_NET_PATH = "../dex-net/"
 DB_NAME = "dexnet_2.hdf5"
 GRIPPER_NAME = "yumi_metal_spline"
