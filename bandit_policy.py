@@ -26,6 +26,8 @@ def main():
         actions = env.get_actions (state)
         print "ACTIONS"
         print actions
+        print "STATE"
+        print state
         '''
         while True:
             logging.info('Attempting to remove item {}...'.format(action.item_id))
@@ -42,7 +44,10 @@ def main():
     logging.info('Average discounted return over {} episodes is {}'
                  .format(num_episodes, average_discounted_return))
         '''
-    input('Press any key to end...')
+    try:
+        input('Press any key to end...')
+    except Exception as e:
+        pass
 
 
 if __name__ == '__main__':

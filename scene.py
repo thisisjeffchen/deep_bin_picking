@@ -130,7 +130,7 @@ class Scene(object):
     def remove_item(self, item_id):
         """Clear the scene of items to reset the scene."""
         pb.removeBody(item_id, physicsClientId=self.client_id)
-        self.item_ids.remove(item_id)
+        self.item_ids.pop(item_id)
         self.unclamp_item_velocity(item_id)
 
     def remove_all_items(self):
@@ -166,7 +166,7 @@ class Scene(object):
         while True:
             # Update poses
             prev_poses = poses
-            poses = self.get_item_poses(to_euler=True, as_vector=True)
+            poses = self.get_item_poses(to_euler=False, as_vector=True)
 
             # Simulate
             self.simulate(steps=num_timesteps)

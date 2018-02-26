@@ -12,7 +12,7 @@ from scene import Scene, ScenePopulator
 
 Action = collections.namedtuple('Action', ['item_id', 'gripper_pose'])
 
-NUM_ITEMS = 3
+NUM_ITEMS = 20
 DEX_NET_PATH = "../dex-net/"
 DB_NAME = "dexnet_2.hdf5"
 GRIPPER_NAME = "yumi_metal_spline"
@@ -36,9 +36,10 @@ class CrateMDP(object):
         self.dn.open_dataset ('3dnet')
         self.gripper_name = GRIPPER_NAME
         self.gripper = dexnet.grasping.gripper.RobotGripper.load (GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH)
+        self.gripper_pose = ([ 0, 0,  1], [ 1, 0, 0, 0])
 
     def _get_current_state(self):
-        return {"poses": self.scene.get_item_poses(to_euler=True),
+        return {"poses": self.scene.get_item_poses(to_euler=False),
                 "dex": self.scene.item_ids }
 
     def _observe_current(self):
