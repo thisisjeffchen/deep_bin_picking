@@ -35,6 +35,7 @@ class CrateMDP(object):
         self.dn.open_database (DEX_NET_PATH + DB_NAME, create_db = True) 
         self.dn.open_dataset ('3dnet')
         self.gripper_name = GRIPPER_NAME
+        self.gripper = dexnet.grasping.gripper.RobotGripper.load (GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH)
 
     def _get_current_state(self):
         return {"poses": self.scene.get_item_poses(to_euler=True),
@@ -53,6 +54,7 @@ class CrateMDP(object):
         # action has to be object ID and gripper pose (gripper center position as x,y,z and
         # gripper orientation as quaternion) in global frame.
         # TODO: implement this.
+        # TODO: how does this work? because the current ferrari canny values are too small
         return 0.8
 
     def _remove_item(self, item_id, pull_remove=True):
@@ -95,7 +97,30 @@ class CrateMDP(object):
         # TODO: implement this.
         if not self.mdp:
             return []
-        #graspable = dn.dataset.graspable (dex_id)   
+
+        gcc = dexnet.grasping.GraspCollisionChecker (self.gripper)
+
+        #add all objects to the world frame
+        dex_keys = state["dex"]
+        poses = state["poses"]
+        graspables = {}
+        for item_id, pose in poses.items ():
+            #TODO: make sure we only get one item per dex_id added to the scene, 
+            #because collision checker indexes by dex_id
+            #TODO: need to figure out how rigidtransform works
+            graspable = self.dn.dataset.graspable (dex_keys[item_id])
+            gcc.add_graspable_object (graspable)
+            graspables[item_id] = graspable
+
+        for idx in reversed (range (len(actions))):
+            action = actions[idx]
+            #TODO: rigidtransform
+            gcc.set_graspable_object (graspables[action["item_id"]])
+            '''
+            #TODO: fix this code so it works
+            if gcc.grasp_in_collision () or gcc.collides_along_approach ():
+                del actions[idx]
+            '''   
         return actions
     
 
