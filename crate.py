@@ -14,7 +14,7 @@ from scene import Scene, ScenePopulator
 
 Action = collections.namedtuple('Action', ['item_id', 'gripper_pose'])
 
-NUM_ITEMS = 10
+NUM_ITEMS = 3
 DEX_NET_PATH = "../dex-net/"
 DB_NAME = "dexnet_2.hdf5"
 GRIPPER_NAME = "yumi_metal_spline"
@@ -98,7 +98,7 @@ class CrateMDP(object):
         done = (len(self.scene.item_ids) == 0)
         return (observation, reward, done)
 
-    def check_collisions(self, actions):
+    def check_collisions(self, state, actions):
         """Filter the provided actions for actions which don't cause collisions."""
         # TODO: implement this.
         # using dexnet collision checker: dexnet.grasping.GraspCollisionChecker
@@ -140,7 +140,7 @@ class CrateMDP(object):
                              "dex_id": dex_id,
                              "grasp" : grasps[0],
                              "metric": metrics[0]})                                        
-        actions = self.check_collisions (actions)
+        actions = self.check_collisions (state, actions)
         return actions
 
 
