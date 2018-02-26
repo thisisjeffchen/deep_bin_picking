@@ -63,7 +63,7 @@ class Scene(object):
         self.gripper_id = None
 
         # Items
-        self.item_ids = set()
+        self.item_ids = {}
         self.linear_velocity_clamps = {}
         self.angular_velocity_clamps = {}
 
@@ -82,7 +82,7 @@ class Scene(object):
             if rolling_friction is not None:
                 pb.changeDynamics(item_id, link_id, rollingFriction=rolling_friction)
         logging.info('Item assigned object id {}'.format(item_id))
-        self.item_ids.add(item_id)
+        self.item_ids[item_id] = name        
         (position, orientation) = pb.getBasePositionAndOrientation(
             item_id, physicsClientId=self.client_id
         )
@@ -100,7 +100,7 @@ class Scene(object):
     def get_item_poses(self, to_euler=False, as_vector=False):
         """Return the poses of all items as numpy arrays."""
         return {item_id: self.get_pose(item_id, to_euler)
-                for item_id in self.item_ids}
+                for item_id, dex_id in self.item_ids.items ()}
 
     def clamp_item_velocity(self, item_id, linear=None, angular=None):
         """Add a velocity clamp to move an item at constant velocity during simumlation."""
@@ -137,7 +137,7 @@ class Scene(object):
         """Clear the scene of items to reset the scene."""
         for item_id in self.item_ids:
             pb.removeBody(item_id, physicsClientId=self.client_id)
-        self.item_ids = set()
+        self.item_ids = {}
         self.velocity_clamps = {}
 
     def simulate(self, steps=None, velocity_clamps=True):
@@ -330,6 +330,7 @@ class ScenePopulator(object):
         self.item_database = sorted(list(set(
             self.full_item_database) - self.excluded_items
         ))
+        #print(self.item_database)
         logging.debug('Available items: {}'.format(self.item_database))
 
     def _sample_num_items(self):
@@ -406,7 +407,6 @@ class ScenePopulator(object):
 
 def main():
     """Initialize and populate a random scene and simulate it."""
-    # scene = Scene(client_mode=pb.GUI)
     scene = Scene(show_gui=True)
 
     populator = ScenePopulator(scene)
