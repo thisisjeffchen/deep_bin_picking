@@ -20,6 +20,8 @@ DB_NAME = "dexnet_2.hdf5"
 GRIPPER_NAME = "yumi_metal_spline"
 GRIPPER_REL_PATH = "data/grippers/"
 GRASP_METRIC = "robust_ferrari_canny"
+# this might not be loading the right ransform--not sure which we need exactly yet
+GRIPPER_TF = "./meshes/grippers/%s/T_mesh_gripper.tf" %(GRIPPER_NAME)
 
 class CrateMDP(object):
     """An environment for the crate/bin-picking task with OpenAI gym-esque interface."""
@@ -41,8 +43,12 @@ class CrateMDP(object):
         # params for collision checking: 
         # NOTE: this is path dependent. 
         # Assumes that this is running from the cs234_final folder
-        self.gripper = dexnet.grasping.RobotGripper.load('gripper', './meshes/grippers/baxter')
+        self.gripper = dexnet.grasping.RobotGripper.load(GRIPPER_NAME, './meshes/grippers/')
         self.col_check = dexnet.grasping.GraspCollisionChecker(self.gripper)
+        self.approach_dist = 10.0;
+        self.delta_approach = 0.1;
+        self.obj_gripper_tf = autolab_core.RigidTransform.load(GRIPPER_TF)
+
 
     def _get_current_state(self):
         return {"poses": self.scene.get_item_poses(to_euler=True),
@@ -78,7 +84,6 @@ class CrateMDP(object):
             bounds_removed_items.remove(item_id)
         except KeyError:
             pass
-        return bounds_removed_items
 
     def reset(self):
         """Reset environment to state sampled from distribution of initial states."""
@@ -119,8 +124,30 @@ class CrateMDP(object):
 
         if not self.mdp:
             return []
+
+        dex_keys = state["dex"]
+        poses = state["poses"]
+        idx = 0
+        non_collide_acts = []
+        for item_id, pose in poses.items ():
+            dex_id = dex_keys[item_id]
+            act = actions[idx]
+            grasp_to_check = act["grasp"]
+            # TODO: still need to figure out where to add/maybe remove graspable objects from collision checker class
+            # also not sure if key should be item_id or dex_id or something else
+            self.col_check.set_tarbet_object(item_id)
+            # maybe play with setting approach_dist and delta_approach
+                # 2nd and 3rd params
+                # for now set to large dist and small delta
+            collide_approach = self.col_check.collides_along_approach(grasp, self.appraoch_dist, self.detla_approach, item_id)
+            collide_grasp = self.col_check.grasp_in_collision(self.obj_gripper_tf,item_id)
+            if not(collide_approach) and not(collide_grasp)
+                non_collide_acts.append(act)
+            
+            
+
         #graspable = dn.dataset.graspable (dex_id)   
-        return actions
+        return non_collide_acts
     
 
 
