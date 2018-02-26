@@ -407,7 +407,7 @@ class ScenePopulator(object):
 def main():
     """Initialize and populate a random scene and simulate it."""
     # scene = Scene(client_mode=pb.GUI)
-    scene = Scene(show_gui=pb.GUI)
+    scene = Scene(show_gui=True)
 
     populator = ScenePopulator(scene)
     populator.add_items(num_items=10)
