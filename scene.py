@@ -63,7 +63,7 @@ class Scene(object):
         self.gripper_id = None
 
         # Items
-        self.item_ids = {}
+        self.items = {}
         self.linear_velocity_clamps = {}
         self.angular_velocity_clamps = {}
 
@@ -82,7 +82,7 @@ class Scene(object):
             if rolling_friction is not None:
                 pb.changeDynamics(item_id, link_id, rollingFriction=rolling_friction)
         logging.info('Item assigned object id {}'.format(item_id))
-        self.item_ids[item_id] = name        
+        self.items[item_id] = name
         (position, orientation) = pb.getBasePositionAndOrientation(
             item_id, physicsClientId=self.client_id
         )
@@ -100,7 +100,7 @@ class Scene(object):
     def get_item_poses(self, to_euler=False, as_vector=False):
         """Return the poses of all items as numpy arrays."""
         return {item_id: self.get_pose(item_id, to_euler)
-                for item_id, dex_id in self.item_ids.items ()}
+                for item_id, dex_id in self.items.items()}
 
     def clamp_item_velocity(self, item_id, linear=None, angular=None):
         """Add a velocity clamp to move an item at constant velocity during simumlation."""
@@ -130,15 +130,16 @@ class Scene(object):
     def remove_item(self, item_id):
         """Clear the scene of items to reset the scene."""
         pb.removeBody(item_id, physicsClientId=self.client_id)
-        self.item_ids.pop(item_id)
+        self.items.pop(item_id)
         self.unclamp_item_velocity(item_id)
 
     def remove_all_items(self):
         """Clear the scene of items to reset the scene."""
-        for item_id in self.item_ids:
+        for item_id in self.items:
             pb.removeBody(item_id, physicsClientId=self.client_id)
-        self.item_ids = {}
-        self.velocity_clamps = {}
+        self.items.clear()
+        self.linear_velocity_clamps.clear()
+        self.angular_velocity_clamps.clear()
 
     def simulate(self, steps=None, velocity_clamps=True):
         """Simulate physics for the specified number of steps."""
@@ -177,7 +178,7 @@ class Scene(object):
                 bounds_removed_items |= removed_items
 
             # Check for steady state
-            if not self.item_ids:
+            if not self.items:
                 break
             if prev_poses is None:
                 continue
@@ -330,16 +331,20 @@ class ScenePopulator(object):
         self.item_database = sorted(list(set(
             self.full_item_database) - self.excluded_items
         ))
-        #print(self.item_database)
         logging.debug('Available items: {}'.format(self.item_database))
 
     def _sample_num_items(self):
         """Sample a uniform random distribution for the number of items to add."""
         return random.randint(self.min_items, self.max_items)
 
-    def _sample_item(self):
+    def _sample_item(self, with_replacement=False):
         """Sample a uniform random distribution for the item to add."""
-        return random.choice(self.item_database)
+        if with_replacement:
+            available_items = self.item_database
+        else:
+            available_items = list(set(self.item_database) - set(self.scene.items.values()))
+        sampled = random.choice(available_items)
+        return sampled
 
     def _sample_position(self):
         """Sample a uniform random distribution for the position of the item to add."""
@@ -363,10 +368,11 @@ class ScenePopulator(object):
         """Sample a uniform random distribution for the rolling friction of the item to add."""
         return random.uniform(self.min_rolling_friction, self.max_rolling_friction)
 
-    def add_item(self):
+    def add_item(self, unique_items=True):
         """Add a random item to the scene."""
         return self.scene.add_item(
-            self._sample_item(), self._sample_position(), self._sample_orientation(),
+            self._sample_item(with_replacement=(not unique_items)),
+            self._sample_position(), self._sample_orientation(),
             lateral_friction=self._sample_lateral_friction(),
             spinning_friction=self._sample_spinning_friction(),
             rolling_friction=self._sample_rolling_friction()
