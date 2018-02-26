@@ -8,8 +8,7 @@ import trimesh
 logging.basicConfig(level=logging.INFO)
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-BULLET_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(ROOT_DIR))))
-DEXNET_DIR = os.path.join(os.path.dirname(BULLET_DIR), 'dex-net')
+DEXNET_DIR = os.path.join(os.path.dirname(ROOT_DIR), 'dex-net')
 IMPORT_DIR = os.path.join(DEXNET_DIR, 'meshes')
 EXPORT_DIR = os.path.join(ROOT_DIR, 'meshes', 'urdf')
 
