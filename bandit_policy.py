@@ -24,7 +24,7 @@ def main():
         step = 0
 
         actions = env.get_actions (state)
-        print "ACTIONS"
+        print "PRUNED ACTIONS"
         print actions
         print "STATE"
         print state
