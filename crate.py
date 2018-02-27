@@ -33,12 +33,12 @@ GRASP_METRIC = 'robust_ferrari_canny'
 class CrateMDP(object):
     """An environment for the crate/bin-picking task with OpenAI gym-esque interface."""
 
-    def __init__(self, scene, scene_populator, mdp=True, sim_remove_velocity=[0, 0, 2],
+    def __init__(self, scene, scene_populator, pomdp=False, sim_remove_velocity=[0, 0, 2],
                  sim_position_delta_threshold=0.004, sim_angle_delta_threshold=np.pi / 32):
         """Store the Scene and ScenePopulator to use for managing the environment."""
         self.scene = scene
         self.scene_populator = scene_populator
-        self.mdp = mdp
+        self.pomdp = pomdp
         self.sim_remove_velocity = sim_remove_velocity
         self.sim_position_delta_threshold = sim_position_delta_threshold
         self.sim_angle_delta_threshold = sim_angle_delta_threshold
@@ -107,13 +107,17 @@ class CrateMDP(object):
         if success:
             bounds_removed_items = self._remove_item(action.item_id)
             reward -= len(bounds_removed_items)  # Penalize for knocking other items out
-        observation = self._observe_current()
+        observation = self._observe_current()   # may need to change for POMDP
         done = (len(self.scene.item_ids) == 0)
+        actions = self.get_actions(observation) # make sure there are still further actions to be executed
+        if len(actions) == 0:
+            reward -= 10000
+            done = True
         return (observation, reward, done)
 
     def check_collisions(self, state, actions):
         """Filter the provided actions for actions which don't cause collisions."""
-        if not self.mdp:
+        if self.pomdp:
             return []
 
         gcc = dexnet.grasping.GraspCollisionChecker(self.gripper)
@@ -154,7 +158,7 @@ class CrateMDP(object):
 
         This can only be used in mdp mode.
         """
-        if not self.mdp:
+        if self.pomdp:
             return []
         item_names = state['item_names']
         poses = state['poses']
@@ -164,7 +168,10 @@ class CrateMDP(object):
             name = item_names[item_id]
             grasps, metrics = self.dn.get_grasps(name, GRIPPER_NAME, GRASP_METRIC)
             actions.append(Action(item_id, name, grasps[0], metrics[0]))
+        print("pre-pruned actions")
+        print(actions)
         actions = self.check_collisions(state, actions)
+
         return actions
 
 
