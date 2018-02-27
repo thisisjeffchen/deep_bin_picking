@@ -5,6 +5,8 @@ import logging
 import math
 import random
 
+import autolab_core
+
 import dexnet
 
 import numpy as np
@@ -20,7 +22,7 @@ except NameError:
 
 Action = collections.namedtuple('Action', ['item_id', 'gripper_pose'])
 
-NUM_ITEMS = 20
+NUM_ITEMS = 10
 DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
 GRIPPER_NAME = 'yumi_metal_spline'
@@ -48,6 +50,8 @@ class CrateMDP(object):
             GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH
         )
         self.gripper_pose = ([0, 0, 1], [1, 0, 0, 0])
+        self.cc_approach_dist = 1.0
+        self.cc_delta_approach = 0.1    # may need tuning
 
     def _get_current_state(self):
         return {
@@ -113,29 +117,51 @@ class CrateMDP(object):
         if not self.mdp:
             return []
 
-        gcc = dexnet.grasping.GraspCollisionChecker (self.gripper)
+        gcc = dexnet.grasping.GraspCollisionChecker(self.gripper)
 
-        #add all objects to the world frame
-        dex_keys = state["dex"]
-        poses = state["poses"]
+        # Add all objects to the world frame
+        item_names = state['item_names']
+        poses = state['poses']
         graspables = {}
-        for item_id, pose in poses.items ():
-            #TODO: make sure we only get one item per dex_id added to the scene, 
-            #because collision checker indexes by dex_id
-            #TODO: need to figure out how rigidtransform works
-            graspable = self.dn.dataset.graspable (dex_keys[item_id])
-            gcc.add_graspable_object (graspable)
+        for item_id, pose in poses.items():
+            # TODO: need to figure out how rigidtransform works
+            graspable = self.dn.dataset.graspable(item_names[item_id])
+            gcc.add_graspable_object(graspable)
             graspables[item_id] = graspable
 
-        for idx in reversed (range (len(actions))):
+        for idx in reversed(range(len(actions))):
             action = actions[idx]
-            #TODO: rigidtransform
-            gcc.set_graspable_object (graspables[action["item_id"]])
-            '''
-            #TODO: fix this code so it works
-            if gcc.grasp_in_collision () or gcc.collides_along_approach ():
+            # TODO: rigidtransform
+            pose = poses[action['item_id']]
+            rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(pose[1])
+            rot_grip = autolab_core.RigidTransform.rotation_from_quaternion(self.gripper_pose[1])
+            world_to_obj = autolab_core.RigidTransform(rot_obj, pose[0], 'world', 'obj')
+            world_to_grip = autolab_core.RigidTransform(rot_grip, self.gripper_pose[0],
+                                                        'world', 'gripper')
+            obj_to_world = world_to_obj.inverse()
+            obj_to_grip = world_to_grip.dot(obj_to_world)
+            # now have RigidTransform of gripper wrt object, so can pass to collision check
+
+            # homogT_obj_wrt_world = np.vstack((
+            #     np.vstack((rotMat.T, pose[0])).T,
+            #     np.array([0,0,0,1])
+            # ))
+            # print homogT_obj_wrt_world
+            # homogT_world_wrt_obj = np.linalg.inv(homogT_obj_wrt_world)
+            # homogT_gripper_wrt_obj = homogT_world_wrt_obj
+            gcc.set_graspable_object(graspables[action['item_id']])
+            # TODO: fix this code so it works
+            # if gcc.grasp_in_collision () or gcc.collides_along_approach ():
+            #     del actions[idx]
+            grasp_collide = gcc.grasp_in_collision(obj_to_grip.inverse(), action['name'])
+            # approach_dist and delta_approach params to play with
+            approach_collide = gcc.collides_along_approach(
+                action['grasp'], self.cc_approach_dist, self.cc_delta_approach,
+                action['name']
+            )
+            if grasp_collide or approach_collide:
                 del actions[idx]
-            '''   
+
         return actions
 
     def get_actions(self, state):
@@ -145,16 +171,16 @@ class CrateMDP(object):
         """
         if not self.mdp:
             return []
-        item_ids = state['item_ids']
+        item_names = state['item_names']
         poses = state['poses']
         actions = []
 
         for item_id, pose in poses.items():
-            dex_id = item_ids[item_id]
-            grasps, metrics = self.dn.get_grasps(dex_id, GRIPPER_NAME, GRASP_METRIC)
+            name = item_names[item_id]
+            grasps, metrics = self.dn.get_grasps(name, GRIPPER_NAME, GRASP_METRIC)
             actions.append({
                 'item_id': item_id,
-                'dex_id': dex_id,
+                'name': name,
                 'grasp': grasps[0],
                 'metric': metrics[0]
             })
