@@ -5,6 +5,7 @@ import logging
 import math
 import random
 import dexnet
+import autolab_core
 
 import numpy as np
 
@@ -12,7 +13,7 @@ from scene import Scene, ScenePopulator
 
 Action = collections.namedtuple('Action', ['item_id', 'gripper_pose'])
 
-NUM_ITEMS = 20
+NUM_ITEMS = 3 # 20
 DEX_NET_PATH = "../dex-net/"
 DB_NAME = "dexnet_2.hdf5"
 GRIPPER_NAME = "yumi_metal_spline"
@@ -37,6 +38,8 @@ class CrateMDP(object):
         self.gripper_name = GRIPPER_NAME
         self.gripper = dexnet.grasping.gripper.RobotGripper.load (GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH)
         self.gripper_pose = ([ 0, 0,  1], [ 1, 0, 0, 0])
+        self.cc_approach_dist = 1.0
+        self.cc_delta_approach = 0.1    # may need tuning
 
     def _get_current_state(self):
         return {"poses": self.scene.get_item_poses(to_euler=False),
@@ -116,12 +119,38 @@ class CrateMDP(object):
         for idx in reversed (range (len(actions))):
             action = actions[idx]
             #TODO: rigidtransform
+            pose = poses[action["item_id"]]
+            rotObj = autolab_core.RigidTransform.rotation_from_quaternion(pose[1])
+            rotGrip = autolab_core.RigidTransform.rotation_from_quaternion(self.gripper_pose[1])
+            worldToObj = autolab_core.RigidTransform(rotObj, pose[0], 'world','obj')
+            worldToGrip = autolab_core.RigidTransform(rotGrip, self.gripper_pose[0], 'world', 'gripper')
+            objToWorld = worldToObj.inverse()
+            print objToWorld
+            print worldToGrip
+            objToGrip = worldToGrip.dot(objToWorld)
+            print objToGrip
+            # now have RigidTransform of gripper wrt object, so can pass to collision check
+            
+            
+            #homogT_obj_wrt_world = np.vstack((np.vstack((rotMat.T, pose[0])).T, np.array([0,0,0,1])))
+            #print homogT_obj_wrt_world
+            #homogT_world_wrt_obj = np.linalg.inv(homogT_obj_wrt_world)
+            #homogT_gripper_wrt_obj = homogT_world_wrt_obj 
             gcc.set_graspable_object (graspables[action["item_id"]])
             '''
             #TODO: fix this code so it works
             if gcc.grasp_in_collision () or gcc.collides_along_approach ():
                 del actions[idx]
             '''   
+            grasp_collide = gcc.grasp_in_collision(objToGrip.inverse(), action["dex_id"])
+            # approach_dist and delta_approach params to play with
+            approach_collide = gcc.collides_along_approach(action["grasp"], 
+                                            self.cc_approach_dist,
+                                            self.cc_delta_approach,
+                                            action["dex_id"])
+            if grasp_collide or approach_collide:
+                del actions[idx]
+            
         return actions
     
 
