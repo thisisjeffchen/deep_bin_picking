@@ -4,6 +4,7 @@
 import dexnet as dn
 import logging
 import numpy as np
+import math
 
 from crate import CrateMDP
 from scene import Scene, ScenePopulator
@@ -23,14 +24,23 @@ def main():
         discounted_return = 0
         step = 0
 
-        actions = env.get_actions (state)
-        print "PRUNED ACTIONS"
+        actions = env.get_actions (state)   # calls collision checker already
+        print "ACTIONS"
         print actions
         print "STATE"
         print state
-        '''
         while True:
-            logging.info('Attempting to remove item {}...'.format(action.item_id))
+            # find action with highest metric
+            actions = env.get_actions (state)   # calls collision checker already
+            action = actions[0]
+            best_metric = actions[0]["metric"]
+            for act in actions:
+                metric = act["metric"]
+                if metric > best_metric:
+                    action = act
+                    best_metric = metric
+            print action["item_id"]
+            logging.info('Attempting to remove item {}...'.format(action["item_id"]))
             (state, reward, done) = env.step(action)
             logging.info('Received reward {}'.format(reward))
             discounted_return += math.pow(discount, step) * reward
@@ -43,7 +53,7 @@ def main():
         average_discounted_return += discounted_return / num_episodes
     logging.info('Average discounted return over {} episodes is {}'
                  .format(num_episodes, average_discounted_return))
-        '''
+
     try:
         input('Press any key to end...')
     except Exception as e:

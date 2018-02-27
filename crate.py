@@ -105,10 +105,14 @@ class CrateMDP(object):
         success = np.random.binomial(1, success_probability)
         reward = success
         if success:
-            bounds_removed_items = self._remove_item(action.item_id)
+            bounds_removed_items = self._remove_item(action["item_id"])
             reward -= len(bounds_removed_items)  # Penalize for knocking other items out
-        observation = self._observe_current()
+        observation = self._observe_current()   # may need to change for POMDP
         done = (len(self.scene.item_ids) == 0)
+        actions = self.get_actions(observation) # make sure there are still further actions to be executed
+        if len(actions) == 0:
+            reward -= 10000
+            done = True
         return (observation, reward, done)
 
     def check_collisions(self, state, actions):
@@ -183,6 +187,8 @@ class CrateMDP(object):
                 'grasp': grasps[0],
                 'metric': metrics[0]
             })
+        print "pre-pruned actions"
+        print actions
         actions = self.check_collisions(state, actions)
     
         return actions
@@ -217,7 +223,7 @@ def main():
             # action = random_baseline(state)
             action = lowest_first_baseline(state)
             # action = highest_first_baseline(state)
-            logging.info('Attempting to remove item {}...'.format(action.item_id))
+            logging.info('Attempting to remove item {}...'.format(action["item_id"]))
             (state, reward, done) = env.step(action)
             logging.info('Received reward {}'.format(reward))
             discounted_return += math.pow(discount, step) * reward
