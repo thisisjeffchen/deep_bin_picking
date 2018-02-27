@@ -9,6 +9,12 @@ import numpy as np
 
 import pybullet as pb
 
+# Import input/raw-input with python 2/3 compatibility
+try:
+    input = raw_input
+except NameError:
+    pass
+
 logging.basicConfig(level=logging.INFO)
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -63,7 +69,8 @@ class Scene(object):
         self.gripper_id = None
 
         # Items
-        self.items = {}
+        self.item_ids = {}
+        self.item_names = {}
         self.linear_velocity_clamps = {}
         self.angular_velocity_clamps = {}
 
@@ -82,7 +89,8 @@ class Scene(object):
             if rolling_friction is not None:
                 pb.changeDynamics(item_id, link_id, rollingFriction=rolling_friction)
         logging.info('Item assigned object id {}'.format(item_id))
-        self.items[item_id] = name
+        self.item_ids[name] = item_id
+        self.item_names[item_id] = name
         (position, orientation) = pb.getBasePositionAndOrientation(
             item_id, physicsClientId=self.client_id
         )
@@ -100,7 +108,7 @@ class Scene(object):
     def get_item_poses(self, to_euler=False, as_vector=False):
         """Return the poses of all items as numpy arrays."""
         return {item_id: self.get_pose(item_id, to_euler)
-                for item_id, dex_id in self.items.items()}
+                for item_id in self.item_ids.values()}
 
     def clamp_item_velocity(self, item_id, linear=None, angular=None):
         """Add a velocity clamp to move an item at constant velocity during simumlation."""
@@ -130,14 +138,16 @@ class Scene(object):
     def remove_item(self, item_id):
         """Clear the scene of items to reset the scene."""
         pb.removeBody(item_id, physicsClientId=self.client_id)
-        self.items.pop(item_id)
+        name = self.item_names.pop(item_id)
+        self.item_ids.pop(name)
         self.unclamp_item_velocity(item_id)
 
     def remove_all_items(self):
         """Clear the scene of items to reset the scene."""
-        for item_id in self.items:
+        for item_id in self.item_ids.values():
             pb.removeBody(item_id, physicsClientId=self.client_id)
-        self.items.clear()
+        self.item_ids.clear()
+        self.item_names.clear()
         self.linear_velocity_clamps.clear()
         self.angular_velocity_clamps.clear()
 
@@ -178,7 +188,7 @@ class Scene(object):
                 bounds_removed_items |= removed_items
 
             # Check for steady state
-            if not self.items:
+            if not self.item_ids:
                 break
             if prev_poses is None:
                 continue
@@ -342,7 +352,7 @@ class ScenePopulator(object):
         if with_replacement:
             available_items = self.item_database
         else:
-            available_items = list(set(self.item_database) - set(self.scene.items.values()))
+            available_items = list(set(self.item_database) - set(self.scene.item_names.values()))
         sampled = random.choice(available_items)
         return sampled
 

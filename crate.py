@@ -4,25 +4,34 @@ import collections
 import logging
 import math
 import random
+
 import dexnet
 
 import numpy as np
 
 from scene import Scene, ScenePopulator
 
+# Import input/raw-input with python 2/3 compatibility
+try:
+    input = raw_input
+except NameError:
+    pass
+
+
 Action = collections.namedtuple('Action', ['item_id', 'gripper_pose'])
 
 NUM_ITEMS = 20
-DEX_NET_PATH = "../dex-net/"
-DB_NAME = "dexnet_2.hdf5"
-GRIPPER_NAME = "yumi_metal_spline"
-GRIPPER_REL_PATH = "data/grippers/"
-GRASP_METRIC = "robust_ferrari_canny"
+DEX_NET_PATH = '../dex-net/'
+DB_NAME = 'dexnet_2.hdf5'
+GRIPPER_NAME = 'yumi_metal_spline'
+GRIPPER_REL_PATH = 'data/grippers/'
+GRASP_METRIC = 'robust_ferrari_canny'
+
 
 class CrateMDP(object):
     """An environment for the crate/bin-picking task with OpenAI gym-esque interface."""
 
-    def __init__(self, scene, scene_populator, mdp = True, sim_remove_velocity=[0, 0, 2],
+    def __init__(self, scene, scene_populator, mdp=True, sim_remove_velocity=[0, 0, 2],
                  sim_position_delta_threshold=0.004, sim_angle_delta_threshold=np.pi / 32):
         """Store the Scene and ScenePopulator to use for managing the environment."""
         self.scene = scene
@@ -31,16 +40,21 @@ class CrateMDP(object):
         self.sim_remove_velocity = sim_remove_velocity
         self.sim_position_delta_threshold = sim_position_delta_threshold
         self.sim_angle_delta_threshold = sim_angle_delta_threshold
-        self.dn = dexnet.DexNet ()
-        self.dn.open_database (DEX_NET_PATH + DB_NAME, create_db = True) 
-        self.dn.open_dataset ('3dnet')
+        self.dn = dexnet.DexNet()
+        self.dn.open_database(DEX_NET_PATH + DB_NAME, create_db=True)
+        self.dn.open_dataset('3dnet')
         self.gripper_name = GRIPPER_NAME
-        self.gripper = dexnet.grasping.gripper.RobotGripper.load (GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH)
-        self.gripper_pose = ([ 0, 0,  1], [ 1, 0, 0, 0])
+        self.gripper = dexnet.grasping.gripper.RobotGripper.load(
+            GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH
+        )
+        self.gripper_pose = ([0, 0, 1], [1, 0, 0, 0])
 
     def _get_current_state(self):
-        return {"poses": self.scene.get_item_poses(to_euler=False),
-                "dex": self.scene.item_ids }
+        return {
+            'poses': self.scene.get_item_poses(),
+            'item_ids': self.scene.item_ids,
+            'item_names': self.scene.item_names,
+        }
 
     def _observe_current(self):
         """Generate observation of environment, namely the current state.
@@ -78,7 +92,7 @@ class CrateMDP(object):
     def reset(self):
         """Reset environment to state sampled from distribution of initial states."""
         self.scene.remove_all_items()
-        self.scene_populator.add_items(num_items = NUM_ITEMS)
+        self.scene_populator.add_items(num_items=NUM_ITEMS)
         return self._observe_current()
 
     def step(self, action):
@@ -123,26 +137,28 @@ class CrateMDP(object):
                 del actions[idx]
             '''   
         return actions
-    
-
 
     def get_actions(self, state):
-        '''Gets all actions given the current state, this can only be used
-           in mdp mode ''' 
+        """Get all actions given the current state.
+
+        This can only be used in mdp mode.
+        """
         if not self.mdp:
             return []
-        dex_keys = state["dex"]
-        poses = state["poses"]
+        item_ids = state['item_ids']
+        poses = state['poses']
         actions = []
 
-        for item_id, pose in poses.items ():
-            dex_id = dex_keys[item_id]
-            grasps, metrics = self.dn.get_grasps (dex_id, GRIPPER_NAME, GRASP_METRIC)
-            actions.append ({"item_id": item_id,
-                             "dex_id": dex_id,
-                             "grasp" : grasps[0],
-                             "metric": metrics[0]})                                        
-        actions = self.check_collisions (state, actions)
+        for item_id, pose in poses.items():
+            dex_id = item_ids[item_id]
+            grasps, metrics = self.dn.get_grasps(dex_id, GRIPPER_NAME, GRASP_METRIC)
+            actions.append({
+                'item_id': item_id,
+                'dex_id': dex_id,
+                'grasp': grasps[0],
+                'metric': metrics[0]
+            })
+        actions = self.check_collisions(state, actions)
         return actions
 
 
@@ -150,11 +166,11 @@ def random_baseline(state):
     return Action(random.choice(list(state.keys())), None)
 
 def highest_first_baseline(state):
-    item_heights = {item: pose[0][2] for (item, pose) in state.items()}
+    item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
     return Action(max(item_heights, key=item_heights.get), None)
 
 def lowest_first_baseline(state):
-    item_heights = {item: pose[0][2] for (item, pose) in state.items()}
+    item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
     return Action(min(item_heights, key=item_heights.get), None)
 
 
