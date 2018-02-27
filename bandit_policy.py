@@ -1,12 +1,13 @@
-#Creates a bandit policy by picking the highest probability grasp.
-#Calculates final reward over epochs
+"""Creates a bandit policy by picking the highest probability grasp.
 
-import dexnet as dn
+Calculates final reward over epochs.
+"""
+
 import logging
-import numpy as np
 import math
 
 from crate import CrateMDP
+
 from scene import Scene, ScenePopulator
 
 
@@ -24,23 +25,23 @@ def main():
         discounted_return = 0
         step = 0
 
-        actions = env.get_actions (state)   # calls collision checker already
-        print "ACTIONS"
-        print actions
-        print "STATE"
-        print state
+        actions = env.get_actions(state)   # calls collision checker already
+        print('ACTIONS')
+        print(actions)
+        print('STATE')
+        print(state)
         while True:
             # find action with highest metric
-            actions = env.get_actions (state)   # calls collision checker already
+            actions = env.get_actions(state)   # calls collision checker already
             action = actions[0]
-            best_metric = actions[0]["metric"]
+            best_metric = actions[0].metric
             for act in actions:
-                metric = act["metric"]
+                metric = act.metric
                 if metric > best_metric:
                     action = act
                     best_metric = metric
-            print action["item_id"]
-            logging.info('Attempting to remove item {}...'.format(action["item_id"]))
+            print(action.item_id)
+            logging.info('Attempting to remove item {}...'.format(action.item_id))
             (state, reward, done) = env.step(action)
             logging.info('Received reward {}'.format(reward))
             discounted_return += math.pow(discount, step) * reward
