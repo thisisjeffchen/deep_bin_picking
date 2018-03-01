@@ -27,7 +27,7 @@ DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
 GRIPPER_NAME = 'yumi_metal_spline'
 GRIPPER_REL_PATH = 'data/grippers/'
-GRASP_METRIC = 'robust_ferrari_canny'
+GRASP_METRIC = 'force_closure'
 
 
 class CrateMDP(object):
