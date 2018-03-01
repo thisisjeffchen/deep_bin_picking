@@ -20,7 +20,7 @@ except NameError:
     pass
 
 
-Action = collections.namedtuple('Action', ['item_id', 'gripper_pose'])
+Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
 NUM_ITEMS = 10
 DEX_NET_PATH = '../dex-net/'
@@ -105,7 +105,7 @@ class CrateMDP(object):
         success = np.random.binomial(1, success_probability)
         reward = success
         if success:
-            bounds_removed_items = self._remove_item(action["item_id"])
+            bounds_removed_items = self._remove_item(action.item_id)
             reward -= len(bounds_removed_items)  # Penalize for knocking other items out
         observation = self._observe_current()   # may need to change for POMDP
         done = (len(self.scene.item_ids) == 0)
@@ -127,15 +127,13 @@ class CrateMDP(object):
         poses = state['poses']
         graspables = {}
         for item_id, pose in poses.items():
-            # TODO: need to figure out how rigidtransform works
             graspable = self.dn.dataset.graspable(item_names[item_id])
             gcc.add_graspable_object(graspable)
             graspables[item_id] = graspable
 
         for idx in reversed(range(len(actions))):
             action = actions[idx]
-            # TODO: rigidtransform
-            pose = poses[action['item_id']]
+            pose = poses[action.item_id]
             rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(pose[1])
             rot_grip = autolab_core.RigidTransform.rotation_from_quaternion(self.gripper_pose[1])
             world_to_obj = autolab_core.RigidTransform(rot_obj, pose[0], 'world', 'obj')
@@ -145,22 +143,10 @@ class CrateMDP(object):
             obj_to_grip = world_to_grip.dot(obj_to_world)
             # now have RigidTransform of gripper wrt object, so can pass to collision check
 
-            # homogT_obj_wrt_world = np.vstack((
-            #     np.vstack((rotMat.T, pose[0])).T,
-            #     np.array([0,0,0,1])
-            # ))
-            # print homogT_obj_wrt_world
-            # homogT_world_wrt_obj = np.linalg.inv(homogT_obj_wrt_world)
-            # homogT_gripper_wrt_obj = homogT_world_wrt_obj
-            gcc.set_graspable_object(graspables[action['item_id']])
-            # TODO: fix this code so it works
-            # if gcc.grasp_in_collision () or gcc.collides_along_approach ():
-            #     del actions[idx]
-            grasp_collide = gcc.grasp_in_collision(obj_to_grip.inverse(), action['name'])
-            # approach_dist and delta_approach params to play with
+            gcc.set_graspable_object(graspables[action.item_id])
+            grasp_collide = gcc.grasp_in_collision(obj_to_grip.inverse(), action.item_name)
             approach_collide = gcc.collides_along_approach(
-                action['grasp'], self.cc_approach_dist, self.cc_delta_approach,
-                action['name']
+                action.grasp, self.cc_approach_dist, self.cc_delta_approach, action.item_name
             )
             if grasp_collide or approach_collide:
                 del actions[idx]
@@ -181,29 +167,27 @@ class CrateMDP(object):
         for item_id, pose in poses.items():
             name = item_names[item_id]
             grasps, metrics = self.dn.get_grasps(name, GRIPPER_NAME, GRASP_METRIC)
-            actions.append({
-                'item_id': item_id,
-                'name': name,
-                'grasp': grasps[0],
-                'metric': metrics[0]
-            })
-        print "pre-pruned actions"
-        print actions
+            actions.append(Action(item_id, name, grasps[0], metrics[0]))
+        print("pre-pruned actions")
+        print(actions)
         actions = self.check_collisions(state, actions)
-    
+
         return actions
 
 
 def random_baseline(state):
-    return Action(random.choice(list(state.keys())), None)
+    (item_id, item_name) = random.choice(list(state['poses'].items()))
+    return Action(item_id, item_name, None, None)
 
 def highest_first_baseline(state):
     item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
-    return Action(max(item_heights, key=item_heights.get), None)
+    item_id = max(item_heights, key=item_heights.get)
+    return Action(item_id, state['item_names'][item_id], None, None)
 
 def lowest_first_baseline(state):
     item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
-    return Action(min(item_heights, key=item_heights.get), None)
+    item_id = min(item_heights, key=item_heights.get)
+    return Action(item_id, state['item_names'][item_id], None, None)
 
 
 def main():
@@ -223,7 +207,7 @@ def main():
             # action = random_baseline(state)
             action = lowest_first_baseline(state)
             # action = highest_first_baseline(state)
-            logging.info('Attempting to remove item {}...'.format(action["item_id"]))
+            logging.info('Attempting to remove item {}...'.format(action.item_id))
             (state, reward, done) = env.step(action)
             logging.info('Received reward {}'.format(reward))
             discounted_return += math.pow(discount, step) * reward
