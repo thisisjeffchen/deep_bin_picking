@@ -101,8 +101,6 @@ class CrateMDP(object):
         """
         if self.pomdp:
             return []
-        print "STATE"
-        print state
         item_names = state['item_names']
 
         poses = state['poses']
@@ -116,8 +114,6 @@ class CrateMDP(object):
                     break
                 actions.append(Action(item_id, name, grasps[idx], metrics[idx]))
 
-        print("number of pre-pruned actions")
-        print(len(actions))
         actions = self.check_collisions(state, actions)
 
         return actions
@@ -135,7 +131,7 @@ class CrateMDP(object):
         reward = success
         if success:
             bounds_removed_items = self._remove_item(action.item_id)
-            reward -= PENALTY_FOR_COLIFT * len(bounds_removed_items)  # Penalize for knocking other items out
+            reward += PENALTY_FOR_COLIFT * len(bounds_removed_items)  # Penalize for knocking other items out
         observation = self._observe_current()   # may need to change for POMDP
         done = (len(self.scene.item_ids) == 0)
         actions = self.get_actions(observation) # make sure there are still further actions to be executed
@@ -187,6 +183,8 @@ class CrateMDP(object):
         actions = self._get_actions (state)
         if len (actions) > 0:
             return actions
+
+        print "Prunning got rid of all actions, now using all actions..."
 
         return self._get_actions (state, use_all_actions = True)
    

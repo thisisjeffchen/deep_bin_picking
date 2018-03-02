@@ -16,21 +16,18 @@ def main():
     scene = Scene(show_gui=True)
     scene_populator = ScenePopulator(scene)
     env = CrateMDP(scene, scene_populator)
-    discount = 1
-    num_episodes = 1
-    average_discounted_return = 0
+    discount = 0.9
+    num_episodes = 10
+    rewards_for_all_episodes = 0
     for episode in range(num_episodes):
         state = env.reset()
         logging.info('Starting episode {}'.format(episode))
         discounted_return = 0
         step = 0
 
-        print('STATE')
-        print(state)
-
         actions = env.get_actions(state)   # calls collision checker already
-        print('ACTIONS')
-        print(actions)
+        print ('Number of avail actions')
+        print len(actions)
 
         while True:
             # find action with highest metric
@@ -46,18 +43,21 @@ def main():
             logging.info('Attempting to remove item {}...'.format(action.item_id))
             (state, reward, done) = env.step(action)
             logging.info('Received reward {}'.format(reward))
-            print "done status: "
+            print "Done status: "
             print done
             discounted_return += math.pow(discount, step) * reward
             step += 1
             if done:
                 break
+        rewards_for_all_episodes += discounted_return
+        print ('Episode {} accumulated a discounted return of {}'
+                     .format(episode, discounted_return))
+
+        print 'Average reward per episode: ' + str(rewards_for_all_episodes / (episode + 1))
 
         logging.info('Episode {} accumulated a discounted return of {}'
                      .format(episode, discounted_return))
-        average_discounted_return += discounted_return / num_episodes
-    logging.info('Average discounted return over {} episodes is {}'
-                 .format(num_episodes, average_discounted_return))
+
 
     try:
         input('Press any key to end...')

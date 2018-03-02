@@ -341,7 +341,11 @@ class ScenePopulator(object):
             #bottle
             '5ad47181a9026fc728cc22dce7529b69', 
             #large coke bottle
-            '6b810dbc89542fd8a531220b48579115' 
+            '6b810dbc89542fd8a531220b48579115' ,
+            #giant bottle that doesn't fit
+            '799397068de1ae1c4587d6a85176d7a0',
+            #another bottle that deosn't fin
+            'fa44223c6f785c60e71da2487cb2ee5b'
 
             #For reference
             #473758ca6cb0506ee7697d561711bd2b -> banana
