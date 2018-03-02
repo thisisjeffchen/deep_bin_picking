@@ -11,14 +11,19 @@ from crate import CrateMDP
 from scene import Scene, ScenePopulator
 
 
+SAVE_FILE = "results.txt"
+
+
 def main():
     """Run a bandit policy."""
     scene = Scene(show_gui=True)
     scene_populator = ScenePopulator(scene)
     env = CrateMDP(scene, scene_populator)
     discount = 0.9
-    num_episodes = 10
+    num_episodes = 100
     rewards_for_all_episodes = 0
+    f = open (SAVE_FILE, "w")
+    f.write ("episode reward avg\n")
     for episode in range(num_episodes):
         state = env.reset()
         logging.info('Starting episode {}'.format(episode))
@@ -53,11 +58,17 @@ def main():
         print ('Episode {} accumulated a discounted return of {}'
                      .format(episode, discounted_return))
 
-        print 'Average reward per episode: ' + str(rewards_for_all_episodes / (episode + 1))
+        avg = rewards_for_all_episodes / (episode + 1)
+        f.write (str(episode + 1) + " " + str(discounted_return) + " " + str(avg) + "\n")
+        f.flush ()
 
-        logging.info('Episode {} accumulated a discounted return of {}'
-                     .format(episode, discounted_return))
+        print 'Average reward per episode: ' + str()
 
+        logging.info('Episode {} accumulated a discounted return of {} and running average of {}'
+                     .format(episode, discounted_return, avg))
+
+
+    f.close ()
 
     try:
         input('Press any key to end...')
