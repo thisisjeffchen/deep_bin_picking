@@ -23,11 +23,13 @@ except NameError:
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
 NUM_ITEMS = 10
+PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
 DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
 GRIPPER_NAME = 'yumi_metal_spline'
 GRIPPER_REL_PATH = 'data/grippers/'
 GRASP_METRIC = 'force_closure'
+DEFAULT_NUM_GRASPS_PER_ITEM = 3
 
 
 class CrateMDP(object):
@@ -72,9 +74,8 @@ class CrateMDP(object):
         # call dex-net to compute probability of grasp success.
         # action has to be object ID and gripper pose (gripper center position as x,y,z and
         # gripper orientation as quaternion) in global frame.
-        # TODO: implement this.
-        # TODO: how does this work? because the current ferrari canny values are too small
-        return 0.8
+
+        return action.metric
 
     def _remove_item(self, item_id, pull_remove=True):
         """Remove an item and simulate until the system reaches steady state again."""
@@ -93,6 +94,34 @@ class CrateMDP(object):
             pass
         return bounds_removed_items
 
+    def _get_actions(self, state, use_all_actions = False):
+        """Get all actions given the current state.
+
+        This can only be used in mdp mode.
+        """
+        if self.pomdp:
+            return []
+        print "STATE"
+        print state
+        item_names = state['item_names']
+
+        poses = state['poses']
+        actions = []
+
+        for item_id, pose in poses.items():
+            name = item_names[item_id]
+            grasps, metrics = self.dn.get_grasps(name, GRIPPER_NAME, GRASP_METRIC)
+            for idx, g in enumerate (grasps):
+                if not use_all_actions and idx >= DEFAULT_NUM_GRASPS_PER_ITEM:
+                    break
+                actions.append(Action(item_id, name, grasps[idx], metrics[idx]))
+
+        print("number of pre-pruned actions")
+        print(len(actions))
+        actions = self.check_collisions(state, actions)
+
+        return actions
+
     def reset(self):
         """Reset environment to state sampled from distribution of initial states."""
         self.scene.remove_all_items()
@@ -106,13 +135,14 @@ class CrateMDP(object):
         reward = success
         if success:
             bounds_removed_items = self._remove_item(action.item_id)
-            reward -= len(bounds_removed_items)  # Penalize for knocking other items out
+            reward -= PENALTY_FOR_COLIFT * len(bounds_removed_items)  # Penalize for knocking other items out
         observation = self._observe_current()   # may need to change for POMDP
         done = (len(self.scene.item_ids) == 0)
         actions = self.get_actions(observation) # make sure there are still further actions to be executed
         if len(actions) == 0:
-            reward -= 10000
+            #if actions is the empty space, then get all actions to double check
             done = True
+
         return (observation, reward, done)
 
     def check_collisions(self, state, actions):
@@ -153,26 +183,13 @@ class CrateMDP(object):
 
         return actions
 
-    def get_actions(self, state):
-        """Get all actions given the current state.
+    def get_actions (self, state):
+        actions = self._get_actions (state)
+        if len (actions) > 0:
+            return actions
 
-        This can only be used in mdp mode.
-        """
-        if self.pomdp:
-            return []
-        item_names = state['item_names']
-        poses = state['poses']
-        actions = []
-
-        for item_id, pose in poses.items():
-            name = item_names[item_id]
-            grasps, metrics = self.dn.get_grasps(name, GRIPPER_NAME, GRASP_METRIC)
-            actions.append(Action(item_id, name, grasps[0], metrics[0]))
-        print("pre-pruned actions")
-        print(actions)
-        actions = self.check_collisions(state, actions)
-
-        return actions
+        return self._get_actions (state, use_all_actions = True)
+   
 
 
 def random_baseline(state):

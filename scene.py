@@ -78,6 +78,8 @@ class Scene(object):
                  spinning_friction=None, rolling_friction=None):
         """Add the specified item in the specified pose."""
         logging.info('Adding item "{}"'.format(name))
+        print "Adding"
+        print name
         file_path = os.path.join(URDF_DIR, name, name + '.urdf')
         item_id = pb.loadURDF(file_path, position, orientation,
                               physicsClientId=self.client_id)
@@ -335,7 +337,16 @@ class ScenePopulator(object):
             '5e42608cac0cb5e94962fcaf2d60c3de', '20a5672ab6767a436fdde33224151fa5',
             '6930c4d2e7e880b2e20e92c5b8147e4a', 'b6f30c63c946c286cf6897d8875cfd5e',
             'b46ad21b7126049842ca7cc070f21ed3', 'ca95ce22929fd53a570c6c691c987a8',
-            'd85daabdcd4481becdd3fedfdba1457f', 'df1d8567cf192c61b2cc746911f13ff9'
+            'd85daabdcd4481becdd3fedfdba1457f', 'df1d8567cf192c61b2cc746911f13ff9',
+            #bottle
+            '5ad47181a9026fc728cc22dce7529b69', 
+            #large coke bottle
+            '6b810dbc89542fd8a531220b48579115' 
+
+            #For reference
+            #473758ca6cb0506ee7697d561711bd2b -> banana
+            #e6f95cfb9825c0f65070edcf21eb751c -> round water bottle
+
         }
         logging.debug('Excluding {} items'.format(len(self.excluded_items)))
         self.item_database = sorted(list(set(

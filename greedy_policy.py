@@ -25,11 +25,13 @@ def main():
         discounted_return = 0
         step = 0
 
+        print('STATE')
+        print(state)
+
         actions = env.get_actions(state)   # calls collision checker already
         print('ACTIONS')
         print(actions)
-        print('STATE')
-        print(state)
+
         while True:
             # find action with highest metric
             actions = env.get_actions(state)   # calls collision checker already
@@ -44,6 +46,8 @@ def main():
             logging.info('Attempting to remove item {}...'.format(action.item_id))
             (state, reward, done) = env.step(action)
             logging.info('Received reward {}'.format(reward))
+            print "done status: "
+            print done
             discounted_return += math.pow(discount, step) * reward
             step += 1
             if done:
