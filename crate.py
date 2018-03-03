@@ -124,7 +124,7 @@ class CrateMDP(object):
         self.scene_populator.add_items(num_items=NUM_ITEMS)
         return self._observe_current()
 
-    def step(self, action):
+    def step(self, action, check_next = True):
         """Take an action on the environment."""
         success_probability = self._get_success_probability(action)
         success = np.random.binomial(1, success_probability)
@@ -134,10 +134,11 @@ class CrateMDP(object):
             reward += PENALTY_FOR_COLIFT * len(bounds_removed_items)  # Penalize for knocking other items out
         observation = self._observe_current()   # may need to change for POMDP
         done = (len(self.scene.item_ids) == 0)
-        actions = self.get_actions(observation) # make sure there are still further actions to be executed
-        if len(actions) == 0:
-            #if actions is the empty space, then get all actions to double check
-            done = True
+        if check_next:
+            actions = self.get_actions(observation) # make sure there are still further actions to be executed
+            if len(actions) == 0:
+                #if actions is the empty space, then get all actions to double check
+                done = True
 
         return (observation, reward, done)
 
@@ -197,12 +198,12 @@ def random_baseline(state):
 def highest_first_baseline(state):
     item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
     item_id = max(item_heights, key=item_heights.get)
-    return Action(item_id, state['item_names'][item_id], None, None)
+    return Action(item_id, state['item_names'][item_id], None, 1.0)
 
 def lowest_first_baseline(state):
     item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
     item_id = min(item_heights, key=item_heights.get)
-    return Action(item_id, state['item_names'][item_id], None, None)
+    return Action(item_id, state['item_names'][item_id], None, 1.0)
 
 
 def main():
