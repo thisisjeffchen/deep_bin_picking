@@ -6,12 +6,12 @@ Calculates final reward over epochs.
 import logging
 import math
 
-from crate import CrateMDP
+from crate import CrateMDP, random_baseline, highest_first_baseline, lowest_first_baseline, Action
 
 from scene import Scene, ScenePopulator
 
 
-SAVE_FILE = "results.txt"
+SAVE_FILE = "results_lowest.txt"
 
 
 def main():
@@ -36,17 +36,26 @@ def main():
 
         while True:
             # find action with highest metric
-            actions = env.get_actions(state)   # calls collision checker already
-            action = actions[0]
-            best_metric = actions[0].metric
-            for act in actions:
-                metric = act.metric
-                if metric > best_metric:
-                    action = act
-                    best_metric = metric
-            print(action.item_id)
+
+            #action = random_baseline(state)
+            action = lowest_first_baseline(state)
+            #action = highest_first_baseline(state)
+  
+            #DEX NET ACTION
+            #actions = env.get_actions(state)   # calls collision checker already
+            #action = actions[0]
+
+            # best_metric = actions[0].metric
+            # for act in actions:
+            #     metric = act.metric
+            #     if metric > best_metric:
+            #         action = act
+            #         best_metric = metric
+            # print(action.item_id)
             logging.info('Attempting to remove item {}...'.format(action.item_id))
-            (state, reward, done) = env.step(action)
+
+            #NOTE: turn check_next = False to not check if there are valid actions in the next state, this speeds things up a bit
+            (state, reward, done) = env.step(action, check_next = False)
             logging.info('Received reward {}'.format(reward))
             print "Done status: "
             print done
@@ -74,6 +83,8 @@ def main():
         input('Press any key to end...')
     except Exception as e:
         pass
+
+
 
 
 if __name__ == '__main__':
