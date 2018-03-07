@@ -1,4 +1,4 @@
-"""Creates a bandit policy by picking the highest probability grasp.
+"""Creates a greedy policy by picking the highest probability grasp.
 
 Calculates final reward over epochs.
 """
@@ -38,12 +38,13 @@ def main():
             # find action with highest metric
 
             #action = random_baseline(state)
-            action = lowest_first_baseline(state)
+            #action = lowest_first_baseline(state)
             #action = highest_first_baseline(state)
   
             #DEX NET ACTION
-            #actions = env.get_actions(state)   # calls collision checker already
-            #action = actions[0]
+            actions = env.get_actions(state)   # calls collision checker already
+            action = actions[0]
+            print action
 
             # best_metric = actions[0].metric
             # for act in actions:

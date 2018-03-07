@@ -1,6 +1,7 @@
 """Crate/bin-picking environments for running policies."""
 
 import collections
+import operator
 import logging
 import math
 import random
@@ -94,7 +95,7 @@ class CrateMDP(object):
             pass
         return bounds_removed_items
 
-    def _get_actions(self, state, use_all_actions = False):
+    def _get_actions(self, state, use_all_actions = True):
         """Get all actions given the current state.
 
         This can only be used in mdp mode.
@@ -114,7 +115,25 @@ class CrateMDP(object):
                     break
                 actions.append(Action(item_id, name, grasps[idx], metrics[idx]))
 
-        actions = self.check_collisions(state, actions)
+        # sort actions in descending success prob order
+        actions.sort(key=operator.attrgetter('metric'), reverse=True)
+        # randomize actions with same probability
+        rand_acts = []
+        cur_metric = actions[0].metric
+        start_idx = 0
+        for idx in range(len(actions)):
+            if actions[idx].metric != cur_metric:
+                # randomize elements until now
+                rand_idx = range(start_idx, idx-1)
+                random.shuffle(rand_idx)
+                for i in range(len(rand_idx)):
+                    rand_acts.append(actions[rand_idx[i]])
+                start_idx = idx
+                cur_metric = actions[idx].metric
+                    
+
+        # prune actions until find first action that doesn't collide
+        actions = self.check_collisions(state, rand_acts)
 
         return actions
 
@@ -124,7 +143,7 @@ class CrateMDP(object):
         self.scene_populator.add_items(num_items=NUM_ITEMS)
         return self._observe_current()
 
-    def step(self, action, check_next = True):
+    def step(self, action, check_next = False):
         """Take an action on the environment."""
         success_probability = self._get_success_probability(action)
         success = np.random.binomial(1, success_probability)
@@ -158,7 +177,7 @@ class CrateMDP(object):
             gcc.add_graspable_object(graspable)
             graspables[item_id] = graspable
 
-        for idx in reversed(range(len(actions))):
+        for idx in range(len(actions)):
             action = actions[idx]
             pose = poses[action.item_id]
             rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(pose[1])
@@ -177,6 +196,7 @@ class CrateMDP(object):
             )
             if grasp_collide or approach_collide:
                 del actions[idx]
+                break   #found first non-collision action, good enough for greedy
 
         return actions
 
