@@ -54,6 +54,11 @@ class CrateMDP(object):
         self.gripper_pose = ([0, 0, 1], [1, 0, 0, 0])
         self.cc_approach_dist = 1.0
         self.cc_delta_approach = 0.1    # may need tuning
+        
+    def encode_state(self, state):
+        encoded = np.zeros((self.scene_populator.max_items, 8))  # 8 = item_id (1) + position (3) + orientation (4)
+        encoded[:state.shape[0], :] = state
+        return encoded
 
     def _get_current_state(self):
         return {
