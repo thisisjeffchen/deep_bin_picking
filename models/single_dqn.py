@@ -3,8 +3,62 @@ import tensorflow as tf
 class SingleDQN():
     def __init__(self, env, flags, logger=None):
         self.flags = flags
-        #TODO: fix rest of this
-        pass
+        self.env = env
+        if logger is None:
+            pass #TODO: fixme
+
+        self.build ()
+
+        # create tf session
+        self.sess = tf.Session()
+
+        # tensorboard stuff
+        self.add_summary()
+
+        # initiliaze all variables
+        init = tf.global_variables_initializer()
+        self.sess.run(init)
+
+        # synchronise q and target_q networks
+        self.sess.run(self.update_target_op)
+
+        # for saving networks weights
+        self.saver = tf.train.Saver()
+
+    def add_summary(self):
+        """
+        Tensorboard stuff
+        """
+        # extra placeholders to log stuff from python
+        self.avg_reward_placeholder = tf.placeholder(tf.float32, shape=(), name="avg_reward")
+        self.max_reward_placeholder = tf.placeholder(tf.float32, shape=(), name="max_reward")
+        self.std_reward_placeholder = tf.placeholder(tf.float32, shape=(), name="std_reward")
+
+        self.avg_q_placeholder  = tf.placeholder(tf.float32, shape=(), name="avg_q")
+        self.max_q_placeholder  = tf.placeholder(tf.float32, shape=(), name="max_q")
+        self.std_q_placeholder  = tf.placeholder(tf.float32, shape=(), name="std_q")
+
+        self.eval_reward_placeholder = tf.placeholder(tf.float32, shape=(), name="eval_reward")
+
+        # add placeholders from the graph
+        tf.summary.scalar("loss", self.loss)
+        tf.summary.scalar("grads norm", self.grad_norm)
+
+        # extra summaries from python -> placeholders
+        tf.summary.scalar("Avg Reward", self.avg_reward_placeholder)
+        tf.summary.scalar("Max Reward", self.max_reward_placeholder)
+        tf.summary.scalar("Std Reward", self.std_reward_placeholder)
+
+        tf.summary.scalar("Avg Q", self.avg_q_placeholder)
+        tf.summary.scalar("Max Q", self.max_q_placeholder)
+        tf.summary.scalar("Std Q", self.std_q_placeholder)
+
+        tf.summary.scalar("Eval Reward", self.eval_reward_placeholder)
+
+        # logging
+        self.merged = tf.summary.merge_all()
+        self.file_writer = tf.summary.FileWriter(self.config.output_path,
+                                                self.sess.graph)
     
     def features_len ():
         return 1000 #TODO: make this work, there's some of this in ReplayBuffer
@@ -41,7 +95,7 @@ class SingleDQN():
         
     def add_placeholders_op(self):
         fl = self.features_len ()
-        
+    
         self.states = tf.placeholder (tf.float32, shape = (None, fl), name = "states")
         raise NotImplementedError
                                   
@@ -271,16 +325,11 @@ class SingleDQN():
             exp_schedule: exploration strategy for epsilon
             lr_schedule: schedule for learning rate
         """
-        # initialize
-        self.initialize()
-
-        # record one game at the beginning
-        if self.flags.record:
-            self.record()
 
         # model
         self.train(exp_schedule, lr_schedule)
 
+        #TODO: figure out if we want to do recording before and after trai
         # record one game at the end
         # if self.config.record:
         #     self.record()
