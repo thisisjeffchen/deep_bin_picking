@@ -56,9 +56,14 @@ class CrateMDP(object):
         self.cc_delta_approach = 0.1    # may need tuning
         
     def encode_state(self, state):
-        encoded = np.zeros((self.scene_populator.max_items, 8))  # 8 = item_id (1) + position (3) + orientation (4)
-        encoded[:state.shape[0], :] = state
-        return encoded
+        one_hot_item_ids = np.zeros(self.scene_populator.max_items, 100)) # 100 is a bit more than the number of item classes
+        for (i, item_id) in enumerate(state['item_ids']):
+            one_hot_item_ids[i, item_id] = 1
+        poses = np.zeros((self.scene_populator.max_items, 7))  # 7 = position (3) + orientation (4)
+        for i in range(len(state['item_ids'])):
+            poses[i, :3] = state['poses'][i][0]
+            poses[i, 3:] = state['poses'][i][1]
+        return np.hstack([poses, one_hot_item_ids])
 
     def _get_current_state(self):
         return {
