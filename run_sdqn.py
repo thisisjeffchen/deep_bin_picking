@@ -10,6 +10,7 @@ from models.single_dqn import SingleDQN
 
 
 #TODO: make all flags here, it will get passed into our core SingleDQN
+tf.app.flags.DEFINE_string  ("model", "linear", "Model used, choices are linear or nn")
 tf.app.flags.DEFINE_integer ("nsteps_train", 5000000, "")
 tf.app.flags.DEFINE_integer ("batch_size", 32, "")
 tf.app.flags.DEFINE_integer ("buffer_size", 1000000, "")
@@ -24,6 +25,7 @@ tf.app.flags.DEFINE_integer ("eps_begin", 1, "")
 tf.app.flags.DEFINE_float   ("eps_end", 0.1, "")
 tf.app.flags.DEFINE_integer ("eps_nsteps", 1000000, "")
 tf.app.flags.DEFINE_integer ("learning_start", 50000, "")
+tf.app.flags.DEFINE_bool    ("grad_clip", False, "")
 
 #TODO: this is not hooked up to the save dir
 tf.app.flags.DEFINE_string("experiment_name", "", "Unique name for your experiment. This will create a directory by this name in the experiments/ directory, which will hold all data related to this experiment")

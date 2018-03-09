@@ -1,9 +1,14 @@
 import tensorflow as tf
+import collections
+
+NN_HIDDEN_1 = 200
+NN_HIDDEN_2 = 10
 
 class SingleDQN():
     def __init__(self, env, flags, logger=None):
         self.flags = flags
         self.env = env
+
         if logger is None:
             pass #TODO: fixme
 
@@ -57,11 +62,23 @@ class SingleDQN():
 
         # logging
         self.merged = tf.summary.merge_all()
-        self.file_writer = tf.summary.FileWriter(self.config.output_path,
+        self.file_writer = tf.summary.FileWriter(self.flags.output_path,
                                                 self.sess.graph)
     
-    def features_len ():
+    def features_len (self):
         return 1000 #TODO: make this work, there's some of this in ReplayBuffer
+
+    def actions_len (self):
+        """
+        How long each action is
+        """
+        return 4 #TODO: fix this, should be sync'd w/ env
+    def actions_choices_len (self):
+        """
+        How many choices are fed into the graph. We hard code this else it 
+        makes running through the graph difficult.
+        """
+        return 5
                             
     def build(self):
         """
@@ -71,54 +88,124 @@ class SingleDQN():
         self.add_placeholders_op()
 
         # compute Q values of state
-        s = self.process_state(self.s)
-        self.q = self.get_q_values_op(s, scope="q", reuse=False)
+        self.q_prior= self.get_q_values_op(self.states, self.actions_taken,
+                                      scope="q", reuse=False)
 
         # compute Q values of next state
-        sp = self.process_state(self.sp)
-        self.target_q = self.get_q_values_op(sp, scope="target_q", reuse=False)
+        states_prime_tiled = tf.tile (self.states_prime, [self.actions_choices_len (), 1])
+
+        s = tf.shape (self.action_choices)
+        action_choices_tiled =  tf.reshape (self.action_choices, [-1, self.actions_len ()])
+
+        target_q_tiled = self.get_q_values_op (states_prime_tiled,
+                                               action_choices_tiled,
+                                               scope = "target_q",
+                                               reuse = False)
+
+        self.target_q = tf.reshape (target_q_tiled, shape = (s[0], s[1])) #(batch, actions_choices_len)
 
         # add update operator for target network
         self.add_update_target_op("q", "target_q")
 
         # add square loss
-        self.add_loss_op(self.q, self.target_q)
+        self.add_loss_op(self.q_prior, self.target_q)
 
         # add optmizer for the main networks
         self.add_optimizer_op("q")
         
-    def process_state(state):
-        """
-        We're already storing state values as floats, so no need to do anything to state 
-        """
-        return state
         
     def add_placeholders_op(self):
+        """
+        states: batch x states_len
+        actions_taken: batch x action_len
+        reward: batch x 1
+        states_prime: batchx states_len
+        action_choices: batch x action_choices_len x action_len
+        """
         fl = self.features_len ()
+        al = self.actions_len ()
+        acl = self.actions_choices_len ()
     
-        self.states = tf.placeholder (tf.float32, shape = (None, fl), name = "states")
-        raise NotImplementedError
+        self.states = tf.placeholder (tf.float32, shape = (None, fl), 
+                                      name = "states")
+        self.states_prime = tf.placeholder (tf.float32, shape = (None, fl),
+                                            name = "states_prime")
+
+        self.actions_taken = tf.placeholder (tf.float32, shape = (None, al), 
+                                       name = "actions_taken")
+
+        self.action_choices = tf.placeholder (tf.float32, 
+                                              shape = (None, acl, al),
+                                              name = "action_choices")
+        self.action_choices_mask = tf.placeholder (tf.bool,
+                                                    shape = (None, acl),
+                                                    name = "action_choices_mask")
+
+        self.rewards = tf.placeholder (tf.float32, shape = (None),
+                                       name = "rewards")
+        self.done_mask = tf.placeholder (tf.bool, shape = (None), 
+                                         name = "done_mask")
+        self.lr = tf.placeholder (tf.float32, shape = (), name = "lr")
                                   
-        
       
     def add_update_target_op(self, q_scope, target_q_scope):
-        raise NotImplementedError
+        Q_vars = tf.get_collection (tf.GraphKeys.TRAINABLE_VARIABLES, 
+                                   scope = q_scope)
+        target_Q_vars = tf.get_collection (tf.GraphKeys.TRAINABLE_VARIABLES, 
+                                           scope = target_q_scope)
 
-    def add_loss_op(self, q, target_q):
-        raise NotImplementedError
+        ops = []
+        for i in range (len (target_Q_vars)):
+            ops.append (tf.assign (target_Q_vars[i], Q_vars[i]))
+
+        self.update_target_op = tf.group (*ops, name = "update_target_op")
+
+    def add_loss_op(self, q_prior, target_q):
+        target_q_masked = tf.boolean_mask (target_q, self.action_choices_mask)
+        target_q_max = tf.reduce_max (target_q_masked, axis = 0) #(batch)
 
 
+        q_samp = self.rewards + (1 - tf.cast (self.done_mask, tf.float32)) * (
+                         tf.cast(self.flags.gamma, tf.float32)
+                         * target_q_max)
+
+        self.loss = tf.reduce_mean (tf.square (q_samp - q_prior), name = "loss")
       
     def add_optimizer_op(self, scope):
-        raise NotImplementedError
+        opt = tf.train.AdamOptimizer (learning_rate = self.lr)
+        variables = tf.get_collection (tf.GraphKeys.TRAINABLE_VARIABLES, scope = scope)
+        grads_and_vars = opt.compute_gradients (self.loss, variables)
 
-      
-  
+        if self.flags.grad_clip:
+            grads_and_vars = [(tf.clip_by_norm (gv[0], self.config.clip_val), gv[1]) for gv in grads_and_vars]
+
+        self.train_op = opt.apply_gradients (grads_and_vars, name = "train_op")
+
+        self.grad_norm = tf.global_norm ([gv[0] for gv in grads_and_vars], name = "grad_norm")
+        writer = tf.summary.FileWriter('output', graph=tf.get_default_graph())  
     
-    #TODO: this really needs some work, thinking required
-    def get_q_values_op(self, state, scope, reuse=False):
-        raise NotImplementedError
+    def get_q_values_op(self, states, actions, scope, reuse=False):
+        """
+        States batch x features_len
+        Actions batch x actions_len
+        Returns output depending on model selection
+        """
 
+        inputs = tf.concat ([states, actions], 1)
+        out = self.rewards #placeholder so init doesn't complain. 
+
+
+        with tf.variable_scope (scope, reuse = reuse):
+            if self.flags.model == "linear":
+                out = tf.contrib.layers.fully_connected (inputs, 1,
+                                                         activation_fn = None)
+            elif self.flags.model == "nn":
+                layer_1 = tf.contrib.layers.fully_connected (inputs, NN_HIDDEN_1) #ReLU by default
+                layer_2 = tf.contrib.layers.fully_connected (layer_1, NN_HIDDEN_2) #ReLU by default
+                out = tf.contrib.layers.fully_connected (layer_2, 1, activation_fn = None)
+            else:
+                raise NameError ("Model flag not recognized") 
+        return out
 
     def save(self):
         raise NotImplementedError
@@ -342,5 +429,9 @@ class SingleDQN():
         pass
  
 if __name__ == "__main__":
-    sdqn = SingleDQN (None, None)
+    Flags = collections.namedtuple('Flags', ['model', 'gamma', 'grad_clip', 'output_path'])
+    flags = Flags (model = "linear", gamma = 0.9, grad_clip = False, output_path = "test")
+
+
+    sdqn = SingleDQN (None, flags)
     print "Init works!"
