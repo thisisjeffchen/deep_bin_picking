@@ -106,7 +106,7 @@ class RobotReplayBuffer(object):
       
       
     def encode_recent_observation(self):
-  		"""Return the most recent `frame_history_len` frames.
+        """Return the most recent `frame_history_len` frames.
 
         Returns
         -------
@@ -161,7 +161,7 @@ class RobotReplayBuffer(object):
         """
         if self.obs is None:
             self.obs      = np.empty([self.size] + list(frame.shape),      dtype=np.float32)
-            self.action   = np.empty([self.size] + list(self.action_dims), dtype=np.float32
+            self.action   = np.empty([self.size] + list(self.action_dims), dtype=np.float32)
             self.reward   = np.empty([self.size],                          dtype=np.float32)
             self.done     = np.empty([self.size],                          dtype=np.bool)
         self.obs[self.next_idx] = frame
@@ -195,3 +195,8 @@ class RobotReplayBuffer(object):
                                      
     #TODO: add a flushing function to flush replay buffer because we need the training data since our sim runs so slowly
     #Or maybe we can save the model params? but what if we change the model?
+
+
+if __name__ == "__main__":
+    rrb = RobotReplayBuffer (100)
+    print "Init works!"

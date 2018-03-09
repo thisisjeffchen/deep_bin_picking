@@ -1,13 +1,15 @@
+import tensorflow as tf
+
 class SingleDQN():
     def __init__(self, env, flags, logger=None):
-      	self.flags = flags
+        self.flags = flags
         #TODO: fix rest of this
-      	pass
+        pass
     
     def features_len ():
         return 1000 #TODO: make this work, there's some of this in ReplayBuffer
                             
- 	def build(self):
+    def build(self):
         """
         Build model by adding all necessary variables
         """
@@ -32,38 +34,52 @@ class SingleDQN():
         self.add_optimizer_op("q")
         
     def process_state(state):
-    """
-    We're already storing state values as floats, so no need to do anything to state 
-    """
-    	return state
+        """
+        We're already storing state values as floats, so no need to do anything to state 
+        """
+        return state
         
     def add_placeholders_op(self):
         fl = self.features_len ()
         
-        self.states = tf.placeholder (tf.float32, 
-                                     shape = (None, fl), name = "states"))
+        self.states = tf.placeholder (tf.float32, shape = (None, fl), name = "states")
+        raise NotImplementedError
                                   
-    	
+        
       
     def add_update_target_op(self, q_scope, target_q_scope):
+        raise NotImplementedError
+
     def add_loss_op(self, q, target_q):
+        raise NotImplementedError
+
+
       
     def add_optimizer_op(self, scope):
+        raise NotImplementedError
+
       
   
     
     #TODO: this really needs some work, thinking required
     def get_q_values_op(self, state, scope, reuse=False):
-    	pass
+        raise NotImplementedError
+
 
     def save(self):
+        raise NotImplementedError
+
       
     def get_action(self, state):
+        raise NotImplementedError
+
 
     def init_averages(self):
-      
-  	def update_averages(self, rewards, max_q_values, q_values, scores_eval):
+        raise NotImplementedError
 
+      
+    def update_averages(self, rewards, max_q_values, q_values, scores_eval):
+        raise NotImplementedError
 
       
     def train(self, exp_schedule, lr_schedule):
@@ -274,12 +290,8 @@ class SingleDQN():
         """
         Re create an env and record a video for one episode
         """
-		pass
+        pass
  
-
- if __name__ == "__main__":
-    sdqn(self, env, flags, logger=None):
-
-    ls = LinearSchedule (0, 10, 5)
-    le = LinearExploration (None, 0, 10, 5)
+if __name__ == "__main__":
+    sdqn = SingleDQN (None, None)
     print "Init works!"
