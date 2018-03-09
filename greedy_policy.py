@@ -16,7 +16,7 @@ SAVE_FILE = "results_lowest.txt"
 
 def main():
     """Run a bandit policy."""
-    scene = Scene(show_gui=True)
+    scene = Scene(show_gui=False)
     scene_populator = ScenePopulator(scene)
     env = CrateMDP(scene, scene_populator)
     discount = 0.9
