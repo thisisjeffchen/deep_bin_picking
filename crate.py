@@ -54,9 +54,10 @@ class CrateMDP(object):
         self.gripper_pose = ([0, 0, 1], [1, 0, 0, 0])
         self.cc_approach_dist = 1.0
         self.cc_delta_approach = 0.1    # may need tuning
+        self.encoded_observation_shape = [self.scene_populator.max_items, len(self.scene_populator.item_database) + 7]
         
     def encode_state(self, state):
-        one_hot_item_ids = np.zeros(self.scene_populator.max_items, 100)) # 100 is a bit more than the number of item classes
+        one_hot_item_ids = np.zeros(self.scene_populator.max_items, len(self.scene_populator.item_database)))
         for (i, item_id) in enumerate(state['item_ids']):
             one_hot_item_ids[i, item_id] = 1
         poses = np.zeros((self.scene_populator.max_items, 7))  # 7 = position (3) + orientation (4)
