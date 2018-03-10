@@ -22,7 +22,7 @@ except NameError:
 
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
-NUM_ITEMS = 1 #TODO: put back to 10
+NUM_ITEMS = 5 #TODO: put back to 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
 DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
@@ -30,6 +30,10 @@ GRIPPER_NAME = 'yumi_metal_spline'
 GRIPPER_REL_PATH = 'data/grippers/'
 GRASP_METRIC = 'force_closure'
 DEFAULT_NUM_GRASPS_PER_ITEM = 3
+
+
+ACTION_DIMS = 4
+ACTION_CHOICES_MAX = 5
 
 
 class CrateMDP(object):
@@ -135,6 +139,15 @@ class CrateMDP(object):
         actions = self.check_collisions(state, actions)
 
         return actions
+
+    def get_action_dims (self):
+        return ACTION_DIMS
+
+    def get_action_choices_max (self):
+        return ACTION_CHOICES_MAX
+
+    def get_encoded_observation_shape (self):
+        return self.encoded_observation_shape
 
     def reset(self):
         """Reset environment to state sampled from distribution of initial states."""

@@ -1,9 +1,10 @@
 import tensorflow as tf
 import collections
-from collections import deque
+import numpy as np
 
 from utils.general import get_logger
 from robot_replay_buffer import RobotReplayBuffer
+from collections import deque
 
 NN_HIDDEN_1 = 200
 NN_HIDDEN_2 = 10
@@ -71,19 +72,24 @@ class SingleDQN():
                                                 self.sess.graph)
     
     def features_len (self):
-        return 1000 #TODO: make this work, there's some of this in ReplayBuffer
+        """
+        Flattened observation len
+        """
+        s = self.env.get_encoded_observation_shape ()
+        return s[0] * s[1]
 
     def actions_len (self):
         """
         How long each action is
         """
-        return 4 #TODO: fix this, should be sync'd w/ env
+        return self.env.get_action_dims ()
+
     def actions_choices_len (self):
         """
         How many choices are fed into the graph. We hard code this else it 
         makes running through the graph difficult.
         """
-        return 5
+        return self.env.get_action_choices_max ()
                             
     def build(self):
         """
@@ -283,27 +289,41 @@ class SingleDQN():
         while t < self.flags.nsteps_train:
             total_reward = 0
             state = self.env.reset()
+
             while True:
                 t += 1
                 last_eval += 1
                 last_record += 1
-                if self.flags.render_train: self.env.render()
+        
+                action_choices = env.get_actions (state)
+
                 # replay memory stuff
-                idx      = replay_buffer.store_frame(state)
-                q_input = replay_buffer.encode_recent_observation()
+                #TODO: fix me
+                encoded_actions = np.zeros ([5,4])#TODO, encode actions
+                encoded_state = self.env.encode_state (state)
+
+                idx      = replay_buffer.store_frame(encoded_state, 
+                                                     encoded_actions)
 
                 # chose action according to current Q and exploration
-                best_action, q_values = self.get_best_action(q_input)
-                action                = exp_schedule.get_action(best_action)
+                #TODO: fix me
+                #best_action, q_values = self.get_best_action (encoded_state)
+                #action                = exp_schedule.get_action(best_action)
 
                 # store q values
-                max_q_values.append(max(q_values))
-                q_values += list(q_values)
+                #max_q_values.append(max(q_values))
+                #q_values += list(q_values)
+
+                #TODO: delete
+                action = action_choices[0]
 
                 # perform action in env
-                new_state, reward, done, info = self.env.step(action)
+                new_state, reward, done = self.env.step(action)
 
                 # store the transition
+                #TODO: fixme
+                action = np.zeros (4) #ENCODE LAST ACTION
+
                 replay_buffer.store_effect(idx, action, reward, done)
                 state = new_state
 
@@ -401,19 +421,31 @@ class SingleDQN():
         for i in range(num_episodes):
             total_reward = 0
             state = env.reset()
-            state = env.encode_state(state)
             while True:
-                # store last state in buffer
-                idx     = replay_buffer.store_frame(state)
-                q_input = replay_buffer.encode_recent_observation()
+                #        if self.flags.render_train: self.env.render()
 
-                action = self.get_action(q_input)
+                action_choices = env.get_actions (state)
+
+                # store last state in buffer
+                encoded_actions = np.zeros ([5,4])#TODO, encode actions
+                encoded_state = self.env.encode_state (state)
+                #TODO: need to save action_choices mask
+
+                idx = replay_buffer.store_frame(encoded_state, encoded_actions)
+
+                
+                #TODO: fix me
+                #action = self.get_action(q_input)
+                print state
+                print action_choices
+                action = action_choices[0]
 
                 # perform action in env
-                new_state, reward, done, info = env.step(action)
-                new_state = env.encode_state(new_state)
+                new_state, reward, done = env.step (action)
 
+                #TODO: fix me
                 # store in replay memory
+                action = np.zeros (4)
                 replay_buffer.store_effect(idx, action, reward, done)
                 state = new_state
 

@@ -44,14 +44,15 @@ class RobotReplayBuffer(object):
         """
         self.size = size
         self.frame_history_len = frame_history_len
-        self.action_dims = 5 # TODO: don't hard-code this in?
 
         self.next_idx      = 0
         self.num_in_buffer = 0
 
-        self.obs      = None
-        self.action   = None
-        self.reward   = None
+        self.obs = None
+        self.actions_taken   = None
+        self.action_choices = None
+        self.action_choices_mask = None
+        self.rewards   = None
         self.done     = None
         
     def can_sample(self, batch_size):
@@ -61,7 +62,7 @@ class RobotReplayBuffer(object):
     def _encode_sample(self, idxes):
         obs_batch      = np.concatenate([self._encode_observation(idx)[None] for idx in idxes], 0)
         act_batch      = self.action[idxes]
-        rew_batch      = self.reward[idxes]
+        rew_batch      = self.rewards[idxes]
         next_obs_batch = np.concatenate([self._encode_observation(idx + 1)[None] for idx in idxes], 0)
         done_mask      = np.array([1.0 if self.done[idx] else 0.0 for idx in idxes], dtype=np.float32)
 
@@ -104,7 +105,9 @@ class RobotReplayBuffer(object):
         idxes = sample_n_unique(lambda: random.randint(0, self.num_in_buffer - 2), batch_size)
         return self._encode_sample(idxes)
       
-      
+    '''
+    TODO: delete, i don't think we need this because it's handled before data comes in
+
     def encode_recent_observation(self):
         """Return the most recent `frame_history_len` frames.
 
@@ -143,8 +146,9 @@ class RobotReplayBuffer(object):
             # this optimization has potential to saves about 30% compute time \o/
             img_h, img_w = self.obs.shape[1], self.obs.shape[2]
             return self.obs[start_idx:end_idx].transpose(1, 2, 0, 3).reshape(img_h, img_w, -1)
+    '''
       
-    def store_frame(self, frame):
+    def store_frame(self, frame, action_choices):
         """Store a single frame in the buffer at the next available index, overwriting
         old frames if necessary.
 
@@ -160,10 +164,15 @@ class RobotReplayBuffer(object):
             Index at which the frame is stored. To be used for `store_effect` later.
         """
         if self.obs is None:
-            self.obs      = np.empty([self.size] + list(frame.shape),      dtype=np.float32)
-            self.action   = np.empty([self.size] + list(self.action_dims), dtype=np.float32)
-            self.reward   = np.empty([self.size],                          dtype=np.float32)
-            self.done     = np.empty([self.size],                          dtype=np.bool)
+            self.obs      =  np.zeros([self.size] + list(frame.shape), dtype=np.float32)
+            assert len(action_choices.shape) == 2 #code depends on this
+
+            self.actions_taken   =  np.zeros([self.size, action_choices.shape[1]], dtype=np.float32)
+            self.action_choices = np.zeros([self.size] + list(action_choices.shape), dtype=np.float32)            
+
+            self.action_choices_mask = np.zeros ([self.size, action_choices.shape[0]], dtype=np.bool)
+            self.rewards = np.empty([self.size], dtype=np.float32)
+            self.done = np.empty([self.size], dtype=np.bool)
         self.obs[self.next_idx] = frame
 
         ret = self.next_idx
@@ -189,8 +198,8 @@ class RobotReplayBuffer(object):
         done: bool
             True if episode was finished after performing that action.
         """
-        self.action[idx] = action
-        self.reward[idx] = reward
+        self.actions_taken[idx] = action
+        self.rewards[idx] = reward
         self.done[idx]   = done
                                      
     #TODO: add a flushing function to flush replay buffer because we need the training data since our sim runs so slowly
