@@ -1,5 +1,9 @@
 import tensorflow as tf
 import collections
+from collections import deque
+
+from utils.general import get_logger
+from robot_replay_buffer import RobotReplayBuffer
 
 NN_HIDDEN_1 = 200
 NN_HIDDEN_2 = 10
@@ -10,7 +14,8 @@ class SingleDQN():
         self.env = env
 
         if logger is None:
-            pass #TODO: fixme
+            log_path = self.flags.train_dir + "log.txt"
+            self.logger = get_logger(log_path)
 
         self.build ()
 
@@ -62,7 +67,7 @@ class SingleDQN():
 
         # logging
         self.merged = tf.summary.merge_all()
-        self.file_writer = tf.summary.FileWriter(self.flags.output_path,
+        self.file_writer = tf.summary.FileWriter(self.flags.train_dir,
                                                 self.sess.graph)
     
     def features_len (self):
@@ -216,11 +221,39 @@ class SingleDQN():
 
 
     def init_averages(self):
-        raise NotImplementedError
+        """
+        Defines extra attributes for tensorboard
+        """
+        self.avg_reward = -1000.
+        self.max_reward = -1000.
+        self.std_reward = 0
 
-      
+        self.avg_q = 0
+        self.max_q = 0
+        self.std_q = 0
+        
+        self.eval_reward = -1000.
+
     def update_averages(self, rewards, max_q_values, q_values, scores_eval):
-        raise NotImplementedError
+        """
+        Update the averages
+
+        Args:
+            rewards: deque
+            max_q_values: deque
+            q_values: deque
+            scores_eval: list
+        """
+        self.avg_reward = np.mean(rewards)
+        self.max_reward = np.max(rewards)
+        self.std_reward = np.sqrt(np.var(rewards) / len(rewards))
+
+        self.max_q      = np.mean(max_q_values)
+        self.avg_q      = np.mean(q_values)
+        self.std_q      = np.sqrt(np.var(q_values) / len(q_values))
+
+        if len(scores_eval) > 0:
+            self.eval_reward = scores_eval[-1]
 
       
     def train(self, exp_schedule, lr_schedule):
@@ -362,7 +395,7 @@ class SingleDQN():
             env = self.env
 
         # replay memory to play
-        replay_buffer = RobotReplayBuffer(self.flags.buffer_size, self.flags.state_history)
+        replay_buffer = RobotReplayBuffer(self.flags.buffer_size)
         rewards = []
 
         for i in range(num_episodes):
@@ -429,8 +462,8 @@ class SingleDQN():
         pass
  
 if __name__ == "__main__":
-    Flags = collections.namedtuple('Flags', ['model', 'gamma', 'grad_clip', 'output_path'])
-    flags = Flags (model = "linear", gamma = 0.9, grad_clip = False, output_path = "test")
+    Flags = collections.namedtuple('Flags', ['model', 'gamma', 'grad_clip', 'train_dir'])
+    flags = Flags (model = "linear", gamma = 0.9, grad_clip = False, train_dir = "test")
 
 
     sdqn = SingleDQN (None, flags)
