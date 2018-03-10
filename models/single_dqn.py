@@ -403,8 +403,6 @@ class SingleDQN():
             state = env.reset()
             state = env.encode_state(state)
             while True:
-                if self.flags.render_test: env.render()
-
                 # store last state in buffer
                 idx     = replay_buffer.store_frame(state)
                 q_input = replay_buffer.encode_recent_observation()

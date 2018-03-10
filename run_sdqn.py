@@ -51,7 +51,7 @@ FLAGS.train_dir = os.path.join(EXPERIMENTS_DIR, FLAGS.experiment_name)
 
 def main(unused_argv):
 
-    scene = Scene (show_gui=True)
+    scene = Scene (show_gui=False)
     scene_populator = ScenePopulator (scene)
     env = CrateMDP (scene, scene_populator)
 

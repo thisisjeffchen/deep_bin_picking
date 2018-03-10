@@ -22,7 +22,7 @@ except NameError:
 
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
-NUM_ITEMS = 10
+NUM_ITEMS = 1 #TODO: put back to 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
 DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
@@ -55,17 +55,22 @@ class CrateMDP(object):
         self.cc_approach_dist = 1.0
         self.cc_delta_approach = 0.1    # may need tuning
         self.encoded_observation_shape = [self.scene_populator.max_items,
-                                          len(self.scene_populator.item_database) + 7]
+                                          len (self.scene_populator.item_database) + 7]
         
     def encode_state(self, state):
-        one_hot_item_ids = np.zeros(self.scene_populator.max_items, 
-                                    len(self.scene_populator.item_database))
-        for (i, item_id) in enumerate(state['item_ids']):
-            one_hot_item_ids[i, item_id] = 1
+        one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
+                                    len(self.scene_populator.item_database)])
+        for (i, item_name) in enumerate (state['item_ids']):
+            item_idx = self.scene_populator.item_database.index (item_name)
+            one_hot_item_ids[i, item_idx] = 1
         poses = np.zeros((self.scene_populator.max_items, 7))  # 7 = position (3) + orientation (4)
-        for i in range(len(state['item_ids'])):
-            poses[i, :3] = state['poses'][i][0]
-            poses[i, 3:] = state['poses'][i][1]
+        for i, item_name in enumerate (state['item_ids']):
+
+            item_id = state["item_ids"][item_name] 
+            poses[i, :3] = state['poses'][item_id][0]
+            poses[i, 3:] = state['poses'][item_id][1]
+
+            print one_hot_item_ids
         return np.hstack([poses, one_hot_item_ids])
 
     def _get_current_state(self):
