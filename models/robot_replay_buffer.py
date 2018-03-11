@@ -60,13 +60,16 @@ class RobotReplayBuffer(object):
         return batch_size + 1 <= self.num_in_buffer
       
     def _encode_sample(self, idxes):
-        obs_batch      = np.concatenate([self._encode_observation(idx)[None] for idx in idxes], 0)
+        obs_batch      = np.concatenate([self.obs(idx) for idx in idxes], 0)
         act_batch      = self.action[idxes]
         rew_batch      = self.rewards[idxes]
-        next_obs_batch = np.concatenate([self._encode_observation(idx + 1)[None] for idx in idxes], 0)
+        next_obs_batch = np.concatenate([self.obs((idx + 1) % self.size) for idx in idxes], 0)
         done_mask      = np.array([1.0 if self.done[idx] else 0.0 for idx in idxes], dtype=np.float32)
 
-        return obs_batch, act_batch, rew_batch, next_obs_batch, done_mask
+        act_choices_batch = np.zeros ([5,4]) #TODO: don't hard code
+        act_choices_mask = np.zeros (4)
+
+        return obs_batch, act_batch, act_choices_batch, act_choices_mask, rew_batch, next_obs_batch, done_mask
       
     def sample(self, batch_size):
         """Sample `batch_size` different transitions.
@@ -209,3 +212,7 @@ class RobotReplayBuffer(object):
 if __name__ == "__main__":
     rrb = RobotReplayBuffer (100)
     print "Init works!"
+
+    #more tests
+
+

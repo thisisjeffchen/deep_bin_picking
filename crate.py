@@ -76,6 +76,22 @@ class CrateMDP(object):
 
         return np.hstack([poses, one_hot_item_ids])
 
+    def encode_action_choices (self, action_choices):
+        #encode action_choices into x,y,d,theta
+        #returns action_choices and mask
+        count = len (action_choices)
+        assert count <= get_action_choices_max ()
+        encoded = np.zeros ([get_action_choices_max (), get_action_dims ()])
+        mask = np.zeros (get_action_choices_max (), dtype=bool)
+        for idx, a in enumerate (action_choices):
+            encoded[idx] = [0, 0, 0, 0] #TODO: fix
+            mask [idx] = True
+
+        print encoded
+        print mask
+        return encoded, mask
+
+
     def _get_current_state(self):
         return {
             'poses': self.scene.get_item_poses(),

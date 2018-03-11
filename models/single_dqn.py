@@ -1,6 +1,7 @@
 import tensorflow as tf
 import collections
 import numpy as np
+import os
 
 from utils.general import get_logger, Progbar, export_plot
 from robot_replay_buffer import RobotReplayBuffer
@@ -14,10 +15,6 @@ class SingleDQN():
         self.flags = flags
         self.env = env
 
-        if logger is None:
-            log_path = self.flags.train_dir + ".log.txt"
-            self.logger = get_logger(log_path)
-
         self.build ()
 
         # create tf session
@@ -25,6 +22,10 @@ class SingleDQN():
 
         # tensorboard stuff
         self.add_summary()
+        # logger depends on the dir being there
+        if logger is None:
+            log_path = self.flags.train_dir + "/log.txt"
+            self.logger = get_logger(log_path)
 
         # initiliaze all variables
         init = tf.global_variables_initializer()
@@ -35,6 +36,7 @@ class SingleDQN():
 
         # for saving networks weights
         self.saver = tf.train.Saver()
+
 
     def add_summary(self):
         """
@@ -188,7 +190,7 @@ class SingleDQN():
         grads_and_vars = opt.compute_gradients (self.loss, variables)
 
         if self.flags.grad_clip:
-            grads_and_vars = [(tf.clip_by_norm (gv[0], self.config.clip_val), gv[1]) for gv in grads_and_vars]
+            grads_and_vars = [(tf.clip_by_norm (gv[0], self.flags.clip_val), gv[1]) for gv in grads_and_vars]
 
         self.train_op = opt.apply_gradients (grads_and_vars, name = "train_op")
 
@@ -219,11 +221,58 @@ class SingleDQN():
         return out
 
     def save(self):
-        raise NotImplementedError
+        """
+        Saves session
+        """
+        self.saver.save(self.sess, self.flags.train_dir)
 
       
-    def get_action(self, state):
+    def get_best_action(self, state, action_choices):
         raise NotImplementedError
+
+    def update_step(self, t, replay_buffer, lr):
+        """
+        Performs an update of parameters by sampling from replay_buffer
+
+        Args:
+            t: number of iteration (episode and move)
+            replay_buffer: ReplayBuffer instance .sample() gives batches
+            lr: (float) learning rate
+        Returns:
+            loss: (Q - Q_target)^2
+        """
+
+        s_batch, a_batch, ac_batch, ac_mask_batch, r_batch, sp_batch, done_mask_batch = replay_buffer.sample(
+            self.flags.batch_size)
+
+
+        fd = {
+            # inputs
+            self.s: s_batch,
+            self.a: a_batch,
+            self.r: r_batch,
+            self.sp: sp_batch,
+            self.done_mask: done_mask_batch,
+            self.lr: lr,
+            # extra info
+            self.avg_reward_placeholder: self.avg_reward,
+            self.max_reward_placeholder: self.max_reward,
+            self.std_reward_placeholder: self.std_reward,
+            self.avg_q_placeholder: self.avg_q,
+            self.max_q_placeholder: self.max_q,
+            self.std_q_placeholder: self.std_q,
+            self.eval_reward_placeholder: self.eval_reward,
+        }
+
+
+        loss_eval, grad_norm_eval, summary, _ = self.sess.run([self.loss, self.grad_norm,
+                                                 self.merged, self.train_op], feed_dict=fd)
+
+
+        # tensorboard stuff
+        self.file_writer.add_summary(summary, t)
+
+        return loss_eval, grad_norm_eval
 
 
     def init_averages(self):
@@ -476,19 +525,22 @@ class SingleDQN():
         """
 
         # model
+        if self.flags.record:
+             self.record()
+        
         self.train(exp_schedule, lr_schedule)
 
-        #TODO: figure out if we want to do recording before and after trai
-        # record one game at the end
-        # if self.config.record:
-        #     self.record()
+        if self.flags.record:
+             self.record()
 
   
     def record(self):
         """
         Re create an env and record a video for one episode
         """
+        #TODO: figure out howto record
         pass
+
  
 if __name__ == "__main__":
     Flags = collections.namedtuple('Flags', ['model', 'gamma', 'grad_clip', 'train_dir'])
