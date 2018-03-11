@@ -74,7 +74,7 @@ class CrateMDP(object):
             poses[i, :3] = state['poses'][item_id][0]
             poses[i, 3:] = state['poses'][item_id][1]
 
-        return np.hstack([poses, one_hot_item_ids])
+        return np.ndarray.flatten(np.hstack([poses, one_hot_item_ids]))
 
     def encode_action_choices (self, action_choices):
         #encode action_choices into x,y,d,theta

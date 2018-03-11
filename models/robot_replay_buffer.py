@@ -60,16 +60,21 @@ class RobotReplayBuffer(object):
         return batch_size + 1 <= self.num_in_buffer
       
     def _encode_sample(self, idxes):
-        obs_batch      = np.concatenate([self.obs(idx) for idx in idxes], 0)
-        act_batch      = self.action[idxes]
+        print "idxes"
+        print idxes
+        print "num in buffer"
+        print self.num_in_buffer
+        obs_batch      = self.obs[idxes]
+        act_batch      = self.actions_taken[idxes]
         rew_batch      = self.rewards[idxes]
-        next_obs_batch = np.concatenate([self.obs((idx + 1) % self.size) for idx in idxes], 0)
+        #TODO: this is a hack to make the sampling go back to the front
+        next_obs_batch = np.concatenate([[self.obs[(idx + 1) % self.num_in_buffer]] for idx in idxes], 0)
         done_mask      = np.array([1.0 if self.done[idx] else 0.0 for idx in idxes], dtype=np.float32)
 
-        act_choices_batch = np.zeros ([5,4]) #TODO: don't hard code
-        act_choices_mask = np.zeros (4)
+        act_choices_batch = self.action_choices[idxes] 
+        act_choices_mask = self.action_choices_mask[idxes]
 
-        return obs_batch, act_batch, act_choices_batch, act_choices_mask, rew_batch, next_obs_batch, done_mask
+        return obs_batch, act_choices_batch, act_choices_mask, act_batch, rew_batch, done_mask, next_obs_batch
       
     def sample(self, batch_size):
         """Sample `batch_size` different transitions.
@@ -151,7 +156,7 @@ class RobotReplayBuffer(object):
             return self.obs[start_idx:end_idx].transpose(1, 2, 0, 3).reshape(img_h, img_w, -1)
     '''
       
-    def store_frame(self, frame, action_choices):
+    def store_frame(self, frame, action_choices, action_choices_mask):
         """Store a single frame in the buffer at the next available index, overwriting
         old frames if necessary.
 
@@ -177,6 +182,8 @@ class RobotReplayBuffer(object):
             self.rewards = np.empty([self.size], dtype=np.float32)
             self.done = np.empty([self.size], dtype=np.bool)
         self.obs[self.next_idx] = frame
+        self.action_choices[self.next_idx] = action_choices
+        self.action_choices_mask[self.next_idx] = action_choices_mask
 
         ret = self.next_idx
         self.next_idx = (self.next_idx + 1) % self.size
@@ -214,5 +221,74 @@ if __name__ == "__main__":
     print "Init works!"
 
     #more tests
+    state = np.ones (100)
+    action_choices = np.ones ([5, 4])
+    action_choices_mask = np.ones (5, dtype=bool)
+
+    idx = rrb.store_frame (state, action_choices, action_choices_mask)
+
+    action_taken = action_choices[0]
+    reward = 5
+    done = False
+
+    rrb.store_effect (idx, action_taken, reward, done)
+
+    state_prime = -1 * np.ones (100)
+    action_choices_prime = -1 * np.ones ([5, 4])
+    action_choices_prime_mask = -1 * np.ones (5, dtype = bool)
+
+    idx2 = rrb.store_frame (state_prime, action_choices_prime, action_choices_prime_mask)
+
+    print "Assert storage"
+    assert rrb.action_choices[0][0][0] == action_choices[0][0]
+    assert rrb.obs[0][0] == state[0]
+    assert rrb.rewards[0] == reward
+
+    print "Storage seems OK!"
+
+
+    size = 1
+    obs_batch, act_choices_batch, act_choices_mask, act_batch, rew_batch, done_mask, next_obs_batch = rrb.sample (size)
+
+    print "Test retrieval"
+    assert obs_batch.shape == (size, 100)
+    assert act_choices_batch.shape == (size, 5, 4)
+    assert act_choices_mask.shape == (size, 5)
+    assert act_batch.shape == (size, 4)
+    assert rew_batch.shape == (size,)
+    assert next_obs_batch.shape == (size, 100)
+    assert done_mask.shape == (size,)
+
+    print "Sizes match!"
+
+    print "Test Values"
+    assert obs_batch[0][0] == 1
+    assert act_choices_batch[0][0][0] == 1
+    assert act_choices_mask[0][0] == 1
+    assert act_batch[0][0]==1
+    assert rew_batch[0] ==5
+    assert next_obs_batch[0][0] == -1
+    assert done_mask[0] == 0.0
+
+    print "Values match!"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
