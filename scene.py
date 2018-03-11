@@ -153,6 +153,38 @@ class Scene(object):
         self.linear_velocity_clamps.clear()
         self.angular_velocity_clamps.clear()
 
+    def get_show_gui(self):
+        return self.show_gui
+
+    def reset(self):
+        self.remove_all_items()
+        # disconnect gui
+        # pb.disconnect()
+        # reset pybullet?
+        pb.resetSimulation()
+        # reconnect?
+        #self.client_id = pb.connect(self.client_mode)
+        # Simulation
+        pb.setGravity(*self.gravity, physicsClientId=self.client_id)
+        self.step = 0
+        pb.setTimeStep(self.timestep_interval, physicsClientId=self.client_id)
+
+        # Scene
+        self.crate_side_ids = []
+        self._add_crate()
+
+        # Gripper
+        self.gripper_id = None
+
+        # Items
+        self.item_ids = {}
+        self.item_names = {}
+        self.linear_velocity_clamps = {}
+        self.angular_velocity_clamps = {}
+
+        
+        
+
     def simulate(self, steps=None, velocity_clamps=True):
         """Simulate physics for the specified number of steps."""
         initial_step = self.step

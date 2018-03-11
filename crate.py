@@ -57,7 +57,7 @@ class CrateMDP(object):
         self.encoded_observation_shape = [self.scene_populator.max_items, len(self.scene_populator.item_database) + 7]
         
     def encode_state(self, state):
-        one_hot_item_ids = np.zeros(self.scene_populator.max_items, len(self.scene_populator.item_database)))
+        one_hot_item_ids = np.zeros(self.scene_populator.max_items, len(self.scene_populator.item_database))
         for (i, item_id) in enumerate(state['item_ids']):
             one_hot_item_ids[i, item_id] = 1
         poses = np.zeros((self.scene_populator.max_items, 7))  # 7 = position (3) + orientation (4)
@@ -123,6 +123,7 @@ class CrateMDP(object):
             for idx, g in enumerate (grasps):
                 if not use_all_actions and idx >= DEFAULT_NUM_GRASPS_PER_ITEM:
                     break
+                print grasps[idx].T_grasp_obj
                 actions.append(Action(item_id, name, grasps[idx], metrics[idx]))
 
         actions = self.check_collisions(state, actions)
@@ -131,7 +132,13 @@ class CrateMDP(object):
 
     def reset(self):
         """Reset environment to state sampled from distribution of initial states."""
-        self.scene.remove_all_items()
+        gui_mode = self.scene.get_show_gui()
+        print gui_mode
+        # self.scene.remove_all_items()
+        self.scene.reset()
+        # now re init scence?
+        # self.scene = Scene(show_gui=gui_mode)
+        # self.scene_populator = ScenePopulator(self.scene)
         self.scene_populator.add_items(num_items=NUM_ITEMS)
         return self._observe_current()
 

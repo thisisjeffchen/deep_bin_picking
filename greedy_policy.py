@@ -31,6 +31,8 @@ def main():
         step = 0
 
         actions = env.get_actions(state)   # calls collision checker already
+        print ('episode number')
+        print episode
         print ('Number of avail actions')
         print len(actions)
 
