@@ -156,7 +156,7 @@ class SingleDQN():
 
         self.rewards = tf.placeholder (tf.float32, shape = (None),
                                        name = "rewards")
-        self.done_mask = tf.placeholder (tf.bool, shape = (None), 
+        self.done_mask = tf.placeholder (tf.float32, shape = (None), 
                                          name = "done_mask")
         self.lr = tf.placeholder (tf.float32, shape = (), name = "lr")
                                   
@@ -228,7 +228,17 @@ class SingleDQN():
 
       
     def get_best_action(self, state, action_choices):
-        raise NotImplementedError
+
+
+        fd = {
+            self.states: np.tile (states, [len(action_choices), 1]),
+            self.actions_taken: action_choices
+        }
+
+        q_values = self.sess.run (self.q_prior, feed_dict = fd)
+
+        return np.argmax (q_values), q_values
+
 
     def update_step(self, t, replay_buffer, lr):
         """
@@ -242,16 +252,17 @@ class SingleDQN():
             loss: (Q - Q_target)^2
         """
 
-        s_batch, a_batch, ac_batch, ac_mask_batch, r_batch, sp_batch, done_mask_batch = replay_buffer.sample(
-            self.flags.batch_size)
+        obs_batch, act_choices_batch, act_choices_mask, act_batch, rew_batch, done_mask_batch, next_obs_batch = replay_buffer.sample(self.flags.batch_size)
 
 
         fd = {
             # inputs
-            self.s: s_batch,
-            self.a: a_batch,
-            self.r: r_batch,
-            self.sp: sp_batch,
+            self.states: obs_batch,
+            self.states_prime: next_obs_batch,
+            self.actions_taken: act_batch,
+            self.action_choices: act_choices_batch,
+            self.action_choices_mask: act_choices_mask,
+            self.rewards: rew_batch,
             self.done_mask: done_mask_batch,
             self.lr: lr,
             # extra info
@@ -310,6 +321,31 @@ class SingleDQN():
         if len(scores_eval) > 0:
             self.eval_reward = scores_eval[-1]
 
+    def step_env (self, state, replay_buffer):
+        #TODO: eval actually doesnt contribute to the replay buffer, consider refactor
+
+        action_choices = self.env.get_actions (state)
+
+        # replay memory stuff
+        encoded_actions, encoded_actions_mask = self.env.encode_action_choices (action_choices)
+        encoded_state = self.env.encode_state (state)
+
+        idx = replay_buffer.store_frame(encoded_state,
+                                        encoded_actions, 
+                                        encoded_actions_mask)
+
+        best_action_idx, q_values = self.get_best_action (encoded_state, encoded_actions[0:len(action_choices)])
+        action_idx = exp_schedule.get_action(best_action_idx, action_choices)
+        action = action_choices[action_idx]
+
+
+        max_q_values.append(max(q_values))
+        q_values += list(q_values)
+
+        new_state, reward, done = self.env.step(action)
+
+        replay_buffer.store_effect(idx, encoded_actions[action_idx], reward, done)
+
       
     def train(self, exp_schedule, lr_schedule):
         """
@@ -344,38 +380,8 @@ class SingleDQN():
                 t += 1
                 last_eval += 1
                 last_record += 1
-        
-                action_choices = self.env.get_actions (state)
-
-                # replay memory stuff
-                #TODO: fix me
-                encoded_actions = np.zeros ([5,4])#TODO, encode actions
-                encoded_state = self.env.encode_state (state)
-
-                idx      = replay_buffer.store_frame(encoded_state, 
-                                                     encoded_actions)
-
-                # chose action according to current Q and exploration
-                #TODO: fix me
-                #best_action, q_values = self.get_best_action (encoded_state)
-                #action                = exp_schedule.get_action(best_action)
-
-                # store q values
-                #max_q_values.append(max(q_values))
-                #q_values += list(q_values)
-
-                #TODO: delete
-                action = action_choices[0]
-
-                # perform action in env
-                new_state, reward, done = self.env.step(action)
-
-                # store the transition
-                #TODO: fixme
-                action = np.zeros (4) #ENCODE LAST ACTION
-
-                replay_buffer.store_effect(idx, action, reward, done)
-                state = new_state
+                
+                state, reward, done = self.step_env (state, replay_buffer)
 
                 # perform a training step
                 loss_eval, grad_eval = self.train_step(t, replay_buffer, lr_schedule.epsilon)
@@ -470,32 +476,7 @@ class SingleDQN():
             total_reward = 0
             state = env.reset()
             while True:
-                #        if self.flags.render_train: self.env.render()
-
-                action_choices = env.get_actions (state)
-
-                # store last state in buffer
-                encoded_actions = np.zeros ([5,4])#TODO, encode actions
-                encoded_state = self.env.encode_state (state)
-                #TODO: need to save action_choices mask
-
-                idx = replay_buffer.store_frame(encoded_state, encoded_actions)
-
-                
-                #TODO: fix me
-                #action = self.get_action(q_input)
-                print state
-                print action_choices
-                action = action_choices[0]
-
-                # perform action in env
-                new_state, reward, done = env.step (action)
-
-                #TODO: fix me
-                # store in replay memory
-                action = np.zeros (4)
-                replay_buffer.store_effect(idx, action, reward, done)
-                state = new_state
+                state, reward, done = self.step_env (state, replay_buffer)
 
                 # count reward
                 total_reward += reward

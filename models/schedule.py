@@ -34,13 +34,11 @@ class LinearExploration(LinearSchedule):
         super(LinearExploration, self).__init__(eps_begin, eps_end, nsteps)
 
 
-    def get_action(self, best_action):
+    def get_action(self, best_action_idx, action_choices):
         r = random.random ()
 
         if (r < self.epsilon):
-            #TODO: make this work for our case, because we cannot sample
-            #return self.env.action_space.sample ()
-            raise NotImplementedError            
+            return action_choices[random.randint(0, len(action_choices) - 1)]           
 
         else:
             return best_action

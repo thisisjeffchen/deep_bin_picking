@@ -76,17 +76,22 @@ class CrateMDP(object):
 
         return np.ndarray.flatten(np.hstack([poses, one_hot_item_ids]))
 
+    def encode_action (self, action):
+        print "encode single action"
+        return [0, 0, 0, 0] #TODO: fix
+
     def encode_action_choices (self, action_choices):
         #encode action_choices into x,y,d,theta
         #returns action_choices and mask
         count = len (action_choices)
-        assert count <= get_action_choices_max ()
-        encoded = np.zeros ([get_action_choices_max (), get_action_dims ()])
-        mask = np.zeros (get_action_choices_max (), dtype=bool)
+        assert count <= self.get_action_choices_max ()
+        encoded = np.zeros ([self.get_action_choices_max (), self.get_action_dims ()])
+        mask = np.zeros (self.get_action_choices_max (), dtype=bool)
         for idx, a in enumerate (action_choices):
-            encoded[idx] = [0, 0, 0, 0] #TODO: fix
+            encoded[idx] = self.encode_action(a)
             mask [idx] = True
 
+        print "encoding actions"
         print encoded
         print mask
         return encoded, mask

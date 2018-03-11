@@ -113,49 +113,6 @@ class RobotReplayBuffer(object):
         idxes = sample_n_unique(lambda: random.randint(0, self.num_in_buffer - 2), batch_size)
         return self._encode_sample(idxes)
       
-    '''
-    TODO: delete, i don't think we need this because it's handled before data comes in
-
-    def encode_recent_observation(self):
-        """Return the most recent `frame_history_len` frames.
-
-        Returns
-        -------
-        observation: np.array
-            Array of shape (img_h, img_w, img_c * frame_history_len)
-            and dtype np.uint8, where observation[:, :, i*img_c:(i+1)*img_c]
-            encodes frame at time `t - frame_history_len + i`
-        """
-        assert self.num_in_buffer > 0
-        return self._encode_observation((self.next_idx - 1) % self.size)
-      
-    def _encode_observation(self, idx):
-        end_idx   = idx + 1 # make noninclusive
-        start_idx = end_idx - self.frame_history_len
-        # this checks if we are using low-dimensional observations, such as RAM
-        # state, in which case we just directly return the latest RAM.
-        # if len(self.obs.shape) <= 2:
-        #     return self.obs[end_idx-1]
-        # if there weren't enough frames ever in the buffer for context
-        if start_idx < 0 and self.num_in_buffer != self.size:
-            start_idx = 0
-        for idx in range(start_idx, end_idx - 1):
-            if self.done[idx % self.size]:
-                start_idx = idx + 1
-        missing_context = self.frame_history_len - (end_idx - start_idx)
-        # if zero padding is needed for missing context
-        # or we are on the boundry of the buffer
-        if start_idx < 0 or missing_context > 0:
-            frames = [np.zeros_like(self.obs[0]) for _ in range(missing_context)]
-            for idx in range(start_idx, end_idx):
-                frames.append(self.obs[idx % self.size])
-            return np.concatenate(frames, 2)
-        else:
-            # this optimization has potential to saves about 30% compute time \o/
-            img_h, img_w = self.obs.shape[1], self.obs.shape[2]
-            return self.obs[start_idx:end_idx].transpose(1, 2, 0, 3).reshape(img_h, img_w, -1)
-    '''
-      
     def store_frame(self, frame, action_choices, action_choices_mask):
         """Store a single frame in the buffer at the next available index, overwriting
         old frames if necessary.
