@@ -28,7 +28,8 @@ DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
 GRIPPER_NAME = 'yumi_metal_spline'
 GRIPPER_REL_PATH = 'data/grippers/'
-GRASP_METRIC = 'force_closure'
+# GRASP_METRIC = 'force_closure'
+GRASP_METRIC = 'ferrari_canny'
 DEFAULT_NUM_GRASPS_PER_ITEM = 3
 
 
@@ -146,6 +147,8 @@ class CrateMDP(object):
         for item_id, pose in poses.items():
             name = item_names[item_id]
             grasps, metrics = self.dn.get_grasps(name, GRIPPER_NAME, GRASP_METRIC)
+            # metrics already sorted in descending order, dn.get_grasps returns them this way
+            metrics = metrics/metrics[0]
             for idx, g in enumerate (grasps):
                 if not use_all_actions and idx >= DEFAULT_NUM_GRASPS_PER_ITEM:
                     break
