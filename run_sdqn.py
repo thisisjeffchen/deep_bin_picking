@@ -13,7 +13,6 @@ MAIN_DIR = os.path.relpath(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 EXPERIMENTS_DIR = os.path.join(MAIN_DIR, "experiments") # relative path of experiments dir
 
 
-#TODO: make all flags here, it will get passed into our core SingleDQN
 tf.app.flags.DEFINE_string  ("model", "linear", "Model used, choices are linear or nn")
 tf.app.flags.DEFINE_integer ("nsteps_train", 5000000, "")
 tf.app.flags.DEFINE_integer ("batch_size", 32, "")
@@ -29,7 +28,7 @@ tf.app.flags.DEFINE_string  ("train_dir", "experiment", "default")
 tf.app.flags.DEFINE_integer ("eps_begin", 1, "")
 tf.app.flags.DEFINE_float   ("eps_end", 0.1, "")
 tf.app.flags.DEFINE_integer ("eps_nsteps", 1000000, "")
-tf.app.flags.DEFINE_integer ("learning_start", 50000, "")
+tf.app.flags.DEFINE_integer ("learning_start", 10, "") #TODO: make this reasonable
 tf.app.flags.DEFINE_bool    ("grad_clip", False, "")
 tf.app.flags.DEFINE_integer ("clip_val", 10, "")
 
@@ -40,7 +39,6 @@ tf.app.flags.DEFINE_integer ("eval_freq", 200, "")
 tf.app.flags.DEFINE_integer ("record_freq", 200, "")
 tf.app.flags.DEFINE_float   ("soft_epsilon", 0.05, "")
 
-#TODO: this is not hooked up to the save dir
 tf.app.flags.DEFINE_string("experiment_name", "", "Unique name for your experiment. This will create a directory by this name in the experiments/ directory, which will hold all data related to this experiment")
 
 FLAGS = tf.app.flags.FLAGS
@@ -51,7 +49,7 @@ FLAGS.train_dir = os.path.join(EXPERIMENTS_DIR, FLAGS.experiment_name)
 
 def main(unused_argv):
 
-    scene = Scene (show_gui=True)
+    scene = Scene (show_gui=False)
     scene_populator = ScenePopulator (scene)
     env = CrateMDP (scene, scene_populator)
 

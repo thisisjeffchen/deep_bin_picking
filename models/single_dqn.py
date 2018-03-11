@@ -2,7 +2,7 @@ import tensorflow as tf
 import collections
 import numpy as np
 
-from utils.general import get_logger
+from utils.general import get_logger, Progbar, export_plot
 from robot_replay_buffer import RobotReplayBuffer
 from collections import deque
 
@@ -15,7 +15,7 @@ class SingleDQN():
         self.env = env
 
         if logger is None:
-            log_path = self.flags.train_dir + "log.txt"
+            log_path = self.flags.train_dir + ".log.txt"
             self.logger = get_logger(log_path)
 
         self.build ()
@@ -193,7 +193,7 @@ class SingleDQN():
         self.train_op = opt.apply_gradients (grads_and_vars, name = "train_op")
 
         self.grad_norm = tf.global_norm ([gv[0] for gv in grads_and_vars], name = "grad_norm")
-        writer = tf.summary.FileWriter('output', graph=tf.get_default_graph())  
+        writer = tf.summary.FileWriter(self.flags.train_dir, graph=tf.get_default_graph())  
     
     def get_q_values_op(self, states, actions, scope, reuse=False):
         """
@@ -281,7 +281,8 @@ class SingleDQN():
 
         t = last_eval = last_record = 0 # time control of nb of steps
         scores_eval = [] # list of scores computed at iteration time
-        scores_eval += [self.evaluate()]
+        #TODO uncomment
+        #scores_eval += [self.evaluate()]
         
         prog = Progbar(target=self.flags.nsteps_train)
 
@@ -295,7 +296,7 @@ class SingleDQN():
                 last_eval += 1
                 last_record += 1
         
-                action_choices = env.get_actions (state)
+                action_choices = self.env.get_actions (state)
 
                 # replay memory stuff
                 #TODO: fix me
@@ -343,9 +344,7 @@ class SingleDQN():
                                         ("lr", lr_schedule.epsilon)])
 
                 elif (t < self.flags.learning_start) and (t % self.flags.log_freq == 0):
-                    sys.stdout.write("\rPopulating the memory {}/{}...".format(t, 
-                                                        self.flags.learning_start))
-                    sys.stdout.flush()
+                    print ("\rPopulating the memory {}/{}...".format(t, self.flags.learning_start))
 
                 # count reward
                 total_reward += reward

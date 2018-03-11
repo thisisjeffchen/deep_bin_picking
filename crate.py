@@ -22,7 +22,7 @@ except NameError:
 
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
-NUM_ITEMS = 5 #TODO: put back to 10
+NUM_ITEMS = 3 #TODO: put back to 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
 DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
@@ -74,7 +74,6 @@ class CrateMDP(object):
             poses[i, :3] = state['poses'][item_id][0]
             poses[i, 3:] = state['poses'][item_id][1]
 
-            print one_hot_item_ids
         return np.hstack([poses, one_hot_item_ids])
 
     def _get_current_state(self):
