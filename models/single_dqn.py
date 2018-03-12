@@ -359,7 +359,7 @@ class SingleDQN():
                 action_choices = self.env.get_actions (state)
 
                 # replay memory stuff
-                encoded_actions, encoded_actions_mask = self.env.encode_action_choices (action_choices)
+                encoded_actions, encoded_actions_mask = self.env.encode_action_choices (action_choices, state)
                 encoded_state = self.env.encode_state (state)
 
                 idx = replay_buffer.store_frame(encoded_state,

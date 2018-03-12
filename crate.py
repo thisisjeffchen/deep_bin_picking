@@ -23,7 +23,7 @@ except NameError:
 
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
-NUM_ITEMS = 3 #TODO: put back to 10
+NUM_ITEMS = 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
 DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
@@ -31,6 +31,7 @@ GRIPPER_NAME = 'yumi_metal_spline'
 GRIPPER_REL_PATH = 'data/grippers/'
 GRASP_METRIC = 'force_closure'
 DEFAULT_NUM_GRASPS_PER_ITEM = 3
+GRIPPER_Z_POS = 1
 
 
 ACTION_DIMS = 4
@@ -56,7 +57,7 @@ class CrateMDP(object):
         self.gripper = dexnet.grasping.gripper.RobotGripper.load(
             GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH
         )
-        self.gripper_pose = ([0, 0, 1], [1, 0, 0, 0])
+        self.gripper_pose = ([0, 0, GRIPPER_Z_POS], [1, 0, 0, 0])
         self.cc_approach_dist = 1.0
         self.cc_delta_approach = 0.1    # may need tuning
         self.encoded_observation_shape = [self.scene_populator.max_items,
@@ -77,22 +78,23 @@ class CrateMDP(object):
 
         return np.ndarray.flatten(np.hstack([poses, one_hot_item_ids]))
 
-    def encode_action (self, action):
-        print "encode single action"
-        return [0, 0, 0, 0] #TODO: fix
+    def encode_action (self, action, state):
+        #TODO: make more precise, right now uses the placement of the object
+        g = action.grasp
+        xyz = state['poses'][action.item_id][0]
 
-    def encode_action_choices (self, action_choices):
+        return [xyz[0], xyz[1], GRIPPER_Z_POS - xyz[2], g.approach_angle] 
+
+    def encode_action_choices (self, action_choices, state):
         #encode action_choices into x,y,d,theta
         #returns action_choices and mask
 
         count = len (action_choices)
-        print action_choices
-        print len(action_choices)
         assert count <= self.get_action_choices_max ()
         encoded = np.zeros ([self.get_action_choices_max (), self.get_action_dims ()])
         mask = np.zeros (self.get_action_choices_max (), dtype=bool)
         for idx, a in enumerate (action_choices):
-            encoded[idx] = self.encode_action(a)
+            encoded[idx] = self.encode_action(a, state)
             mask [idx] = True
 
         print "encoding actions"
