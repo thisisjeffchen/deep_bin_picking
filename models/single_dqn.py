@@ -356,7 +356,7 @@ class SingleDQN():
                 last_record += 1
                 
                 action_choices = self.env.get_actions (state)
-                if len(action_choices == 0):
+                if len(action_choices) == 0:
                     done = True
                     break
 
@@ -474,7 +474,7 @@ class SingleDQN():
             state = env.reset()
             while True:
                 action_choices = self.env.get_actions (state)
-                if len(action_choices == 0):
+                if len(action_choices) == 0:
                     done = True
                     break
 
