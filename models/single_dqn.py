@@ -285,6 +285,11 @@ class SingleDQN():
         self.file_writer.add_summary(summary, t)
 
         return loss_eval, grad_norm_eval
+    def update_target_params(self):
+        """
+        Update parametes of Q' with parameters of Q
+        """
+        self.sess.run(self.update_target_op)
 
 
     def init_averages(self):
