@@ -42,7 +42,7 @@ class Scene(object):
     """Manages a scene and its contents."""
 
     def __init__(
-            self, show_gui=False, gravity=[0, 0, -40], timestep_interval=0.0001,
+            self, show_gui=False, gravity=[0, 0, -40], timestep_interval=0.001,
             crate_wall_thickness=0.002, crate_wall_width=0.15, crate_wall_height=0.15,
             bounds_height_thresholds=(-0.1, 0.35)
     ):

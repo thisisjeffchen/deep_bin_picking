@@ -341,8 +341,7 @@ class SingleDQN():
 
         t = last_eval = last_record = 0 # time control of nb of steps
         scores_eval = [] # list of scores computed at iteration time
-        #TODO uncomment
-        #scores_eval += [self.evaluate()]
+        scores_eval += [self.evaluate()]
         
         prog = Progbar(target=self.flags.nsteps_train)
 
@@ -473,12 +472,8 @@ class SingleDQN():
             while True:
                 action_choices = self.env.get_actions (state)
                 best_action_idx, q_values = self.get_best_action (encoded_state, encoded_actions[0:len(action_choices)])
-                
-                max_q_values.append(max(q_values))
-                q_values += list(q_values)
 
                 state, reward, done = self.env.step(action)
-
 
                 # count reward
                 total_reward += reward
