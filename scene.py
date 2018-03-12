@@ -22,6 +22,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 URDF_DIR = os.path.join(ROOT_DIR, 'meshes', 'urdf')
 GRIPPER_DIR = os.path.join(ROOT_DIR, 'meshes', 'grippers')
 GRIPPER = 'yumi_metal_spline'
+MAX_SIM_LOOP = 50
 
 
 def compute_pose_deltas(poses, prev_poses):
@@ -179,7 +180,10 @@ class Scene(object):
         poses = None
         initial_step = self.step
         bounds_removed_items = set()
+        counter = 0
+        stuck = False
         while True:
+            counter += 1
             # Update poses
             prev_poses = poses
             poses = self.get_item_poses(to_euler=False, as_vector=True)
@@ -207,7 +211,11 @@ class Scene(object):
             if (reached_steady_state and not self.linear_velocity_clamps
                     and not self.angular_velocity_clamps):
                 break
-        return (initial_step - self.step, bounds_removed_items)
+            if (counter > MAX_SIM_LOOP):
+                stuck = True
+                break
+
+        return (initial_step - self.step, bounds_removed_items, stuck)
 
     def _add_gripper(self):
         """Add a gripper. Currently broken and unused."""

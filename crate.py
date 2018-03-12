@@ -132,10 +132,21 @@ class CrateMDP(object):
                                            angular=[0, 0, 0])
         else:
             self.scene.remove_item(item_id)
-        (_, bounds_removed_items) = self.scene.simulate_to_steady_state(
+        (_, bounds_removed_items, stuck) = self.scene.simulate_to_steady_state(
             position_delta_threshold=self.sim_position_delta_threshold,
-            angle_delta_threshold=self.sim_angle_delta_threshold
-        )
+            angle_delta_threshold=self.sim_angle_delta_threshold)
+
+        if stuck:
+            try:
+                self.scene.remove_item (item_id)
+                (_, bounds_removed_items, stuck_again) = self.scene.simulate_to_steady_state(
+                position_delta_threshold=self.sim_position_delta_threshold,
+                angle_delta_threshold=self.sim_angle_delta_threshold)
+                if stuck_again:
+                    print "WARNING: static removal was also stuck"
+            except KeyError:
+                pass
+
         try:
             bounds_removed_items.remove(item_id)
         except KeyError:
