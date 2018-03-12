@@ -97,9 +97,9 @@ class CrateMDP(object):
             encoded[idx] = self.encode_action(a, state)
             mask [idx] = True
 
-        print "encoding actions"
-        print encoded
-        print mask
+        #print "encoding actions"
+        #print encoded
+        #print mask
         return encoded, mask
 
 

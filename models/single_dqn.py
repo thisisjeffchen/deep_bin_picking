@@ -356,6 +356,9 @@ class SingleDQN():
                 last_record += 1
                 
                 action_choices = self.env.get_actions (state)
+                if len(action_choices == 0):
+                    done = True
+                    break
 
                 # replay memory stuff
                 encoded_actions, encoded_actions_mask = self.env.encode_action_choices (action_choices, state)
@@ -373,7 +376,7 @@ class SingleDQN():
                 max_q_values.append(max(q_values))
                 q_values += list(q_values)
 
-                state, reward, done = self.env.step(action)
+                state, reward, done = self.env.step(action, check_next = False)
 
                 replay_buffer.store_effect(idx, encoded_actions[action_idx], reward, done)
 
@@ -471,9 +474,17 @@ class SingleDQN():
             state = env.reset()
             while True:
                 action_choices = self.env.get_actions (state)
+                if len(action_choices == 0):
+                    done = True
+                    break
+
+                encoded_actions, encoded_actions_mask = self.env.encode_action_choices (action_choices, state)
+                encoded_state = self.env.encode_state (state)
                 best_action_idx, q_values = self.get_best_action (encoded_state, encoded_actions[0:len(action_choices)])
 
-                state, reward, done = self.env.step(action)
+                action = action_choices[best_action_idx]
+
+                state, reward, done = self.env.step(action, check_next = False)
 
                 # count reward
                 total_reward += reward
