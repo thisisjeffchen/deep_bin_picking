@@ -20,7 +20,7 @@ def main():
     scene_populator = ScenePopulator(scene)
     env = CrateMDP(scene, scene_populator)
     discount = 0.9
-    num_episodes = 100
+    num_episodes = 1000
     rewards_for_all_episodes = 0
     f = open (SAVE_FILE, "w")
     f.write ("episode reward avg\n")
