@@ -2,6 +2,7 @@ import tensorflow as tf
 import collections
 import numpy as np
 import os
+import pdb
 
 from utils.general import get_logger, Progbar, export_plot
 from robot_replay_buffer import RobotReplayBuffer
@@ -231,7 +232,7 @@ class SingleDQN():
 
 
         fd = {
-            self.states: np.tile (states, [len(action_choices), 1]),
+            self.states: np.tile (state, [len(action_choices), 1]),
             self.actions_taken: action_choices
         }
 
@@ -320,32 +321,6 @@ class SingleDQN():
 
         if len(scores_eval) > 0:
             self.eval_reward = scores_eval[-1]
-
-    def step_env (self, state, replay_buffer):
-        #TODO: eval actually doesnt contribute to the replay buffer, consider refactor
-
-        action_choices = self.env.get_actions (state)
-
-        # replay memory stuff
-        encoded_actions, encoded_actions_mask = self.env.encode_action_choices (action_choices)
-        encoded_state = self.env.encode_state (state)
-
-        idx = replay_buffer.store_frame(encoded_state,
-                                        encoded_actions, 
-                                        encoded_actions_mask)
-
-        best_action_idx, q_values = self.get_best_action (encoded_state, encoded_actions[0:len(action_choices)])
-        action_idx = exp_schedule.get_action(best_action_idx, action_choices)
-        action = action_choices[action_idx]
-
-
-        max_q_values.append(max(q_values))
-        q_values += list(q_values)
-
-        new_state, reward, done = self.env.step(action)
-
-        replay_buffer.store_effect(idx, encoded_actions[action_idx], reward, done)
-
       
     def train(self, exp_schedule, lr_schedule):
         """
@@ -381,7 +356,27 @@ class SingleDQN():
                 last_eval += 1
                 last_record += 1
                 
-                state, reward, done = self.step_env (state, replay_buffer)
+                action_choices = self.env.get_actions (state)
+
+                # replay memory stuff
+                encoded_actions, encoded_actions_mask = self.env.encode_action_choices (action_choices)
+                encoded_state = self.env.encode_state (state)
+
+                idx = replay_buffer.store_frame(encoded_state,
+                                                encoded_actions, 
+                                                encoded_actions_mask)
+
+                best_action_idx, q_values = self.get_best_action (encoded_state, encoded_actions[0:len(action_choices)])
+                action_idx = exp_schedule.get_action_idx(best_action_idx, action_choices)
+                action = action_choices[action_idx]
+
+
+                max_q_values.append(max(q_values))
+                q_values += list(q_values)
+
+                state, reward, done = self.env.step(action)
+
+                replay_buffer.store_effect(idx, encoded_actions[action_idx], reward, done)
 
                 # perform a training step
                 loss_eval, grad_eval = self.train_step(t, replay_buffer, lr_schedule.epsilon)
@@ -476,7 +471,14 @@ class SingleDQN():
             total_reward = 0
             state = env.reset()
             while True:
-                state, reward, done = self.step_env (state, replay_buffer)
+                action_choices = self.env.get_actions (state)
+                best_action_idx, q_values = self.get_best_action (encoded_state, encoded_actions[0:len(action_choices)])
+                
+                max_q_values.append(max(q_values))
+                q_values += list(q_values)
+
+                state, reward, done = self.env.step(action)
+
 
                 # count reward
                 total_reward += reward

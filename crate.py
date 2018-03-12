@@ -4,6 +4,7 @@ import collections
 import logging
 import math
 import random
+import pdb
 
 import autolab_core
 
@@ -83,7 +84,10 @@ class CrateMDP(object):
     def encode_action_choices (self, action_choices):
         #encode action_choices into x,y,d,theta
         #returns action_choices and mask
+
         count = len (action_choices)
+        print action_choices
+        print len(action_choices)
         assert count <= self.get_action_choices_max ()
         encoded = np.zeros ([self.get_action_choices_max (), self.get_action_dims ()])
         mask = np.zeros (self.get_action_choices_max (), dtype=bool)
@@ -189,6 +193,7 @@ class CrateMDP(object):
             actions = self.get_actions(observation) # make sure there are still further actions to be executed
             if len(actions) == 0:
                 #if actions is the empty space, then get all actions to double check
+                #TODO: this takes a while, so we should have a way to just check one action and return immediately
                 done = True
 
         return (observation, reward, done)
@@ -233,13 +238,12 @@ class CrateMDP(object):
 
     def get_actions (self, state):
         actions = self._get_actions (state)
-        if len (actions) > 0:
-            return actions
-
-        print "Prunning got rid of all actions, now using all actions..."
-
-        return self._get_actions (state, use_all_actions = True)
-   
+        if len (actions) == 0:
+            print "Prunning got rid of all actions, now using all actions..."
+            actions = self._get_actions (state, use_all_actions = True)
+        
+        #will only return a certain number of actions
+        return actions[0:self.get_action_choices_max()]
 
 
 def random_baseline(state):

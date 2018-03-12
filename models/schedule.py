@@ -34,14 +34,13 @@ class LinearExploration(LinearSchedule):
         super(LinearExploration, self).__init__(eps_begin, eps_end, nsteps)
 
 
-    def get_action(self, best_action_idx, action_choices):
+    def get_action_idx(self, best_action_idx, action_choices):
         r = random.random ()
 
         if (r < self.epsilon):
-            return action_choices[random.randint(0, len(action_choices) - 1)]           
-
+            return random.randint(0, len(action_choices) - 1)
         else:
-            return best_action
+            return best_action_idx
 
 if __name__ == "__main__":
     ls = LinearSchedule (0, 10, 5)

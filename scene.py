@@ -4,6 +4,7 @@ import logging
 import math
 import os
 import random
+import pdb
 
 import numpy as np
 
@@ -139,9 +140,11 @@ class Scene(object):
 
     def remove_item(self, item_id):
         """Clear the scene of items to reset the scene."""
+
         pb.removeBody(item_id, physicsClientId=self.client_id)
         name = self.item_names.pop(item_id)
         self.item_ids.pop(name)
+
         self.unclamp_item_velocity(item_id)
 
     def remove_all_items(self):
