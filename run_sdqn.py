@@ -16,7 +16,7 @@ tf.app.flags.DEFINE_string  ("model", "linear", "Model used, choices are linear 
 tf.app.flags.DEFINE_integer ("nsteps_train", 10000, "")
 tf.app.flags.DEFINE_integer ("batch_size", 10, "")
 tf.app.flags.DEFINE_integer ("buffer_size", 100, "")
-tf.app.flags.DEFINE_integer ("target_update_freq", 100, "")
+tf.app.flags.DEFINE_integer ("target_update_freq", 10, "")
 tf.app.flags.DEFINE_float   ("gamma", 0.99, "")
 tf.app.flags.DEFINE_integer ("learning_freq", 4, "")
 tf.app.flags.DEFINE_float   ("lr_begin", 0.2, "")
