@@ -159,7 +159,7 @@ class CrateMDP(object):
         observation = self._observe_current()   # may need to change for POMDP
         done = (len(self.scene.item_ids) == 0)
         if not self.simple_done:
-            self._current_candidate_actions = self.get_actions(observation)
+            self._current_candidate_actions = self.af.find(observation)
             if not self._current_candidate_actions:
                 done = True
 
@@ -169,11 +169,5 @@ class CrateMDP(object):
     def get_actions (self, state):
         if self._current_candidate_actions is None:
             self._current_candidate_actions = self.af.find(state)
-        actions = self._current_candidate_actions
-        if len(actions) == 0:
-            print "Prunning got rid of all actions, now using all actions..."
-            actions = self.af.find (state)
-
-        #will only return a certain number of actions
-        return actions[0:self.get_action_choices_max()]
+        return self._current_candidate_actions
 
