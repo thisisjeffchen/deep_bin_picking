@@ -87,7 +87,8 @@ class CrateMDP(object):
         g_to_w = general.grasp_to_world(obj_pose, g.T_grasp_obj)
         axis = g_to_w.x_axis
         angle = general.angle_between(np.array([1, 0, 0]), axis)
-        grasp_loc_world = g_to_w.translation
+        grasp_loc_world = g_to_w.inverse().translation
+        pdb.set_trace()
         return [grasp_loc_world[0], grasp_loc_world[1], grasp_loc_world[2], angle] 
 
     def encode_action_choices (self, action_choices, state):
