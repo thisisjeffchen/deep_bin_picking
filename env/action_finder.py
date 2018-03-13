@@ -111,6 +111,7 @@ class ActionFinder (object):
             added = False
             item_actions[item_id] = {"grasps": grasps,
                                      "metrics": metrics}
+            print metrics
 
             for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
                 idx = (i * ACTION_SKIP_RATE) % len (grasps)
@@ -140,7 +141,6 @@ class ActionFinder (object):
 
         unlikely_item_poses = item_poses
 
-        assert len (item_poses) == 0
         assert len (unlikely_item_poses) + len (return_actions) == len (state['poses'])
 
         give_up_iter = 0
@@ -167,8 +167,10 @@ class ActionFinder (object):
                     del metrics[item_idx]
 
             for action in return_actions:
-                del unlikely_item_poses[action.item_id]
-
+                try:
+                    del unlikely_item_poses[action.item_id]
+                except KeyError:
+                    pass
 
         print "Exit while loop to search for an action"
         print "Actions Length: " + str(len(return_actions))
