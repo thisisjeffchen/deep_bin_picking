@@ -1,7 +1,9 @@
 import dexnet
 import collections
+import autolab_core
+import pdb
 
-DEX_NET_PATH = '../../dex-net/'
+DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
 GRIPPER_NAME = 'yumi_metal_spline'
 GRIPPER_REL_PATH = 'data/grippers/'
@@ -78,8 +80,13 @@ class ActionFinder (object):
         graspables = {}
         for item_id, pose in poses.items():
             graspable = self.dn.dataset.graspable(item_names[item_id])
-            gcc.add_graspable_object(graspable)
+            rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(pose[1])
+            world_to_obj = autolab_core.RigidTransform(rot_obj, pose[0], 'world', 'obj') 
+            obj_to_world = world_to_obj.inverse()           
+            gcc.add_graspable_object(graspable, obj_to_world)
+
             graspables[item_id] = graspable
+            pdb.set_trace()
 
         return gcc, graspables
 
