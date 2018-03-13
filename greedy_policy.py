@@ -11,7 +11,7 @@ from env.crate import CrateMDP, random_baseline, highest_first_baseline, lowest_
 from env.scene import Scene, ScenePopulator
 
 
-SAVE_FILE = "results_lowest.txt"
+SAVE_FILE = "greedy_results_lowest.txt"
 
 
 def main():
