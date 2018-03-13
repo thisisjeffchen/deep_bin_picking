@@ -1,8 +1,10 @@
 """Support for implementation of policies, and baseline policies."""
 import contextlib
 import logging
+import os
 import math
 import random
+import argparse
 import pdb
 
 from env.scene import Scene, ScenePopulator
@@ -10,6 +12,9 @@ from env.crate import Action, CrateMDP
 from env.action_finder import Action, ActionFinder
 
 class Policy(object):
+    def __init__(self, env):
+        self.env = env
+
     def choose_action(self, state):
         pass
 
@@ -58,7 +63,7 @@ def returns_log(filepath=None, description=None):
 
 
 class PolicyTester(object):
-    def __init__(self, policy_runner, returns_logfile, num_episodes=500):
+    def __init__(self, policy_runner, returns_logfile, num_episodes=100):
         self.policy_runner = policy_runner
         self.num_episodes = num_episodes
         self.episode = 0
@@ -117,16 +122,37 @@ class GreedyBaseline(Policy):
         (item_id, item_name) = random.choice(list(state['poses'].items()))
         return Action(item_id, item_name, None, None)
 
-def main():
-    """Run a baseline heuristic policy on the CrateMDP environment."""
+
+BASELINE_POLICIES = {
+    'baseline_highest': HighestFirstBaseline,
+    'baseline_lowest': LowestFirstBaseline,
+    'baseline_random': RandomBaseline,
+    'baseline_greedy': GreedyBaseline
+}
+
+
+def test_policy(policy_name, Policy,
+                policy_factory_args=[], policy_factory_kwargs={}):
+    """Run a policy on the CrateMDP environment."""
     scene = Scene(show_gui=False)
     scene_populator = ScenePopulator(scene)
     env = CrateMDP(scene, scene_populator)
-    policy = HighestFirstBaseline()
+    policy = Policy(env, *policy_factory_args, **policy_factory_kwargs)
     policy_runner = PolicyRunner(scene, scene_populator, env, policy)
-    with returns_log('policies_test.txt') as f:
+    if not os.path.exists('results/{}'):
+        os.makedirs('results/{}')
+    with returns_log('results/{}/results.txt'.format(policy_name)) as f:
         policy_tester = PolicyTester(policy_runner, f)
         policy_tester.run_episodes()
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'policy', type=str, choices=BASELINE_POLICIES.keys(),
+        help='The baseline policy to test.'
+    )
+    args = parser.parse_args()
+    test_policy(args.policy, BASELINE_POLICIES[args.policy])
 
 
 if __name__ == '__main__':
