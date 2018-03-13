@@ -24,7 +24,8 @@ class CrateMDP(object):
     """An environment for the crate/bin-picking task with OpenAI gym-esque interface."""
 
     def __init__(self, scene, scene_populator, pomdp=False, sim_remove_velocity=[0, 0, 2],
-                 sim_position_delta_threshold=0.004, sim_angle_delta_threshold=np.pi / 32):
+                 sim_position_delta_threshold=0.004, sim_angle_delta_threshold=np.pi / 32,
+                 simple_done=False):
         """Store the Scene and ScenePopulator to use for managing the environment."""
         self.scene = scene
         self.scene_populator = scene_populator
@@ -36,7 +37,7 @@ class CrateMDP(object):
                                           len (self.scene_populator.item_database) + 7]
         self._current_candidate_actions = None
         self.af = ActionFinder()
-        
+        self.simple_done = simple_done
 
     def encode_state(self, state):
         one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
@@ -156,9 +157,10 @@ class CrateMDP(object):
             reward += PENALTY_FOR_COLIFT * len(bounds_removed_items)  # Penalize for knocking other items out
         observation = self._observe_current()   # may need to change for POMDP
         done = (len(self.scene.item_ids) == 0)
-        self._current_candidate_actions = self.get_actions(observation)
-        if not self._current_candidate_actions:
-            done = True
+        if not self.simple_done:
+            self._current_candidate_actions = self.af.find(observation)
+            if not self._current_candidate_actions:
+                done = True
 
         return (observation, reward, done)
 
@@ -166,11 +168,5 @@ class CrateMDP(object):
     def get_actions (self, state):
         if self._current_candidate_actions is None:
             self._current_candidate_actions = self.af.find(state)
-        actions = self._current_candidate_actions
-        if len(actions) == 0:
-            print "Prunning got rid of all actions, now using all actions..."
-            actions = self.af.find (state)
-
-        #will only return a certain number of actions
-        return actions[0:self.get_action_choices_max()]
+        return self._current_candidate_actions
 
