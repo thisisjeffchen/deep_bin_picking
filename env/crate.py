@@ -1,5 +1,4 @@
 """Crate/bin-picking environments for running policies."""
-import collections
 import logging
 import math
 import random
