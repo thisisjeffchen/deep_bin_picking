@@ -25,7 +25,7 @@ class CrateMDP(object):
 
     def __init__(self, scene, scene_populator, pomdp=False, sim_remove_velocity=[0, 0, 2],
                  sim_position_delta_threshold=0.004, sim_angle_delta_threshold=np.pi / 32,
-                 simple_done=False):
+                 ignore_feasibility=False):
         """Store the Scene and ScenePopulator to use for managing the environment."""
         self.scene = scene
         self.scene_populator = scene_populator
@@ -37,7 +37,7 @@ class CrateMDP(object):
                                           len (self.scene_populator.item_database) + 7]
         self._current_candidate_actions = None
         self.af = ActionFinder()
-        self.simple_done = simple_done
+        self.ignore_feasibility = ignore_feasibility
 
     def encode_state(self, state):
         one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
@@ -145,8 +145,10 @@ class CrateMDP(object):
         """Reset environment to state sampled from distribution of initial states."""
         self.scene.remove_all_items()
         self.scene_populator.add_items(num_items=NUM_ITEMS)
-        self._current_candidate_actions = None
-        return self._observe_current()
+        observation = self._observe_current()
+        self._current_candidate_actions = (None if self.ignore_feasibility
+                                           else self.af.find(observation))
+        return observation
 
     def step(self, action):
         """Take an action on the environment."""
@@ -158,16 +160,13 @@ class CrateMDP(object):
             reward += PENALTY_FOR_COLIFT * len(bounds_removed_items)  # Penalize for knocking other items out
         observation = self._observe_current()   # may need to change for POMDP
         done = (len(self.scene.item_ids) == 0)
-        if not self.simple_done:
+        if not self.ignore_feasibility:
             self._current_candidate_actions = self.af.find(observation)
             if not self._current_candidate_actions:
                 done = True
 
         return (observation, reward, done)
 
-
-    def get_actions (self, state):
-        if self._current_candidate_actions is None:
-            self._current_candidate_actions = self.af.find(state)
+    def get_current_candidate_actions(self):
         return self._current_candidate_actions
 
