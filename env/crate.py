@@ -63,6 +63,7 @@ class CrateMDP(object):
         self.cc_delta_approach = 0.1    # may need tuning
         self.encoded_observation_shape = [self.scene_populator.max_items,
                                           len (self.scene_populator.item_database) + 7]
+        self._current_candidate_actions = None
         
     def encode_state(self, state):
         one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
@@ -194,6 +195,7 @@ class CrateMDP(object):
         """Reset environment to state sampled from distribution of initial states."""
         self.scene.remove_all_items()
         self.scene_populator.add_items(num_items=NUM_ITEMS)
+        self._current_candidate_actions = None
         return self._observe_current()
 
     def step(self, action, check_next = True):
@@ -208,6 +210,7 @@ class CrateMDP(object):
         done = (len(self.scene.item_ids) == 0)
         if check_next:
             actions = self.get_actions(observation) # make sure there are still further actions to be executed
+            self._current_candidate_actions = actions
             if len(actions) == 0:
                 #if actions is the empty space, then get all actions to double check
                 #TODO: this takes a while, so we should have a way to just check one action and return immediately
@@ -254,7 +257,9 @@ class CrateMDP(object):
         return actions
 
     def get_actions (self, state):
-        actions = self._get_actions (state)
+        if self._current_candidate_actions is None:
+            self._current_candidate_actions = self._get_actions(state)
+        actions = self._current_candidate_actions
         if len (actions) == 0:
             print "Prunning got rid of all actions, now using all actions..."
             actions = self._get_actions (state, use_all_actions = True)
