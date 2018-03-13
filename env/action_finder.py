@@ -1,4 +1,5 @@
 import dexnet
+import collections
 
 DEX_NET_PATH = '../../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
@@ -17,9 +18,9 @@ ACTION_SKIP_RATE = 11
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
 class ActionFinder (object):
-	def __init__ (self):
-		self.gcc = None
-		self.dn = dexnet.DexNet()
+    def __init__ (self):
+        self.gcc = None
+        self.dn = dexnet.DexNet()
         self.dn.open_database(DEX_NET_PATH + DB_NAME, create_db=True)
         self.dn.open_dataset('3dnet')
         self.gripper_name = GRIPPER_NAME
@@ -30,8 +31,11 @@ class ActionFinder (object):
         self.cc_approach_dist = 1.0
         self.cc_delta_approach = 0.1    # may need tuning
 
- 	def _check_collisions(self, state, actions):
-        """Filter the provided actions for actions which don't cause collisions."""
+    def _check_collisions(self, state, actions):
+        """
+        Filter the provided actions for actions
+        which don't cause collisions.
+        """
         if self.pomdp:
             return []
 
@@ -58,15 +62,15 @@ class ActionFinder (object):
         return actions
 
     def _is_collision_free (self, graspable, grasp, pose):
-    	"""
-    	Makes sure a particular graspable is collision free
-    	"""
-    	return True
+        """
+        Makes sure a particular graspable is collision free
+        """
+        return True
 
 
 
     def _create_grasp_collision_checker (self, state):
-    	gcc = dexnet.grasping.GraspCollisionChecker(self.gripper)
+        gcc = dexnet.grasping.GraspCollisionChecker(self.gripper)
 
         # Add all objects to the world frame
         item_names = state['item_names']
@@ -77,44 +81,44 @@ class ActionFinder (object):
             gcc.add_graspable_object(graspable)
             graspables[item_id] = graspable
 
-       	return gcc, graspables
+        return gcc, graspables
 
 
     def _convert_to_prob (self, ferrari_canny):
-    	fc_adjusted = max (ferrari_canny, FC_90_THRESHOLD)
+        fc_adjusted = max (ferrari_canny, FC_90_THRESHOLD)
 
-    	return (fc_adjusted / FC_90_THRESHOLD) * MAX_PROB
-
-
-	def find (self, state):
-		"""
-		Finds actions for the state
-		"""
-		gcc, graspables = _create_grasp_collision_checker (state)
-
-		unlikely_item_poses = {}
-		item_poses = {**state['poses']}
-		item_actions = {}
-
-		return_actions = []
-
-		for item_id, pose in item_poses:
-			name = state['item_names'][item_id]
-			grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
-			added = False
-			item_actions[name] = {"grasps": grasps,
-								  "metrics": metrics}
-
-			for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
-				idx = (i * ACTION_SKIP_RATE) % len (grasps)
-				if self._is_collision_free (graspables[item_id], grasps[idx], item_poses[item_id]):
-					action = Action (item_id, name, grasps[idx], self._convert_to_prob (metrics[idx]))
-					return_actions.append (action)
-					added = True
+        return (fc_adjusted / FC_90_THRESHOLD) * MAX_PROB
 
 
+    def find (self, state):
+        """
+        Finds actions for the state
+        """
+        gcc, graspables = self._create_grasp_collision_checker (state)
 
-		#while #there are no actions:
+        unlikely_item_poses = {}
+        item_poses = state['poses'].copy () #shallow copy
+        item_actions = {}
+
+        return_actions = []
+
+        for item_id, pose in item_poses.iteritems ():
+            name = state['item_names'][item_id]
+            grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
+            added = False
+            item_actions[name] = {"grasps": grasps,
+                                  "metrics": metrics}
+
+            for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
+                idx = (i * ACTION_SKIP_RATE) % len (grasps)
+                if self._is_collision_free (graspables[item_id], grasps[idx], item_poses[item_id]):
+                    action = Action (item_id, name, grasps[idx], self._convert_to_prob (metrics[idx]))
+                    return_actions.append (action)
+                    added = True
+
+
+
+        #while #there are no actions:
 
 
 
@@ -148,4 +152,19 @@ class ActionFinder (object):
 
    
 if __name__ == "__main__":
-	#tests
+    state = {'item_names': {5L: '437678d4bc6be981c8724d5673a063a6', 
+                            6L: '5c5a9db9d4ff156a1de495b75c95e5ad', 
+                            7L: 'e6f95cfb9825c0f65070edcf21eb751c'}, 
+            'poses': {5L: ([-0.03550167, -0.02851296,  0.08055547], 
+                           [ 0.30126049,  0.05754684, -0.73074917,  0.60986567]), 
+                      6L: ([-0.01447178, -0.04350919,  0.01318321], 
+                           [-3.72947186e-01,  5.19353120e-01,  7.52543106e-04,  7.68883715e-01]), 
+                      7L: ([-0.00907455, -0.00746043,  0.16875964],
+                           [-0.67121325, -0.15184073, -0.01838945,  0.72531303])},
+            'item_ids': {'e6f95cfb9825c0f65070edcf21eb751c': 7L, 
+                         '5c5a9db9d4ff156a1de495b75c95e5ad': 6L, 
+                         '437678d4bc6be981c8724d5673a063a6': 5L}}
+    af = ActionFinder()
+    actions = af.find (state)
+    print "Init test pass!"
+
