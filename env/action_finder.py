@@ -147,6 +147,8 @@ class ActionFinder (object):
                 if metrics[idx] < FC_PRUNE_THRESHOLD:
                     del metrics[idx]
                     del grasps[idx]
+                else:
+                    break #metrics are sorted
 
             added = False
             item_actions[item_id] = {"grasps": grasps,
