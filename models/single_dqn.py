@@ -471,7 +471,6 @@ class SingleDQN():
             env = self.env
 
         # replay memory to play
-        replay_buffer = RobotReplayBuffer(self.flags.buffer_size)
         rewards = []
 
         for i in range(num_episodes):

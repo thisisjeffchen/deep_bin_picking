@@ -35,8 +35,8 @@ tf.app.flags.DEFINE_integer ("log_freq", 1, "")
 tf.app.flags.DEFINE_integer ("eval_freq", 200, "")
 tf.app.flags.DEFINE_integer ("record_freq", 200, "")
 tf.app.flags.DEFINE_float   ("soft_epsilon", 0.05, "")
-tf.app.flags.DEFINE_string  ("train_dir", "tmp", "defaults to experiment_name")
-tf.app.flags.DEFINE_string("experiment_name", "", "Unique name for your experiment. This will create a directory by this name in the experiments/ directory, which will hold all data related to this experiment")
+tf.app.flags.DEFINE_string  ("train_dir", "", "defaults to experiment_name")
+tf.app.flags.DEFINE_string("experiment_name", "tmp", "Unique name for your experiment. This will create a directory by this name in the experiments/ directory, which will hold all data related to this experiment")
 tf.app.flags.DEFINE_bool    ("record", False, "")
 
 
