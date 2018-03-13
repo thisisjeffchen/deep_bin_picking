@@ -13,11 +13,11 @@ EXPERIMENTS_DIR = "./experiments"
 
 
 tf.app.flags.DEFINE_string  ("model", "linear", "Model used, choices are linear or nn")
-tf.app.flags.DEFINE_integer ("nsteps_train", 10000, "")
-tf.app.flags.DEFINE_integer ("batch_size", 10, "")
-tf.app.flags.DEFINE_integer ("buffer_size", 100, "")
-tf.app.flags.DEFINE_integer ("target_update_freq", 10, "")
-tf.app.flags.DEFINE_float   ("gamma", 0.99, "")
+tf.app.flags.DEFINE_integer ("nsteps_train", 100000, "")
+tf.app.flags.DEFINE_integer ("batch_size", 100, "")
+tf.app.flags.DEFINE_integer ("buffer_size", 2000, "")
+tf.app.flags.DEFINE_integer ("target_update_freq", 1000, "")
+tf.app.flags.DEFINE_float   ("gamma", 0.9, "")
 tf.app.flags.DEFINE_integer ("learning_freq", 4, "")
 tf.app.flags.DEFINE_float   ("lr_begin", 0.2, "")
 tf.app.flags.DEFINE_float   ("lr_end", 0.00005, "")
@@ -25,14 +25,14 @@ tf.app.flags.DEFINE_integer ("lr_nsteps", -1, "Initially set to -1, but later co
 tf.app.flags.DEFINE_integer ("eps_begin", 1, "")
 tf.app.flags.DEFINE_float   ("eps_end", 0.1, "")
 tf.app.flags.DEFINE_integer ("eps_nsteps", 100, "")
-tf.app.flags.DEFINE_integer ("learning_start", 20, "") #needs to be at least 1 episode
+tf.app.flags.DEFINE_integer ("learning_start", 1000, "") #needs to be at least 1 episode
 tf.app.flags.DEFINE_bool    ("grad_clip", False, "")
 tf.app.flags.DEFINE_integer ("clip_val", 10, "")
 
-tf.app.flags.DEFINE_integer ("num_episodes_test", 1, "")
+tf.app.flags.DEFINE_integer ("num_episodes_test", 25, "")
 tf.app.flags.DEFINE_integer ("saving_freq", 200, "")
 tf.app.flags.DEFINE_integer ("log_freq", 100, "")
-tf.app.flags.DEFINE_integer ("eval_freq", 200, "")
+tf.app.flags.DEFINE_integer ("eval_freq", 1000, "")
 tf.app.flags.DEFINE_integer ("record_freq", 200, "")
 tf.app.flags.DEFINE_float   ("soft_epsilon", 0.05, "")
 tf.app.flags.DEFINE_string  ("train_dir", "", "defaults to experiment_name")

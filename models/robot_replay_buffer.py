@@ -60,10 +60,10 @@ class RobotReplayBuffer(object):
         return batch_size + 1 <= self.num_in_buffer
       
     def _encode_sample(self, idxes):
-        print "idxes"
-        print idxes
-        print "num in buffer"
-        print self.num_in_buffer
+        #print "idxes"
+        #print idxes
+        #print "num in buffer"
+        #print self.num_in_buffer
         obs_batch      = self.obs[idxes]
         act_batch      = self.actions_taken[idxes]
         rew_batch      = self.rewards[idxes]
