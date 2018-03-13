@@ -12,7 +12,7 @@ FC_90_THRESHOLD = 0.010809481366594122
 MAX_PROB = 0.9
 
 ACTION_COLLISION_CHECK_MAX_SOFT = 3
-ACTION_COLLISION_CHECK_MAX_HARD = 20
+ACTION_COLLISION_CHECK_MAX_HARD = 10
 ACTION_SKIP_RATE = 11
 
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
@@ -136,9 +136,12 @@ class ActionFinder (object):
         while (len (return_actions) == 0 
                and len (unlikely_item_poses) > 0 
                and give_up_iter < ACTION_COLLISION_CHECK_MAX_HARD):
-        
+
+            idx = (give_up_iter + ACTION_COLLISION_CHECK_MAX_SOFT) * ACTION_SKIP_RATE
+
             print "Enter while loop to search for an action"
             for item_id, pose in unlikely_item_poses:
+                if ()
 
 
 
