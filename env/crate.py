@@ -1,5 +1,4 @@
 """Crate/bin-picking environments for running policies."""
-
 import collections
 import logging
 import math
@@ -8,7 +7,6 @@ import pdb
 import utils.general as general
 import autolab_core
 
-import dexnet
 
 import numpy as np
 
