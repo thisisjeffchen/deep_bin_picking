@@ -296,15 +296,15 @@ class SingleDQN():
         """
         Defines extra attributes for tensorboard
         """
-        self.avg_reward = -1000.
-        self.max_reward = -1000.
+        self.avg_reward = -100.
+        self.max_reward = -100.
         self.std_reward = 0
 
         self.avg_q = 0
         self.max_q = 0
         self.std_q = 0
         
-        self.eval_reward = -1000.
+        self.eval_reward = -100.
 
     def update_averages(self, rewards, max_q_values, q_values, scores_eval):
         """
