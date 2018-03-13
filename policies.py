@@ -1,4 +1,5 @@
 """Support for implementation of policies, and baseline policies."""
+import contextlib
 import logging
 import math
 import random
@@ -43,54 +44,44 @@ class PolicyRunner(object):
             pass
         return self.discounted_return
 
-class ReturnsLogger(object):
-    def __init__(self, filepath=None, description=None):
-        self.filepath = filepath
-        self.description = description
-        self.file = None
+@contextlib.contextmanager
+def returns_log(filepath=None, description=None):
+    file = None
+    if filepath is not None:
+        file = open(filepath, 'w')
+        file.write('Discounted returns in episodes\n')
+        if description is not None:
+            file.write('{}\n'.format(description))
+    yield file
+    if file is not None:
+        file.close()
 
-    def __enter__(self):
-        if self.filepath is None:
-            return
-        self.file = open(self.filepath, 'w')
-        self.file.write('Discounted returns in episodes\n')
-        if self.description is not None:
-            self.file.write('{}\n'.format(description))
-
-    def __exit__(self, *args):
-        if self.file is not None:
-            self.file.close()
-
-    def log_returns(self, episode, discounted_return, average_discounted_returns):
-        logging.info('Episode {} accumulated a discounted return of {}'.format(
-            episode, discounted_return
-        ))
-        logging.info('Average reward per episode over past {} episodes: {}'.format(
-            episode + 1, average_discounted_returns
-        ))
-        if self.returns_file is not None:
-            self.returns_file.write('{} {} {}\n'.format(
-                episode, discounted_return, average_discounted_returns
-            ))
-            self.returns_file.flush()
 
 class PolicyTester(object):
-    def __init__(self, policy_runner, returns_logger, num_episodes=500):
+    def __init__(self, policy_runner, returns_logfile, num_episodes=500):
         self.policy_runner = policy_runner
         self.num_episodes = num_episodes
         self.episode = 0
         self.total_discounted_returns = 0
         self.average_discounted_returns = 0
-        self.returns_logger = returns_logger
+        self.returns_logfile = returns_logfile
 
     def run_episode(self):
         logging.info('Running episode {}...'.format(self.episode))
         discounted_return = self.policy_runner.run_episode()
         self.total_discounted_returns += discounted_return
-        average_discounted_returns = self.total_discounted_returns / (episode + 1)
-        self.returns_logger.log_returns(
-            episode + 1, discounted_return, average_discounted_returns
-        )
+        self.average_discounted_returns = self.total_discounted_returns / (self.episode + 1)
+        logging.info('Episode {} accumulated a discounted return of {}'.format(
+            self.episode + 1, discounted_return
+        ))
+        logging.info('Average reward per episode over past {} episodes: {}'.format(
+            self.episode + 1, self.average_discounted_returns
+        ))
+        if self.returns_logfile is not None:
+            self.returns_logfile.write('{} {} {}\n'.format(
+                self.episode + 1, discounted_return, self.average_discounted_returns
+            ))
+            self.returns_logfile.flush()
         self.episode += 1
 
     def run_episodes(self):
@@ -133,8 +124,8 @@ def main():
     env = CrateMDP(scene, scene_populator)
     policy = HighestFirstBaseline()
     policy_runner = PolicyRunner(scene, scene_populator, env, policy)
-    with ReturnsLogger('policies_test') as returns_logger:
-        policy_tester = PolicyTester(policy_runner, returns_logger)
+    with returns_log('policies_test.txt') as f:
+        policy_tester = PolicyTester(policy_runner, f)
         policy_tester.run_episodes()
 
 
