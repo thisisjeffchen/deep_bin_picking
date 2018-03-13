@@ -13,13 +13,6 @@ import numpy as np
 from scene import Scene, ScenePopulator
 from action_finder import Action, ActionFinder
 
-# Import input/raw-input with python 2/3 compatibility
-try:
-    input = raw_input
-except NameError:
-    pass
-
-
 NUM_ITEMS = 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
 
@@ -42,12 +35,9 @@ class CrateMDP(object):
         self.encoded_observation_shape = [self.scene_populator.max_items,
                                           len (self.scene_populator.item_database) + 7]
         self._current_candidate_actions = None
-<<<<<<< HEAD
         self.af = ActionFinder()
         
-=======
 
->>>>>>> e8eb1ebe719162992e6aa1db7cdddb3b9ebc361e
     def encode_state(self, state):
         one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
                                     len(self.scene_populator.item_database)])
@@ -178,15 +168,10 @@ class CrateMDP(object):
         if self._current_candidate_actions is None:
             self._current_candidate_actions = self.af.find(state)
         actions = self._current_candidate_actions
-        if len (actions) == 0:
+        if len(actions) == 0:
             print "Prunning got rid of all actions, now using all actions..."
-<<<<<<< HEAD
             actions = self.af.find (state)
-        
-=======
-            actions = self._get_actions (state, use_all_actions = True)
 
->>>>>>> e8eb1ebe719162992e6aa1db7cdddb3b9ebc361e
         #will only return a certain number of actions
         return actions[0:self.get_action_choices_max()]
 

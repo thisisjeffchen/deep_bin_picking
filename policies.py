@@ -3,10 +3,10 @@ import logging
 import math
 import random
 import pdb
-from env.crate import Action
 
-from scene import Scene, ScenePopulator
-from action_finder import Action, ActionFinder
+from env.scene import Scene, ScenePopulator
+from env.crate import Action, CrateMDP
+from env.action_finder import Action, ActionFinder
 
 class Policy(object):
     def choose_action(self, state):
@@ -21,7 +21,7 @@ class PolicyRunner(object):
         self.discount = discount
 
     def start_episode(self):
-        self.state = env.reset()
+        self.state = self.env.reset()
         self.discounted_return = 0
         self.step = 0
 
@@ -30,7 +30,7 @@ class PolicyRunner(object):
         if action == None:
             return False
         logging.info('Attempting to remove item {}...'.format(action.item_id))
-        (state, reward, done) = env.step(action)
+        (state, reward, done) = self.env.step(action)
         logging.info('Received reward {}'.format(reward))
         self.state = state
         self.discounted_return += math.pow(self.discount, self.step) * reward
@@ -55,7 +55,7 @@ class ReturnsLogger(object):
         if self.description is not None:
             self.file.write('{}\n'.format(description))
 
-    def __exit__(self):
+    def __exit__(self, *args):
         self.file.close()
 
     def log_returns(self, episode, discounted_return, average_discounted_returns):
@@ -92,7 +92,7 @@ class PolicyTester(object):
 
     def run_episodes(self):
         logging.info('Running {} episodes...'.format(self.num_episodes))
-        while (self.episode < self.num_episode):
+        while (self.episode < self.num_episodes):
             self.run_episode()
 
 class HighestFirstBaseline(Policy):
@@ -125,7 +125,7 @@ class GreedyBaseline(Policy):
 
 def main():
     """Run a baseline heuristic policy on the CrateMDP environment."""
-    scene = Scene(show_gui=True)
+    scene = Scene(show_gui=False)
     scene_populator = ScenePopulator(scene)
     env = CrateMDP(scene, scene_populator)
     policy = HighestFirstBaseline()
