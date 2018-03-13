@@ -1,2 +1,0 @@
-episode reward avg
-1 5.6953279 5.6953279
