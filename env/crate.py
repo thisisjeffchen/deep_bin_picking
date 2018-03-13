@@ -15,6 +15,7 @@ from action_finder import Action, ActionFinder
 
 NUM_ITEMS = 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
+CONSECUTIVE_FAILURE_DONE_THRESHOLD = 10
 
 ACTION_DIMS = 5
 ACTION_CHOICES_MAX = 10
@@ -38,6 +39,7 @@ class CrateMDP(object):
         self._current_candidate_actions = None
         self.af = ActionFinder()
         self.ignore_feasibility = ignore_feasibility
+        self.consecutive_failures = 0
 
     def encode_state(self, state):
         one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
@@ -157,12 +159,22 @@ class CrateMDP(object):
         if success:
             bounds_removed_items = self._remove_item(action.item_id)
             reward += PENALTY_FOR_COLIFT * len(bounds_removed_items)  # Penalize for knocking other items out
+            self.consecutive_failures = 0
+        else:
+            self.consecutive_failures += 1
         observation = self._observe_current()   # may need to change for POMDP
-        done = (len(self.scene.item_ids) == 0)
+        done = False
+        if len(self.scene.item_ids) == 0:
+            done = True
+            logging.info('Environment terminated: no remaining items.')
         if not self.ignore_feasibility:
             self._current_candidate_actions = self.af.find(observation)
-            if not self._current_candidate_actions:
+            if len(self._current_candidate_actions) == 0:
+                logging.info('Environment terminated: no remaining candidate actions.')
                 done = True
+        if self.consecutive_failures > CONSECUTIVE_FAILURE_DONE_THRESHOLD:
+            logging.info('Environment terminated: too many consecutive failed grasp attempts.')
+            done = True
 
         return (observation, reward, done)
 

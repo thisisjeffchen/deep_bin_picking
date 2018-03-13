@@ -132,12 +132,16 @@ class LowestFirstBaseline(InfeasiblePolicy):
 class RandomBaseline(Policy):
     def choose_current_action(self):
         actions = self.env.get_current_candidate_actions()
+        if not actions:
+            return None
         action = random.choice(actions)
         return action
 
 class GreedyBaseline(Policy):
     def choose_current_action(self):
         actions = self.env.get_current_candidate_actions()
+        if not actions:
+            return None
         action = max(actions, key=operator.attrgetter('metric'))
         return action
 

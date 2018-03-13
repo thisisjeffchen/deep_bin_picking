@@ -37,6 +37,7 @@ print "mean: " + str(np.mean (metrics_all))
 print "median: " + str(np.median (metrics_all))
 print "mode: " + str(stats.mode (metrics_all))
 print "stdev: " + str(np.std (metrics_all))
+print "zeros: " + str(np.sum(np.less(metrics_all, 0.0001)))
 
 ninety = int (total_grasps* 0.9)
 metrics_all.sort()
