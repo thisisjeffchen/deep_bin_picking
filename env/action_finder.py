@@ -1,6 +1,6 @@
 import dexnet
 
-DEX_NET_PATH = '../dex-net/'
+DEX_NET_PATH = '../../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
 GRIPPER_NAME = 'yumi_metal_spline'
 GRIPPER_REL_PATH = 'data/grippers/'

@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-from scene import ScenePopulator, Scene
+from env.scene import ScenePopulator, Scene
 
 import matplotlib.ticker as ticker
 

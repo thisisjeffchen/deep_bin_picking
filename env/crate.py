@@ -80,7 +80,6 @@ class CrateMDP(object):
         return np.ndarray.flatten(np.hstack([poses, one_hot_item_ids]))
 
     def encode_action (self, action, state):
-        #TODO: make more precise, right now uses the placement of the object
         g = action.grasp
         item_id = action.item_id
         obj_pose = state['poses'][item_id]
