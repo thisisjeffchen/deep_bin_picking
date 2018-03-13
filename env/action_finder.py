@@ -14,7 +14,7 @@ FC_90_THRESHOLD = 0.010809481366594122
 MAX_PROB = 0.9
 
 ACTION_COLLISION_CHECK_MAX_SOFT = 3
-ACTION_COLLISION_CHECK_MAX_HARD = 20
+ACTION_COLLISION_CHECK_MAX_HARD = 10
 ACTION_SKIP_RATE = 11
 
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
@@ -91,8 +91,13 @@ class ActionFinder (object):
 
 
     def _convert_to_prob (self, ferrari_canny):
-        fc_adjusted = max (ferrari_canny, FC_90_THRESHOLD)
+        """
+        Converts Ferrari-Canny score to probability with the top being
+        MAX_PROB at FC_90_THRESHOLD. 
 
+        Prob scales from 0 -> FC_90_THRESHOLD linearly.
+        """
+        fc_adjusted = max (ferrari_canny, FC_90_THRESHOLD)
         return (fc_adjusted / FC_90_THRESHOLD) * MAX_PROB
 
 
@@ -112,7 +117,7 @@ class ActionFinder (object):
             name = state['item_names'][item_id]
             grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
             added = False
-            item_actions[name] = {"grasps": grasps,
+            item_actions[item_id] = {"grasps": grasps,
                                   "metrics": metrics}
 
             for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
@@ -121,11 +126,30 @@ class ActionFinder (object):
                     action = Action (item_id, name, grasps[idx], self._convert_to_prob (metrics[idx]))
                     return_actions.append (action)
                     added = True
+                    break
+        
 
+        return return_actions
 
-
-        #while #there are no actions:
-
+   
+if __name__ == "__main__":
+    state = {'item_names': {5L: '437678d4bc6be981c8724d5673a063a6', 
+                            6L: '5c5a9db9d4ff156a1de495b75c95e5ad', 
+                            7L: 'e6f95cfb9825c0f65070edcf21eb751c'}, 
+            'poses': {5L: ([-0.03550167, -0.02851296,  0.08055547], 
+                           [ 0.30126049,  0.05754684, -0.73074917,  0.60986567]), 
+                      6L: ([-0.01447178, -0.04350919,  0.01318321], 
+                           [-3.72947186e-01,  5.19353120e-01,  7.52543106e-04,  7.68883715e-01]), 
+                      7L: ([-0.00907455, -0.00746043,  0.16875964],
+                           [-0.67121325, -0.15184073, -0.01838945,  0.72531303])},
+            'item_ids': {'e6f95cfb9825c0f65070edcf21eb751c': 7L, 
+                         '5c5a9db9d4ff156a1de495b75c95e5ad': 6L, 
+                         '437678d4bc6be981c8724d5673a063a6': 5L}}
+    af = ActionFinder()
+    actions = af.find (state)
+    assert actions is not None
+    assert len(actions) > 0
+    print "Basic test pass!"
 
 
 '''
@@ -155,22 +179,3 @@ class ActionFinder (object):
         return actions
 
 '''
-
-   
-if __name__ == "__main__":
-    state = {'item_names': {5L: '437678d4bc6be981c8724d5673a063a6', 
-                            6L: '5c5a9db9d4ff156a1de495b75c95e5ad', 
-                            7L: 'e6f95cfb9825c0f65070edcf21eb751c'}, 
-            'poses': {5L: ([-0.03550167, -0.02851296,  0.08055547], 
-                           [ 0.30126049,  0.05754684, -0.73074917,  0.60986567]), 
-                      6L: ([-0.01447178, -0.04350919,  0.01318321], 
-                           [-3.72947186e-01,  5.19353120e-01,  7.52543106e-04,  7.68883715e-01]), 
-                      7L: ([-0.00907455, -0.00746043,  0.16875964],
-                           [-0.67121325, -0.15184073, -0.01838945,  0.72531303])},
-            'item_ids': {'e6f95cfb9825c0f65070edcf21eb751c': 7L, 
-                         '5c5a9db9d4ff156a1de495b75c95e5ad': 6L, 
-                         '437678d4bc6be981c8724d5673a063a6': 5L}}
-    af = ActionFinder()
-    actions = af.find (state)
-    print "Init test pass!"
-
