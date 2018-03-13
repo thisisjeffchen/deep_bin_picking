@@ -86,14 +86,16 @@ class ActionFinder (object):
             gcc.add_graspable_object(graspable, obj_to_world)
 
             graspables[item_id] = graspable
-            pdb.set_trace()
 
         return gcc, graspables
 
 
     def _convert_to_prob (self, ferrari_canny):
         """
+        Converts Ferrari-Canny score to probability with the top being
+        MAX_PROB at FC_90_THRESHOLD. 
 
+        Prob scales from 0 -> FC_90_THRESHOLD linearly.
         """
         fc_adjusted = max (ferrari_canny, FC_90_THRESHOLD)
         return (fc_adjusted / FC_90_THRESHOLD) * MAX_PROB
@@ -115,7 +117,7 @@ class ActionFinder (object):
             name = state['item_names'][item_id]
             grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
             added = False
-            item_actions[name] = {"grasps": grasps,
+            item_actions[item_id] = {"grasps": grasps,
                                   "metrics": metrics}
 
             for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
@@ -125,35 +127,7 @@ class ActionFinder (object):
                     return_actions.append (action)
                     added = True
                     break
-            
-            if added == True:
-                item_poses.pop (item_id)
-            else:
-                idxes = ACTION_SKIP_RATE  * range (0, ACTION_COLLISION_CHECK_MAX_SOFT)
-                idxes.reverse ()
-                for idx in idxes:
-                    del grasps[idx]
-                    del metrics[idx]
-                unlikely_item_poses[item_id] = item_poses[item_id]
-
-        assert len (item_poses) == 0
-        assert len (unlikely_item_poses) + len (return_actions) == len (state['poses'])
-
-        give_up_iter = 0
-        while (len (return_actions) == 0 
-               and len (unlikely_item_poses) > 0 
-               and give_up_iter < ACTION_COLLISION_CHECK_MAX_HARD):
-
-            idx = (give_up_iter + ACTION_COLLISION_CHECK_MAX_SOFT) * ACTION_SKIP_RATE
-
-            print "Enter while loop to search for an action"
-            for item_id, pose in unlikely_item_poses:
-                if ()
-
-
-
-
-            print "Exit while loop to search for an action"
+        
 
         return return_actions
 
@@ -173,6 +147,8 @@ if __name__ == "__main__":
                          '437678d4bc6be981c8724d5673a063a6': 5L}}
     af = ActionFinder()
     actions = af.find (state)
+    assert actions is not None
+    assert len(actions) > 0
     print "Basic test pass!"
 
 
