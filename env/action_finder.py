@@ -15,7 +15,6 @@ ACTION_SKIP_RATE = 11
 
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
-
 class ActionFinder (object):
 	def __init__ (self):
 		self.gcc = None
@@ -29,23 +28,11 @@ class ActionFinder (object):
         self.gripper_pose = ([0, 0, GRIPPER_Z_POS], [1, 0, 0, 0])
         self.cc_approach_dist = 1.0
         self.cc_delta_approach = 0.1    # may need tuning
-		pass
 
  	def _check_collisions(self, state, actions):
         """Filter the provided actions for actions which don't cause collisions."""
         if self.pomdp:
             return []
-
-        gcc = dexnet.grasping.GraspCollisionChecker(self.gripper)
-
-        # Add all objects to the world frame
-        item_names = state['item_names']
-        poses = state['poses']
-        graspables = {}
-        for item_id, pose in poses.items():
-            graspable = self.dn.dataset.graspable(item_names[item_id])
-            gcc.add_graspable_object(graspable)
-            graspables[item_id] = graspable
 
         for idx in reversed(range(len(actions))):
             action = actions[idx]
@@ -69,16 +56,28 @@ class ActionFinder (object):
 
         return actions
 
-    def _init_grasp_collision_checker (state):
+    def _create_grasp_collision_checker (self, state):
+    	gcc = dexnet.grasping.GraspCollisionChecker(self.gripper)
+
+        # Add all objects to the world frame
+        item_names = state['item_names']
+        poses = state['poses']
+        graspables = {}
+        for item_id, pose in poses.items():
+            graspable = self.dn.dataset.graspable(item_names[item_id])
+            gcc.add_graspable_object(graspable)
+            graspables[item_id] = graspable
+
+       	return gcc, graspables
 
 
-    def _convert_to_prob (ferrari_canny):
+    def _convert_to_prob (self, ferrari_canny):
 
-
-	def find (state):
+	def find (self, state):
 		"""
 		Finds actions for the state
 		"""
+		gcc, graspables = _create_grasp_collision_checker (state)
 
 		unlikely_item_poses = {}
 		item_poses = {**state['poses']}
@@ -87,7 +86,18 @@ class ActionFinder (object):
 		return_actions = []
 
 		for item_id, pose in item_poses:
+			name = state['item_names'][item_id]
+			grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
+			item_actions[name] = {"grasps": grasps,
+								  "metrics": metrics}
+
 			for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
+				if 
+
+
+		while #there are no actions:
+
+
 
 
 
