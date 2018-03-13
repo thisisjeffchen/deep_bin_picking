@@ -5,6 +5,7 @@ Calculates final reward over epochs.
 
 import logging
 import math
+import pdb
 
 from crate import CrateMDP, random_baseline, highest_first_baseline, lowest_first_baseline, Action
 
@@ -26,6 +27,7 @@ def main():
     f.write ("episode reward avg\n")
     for episode in range(num_episodes):
         state = env.reset()
+        pdb.set_trace ()
         logging.info('Starting episode {}'.format(episode))
         discounted_return = 0
         step = 0

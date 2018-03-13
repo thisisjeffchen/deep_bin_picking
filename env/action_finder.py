@@ -9,17 +9,19 @@ DEFAULT_NUM_GRASPS_PER_ITEM = 3
 GRIPPER_Z_POS = 1
 FC_90_THRESHOLD = 0.010809481366594122
 
+ACTION_COLLISION_CHECK_MAX_SOFT = 3
+ACTION_COLLISION_CHECK_MAX_HARD = 20
+ACTION_SKIP_RATE = 11
+
+Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
+
+
 class ActionFinder (object):
 	def __init__ (self):
+		self.gcc = None
 		pass
 
-	def find (state):
-		"""
-		Finds actions for the state
-		"""
-		pass
-
-    def check_collisions(self, state, actions):
+ 	def _check_collisions(self, state, actions):
         """Filter the provided actions for actions which don't cause collisions."""
         if self.pomdp:
             return []
@@ -57,5 +59,49 @@ class ActionFinder (object):
 
         return actions
 
+    def _init_grasp_collision_checker (state):
+
+
+    def _convert_to_prob (ferrari_canny):
+
+
+	def find (state):
+		"""
+		Finds actions for the state
+		"""
+
+		unlikely_item_poses = {}
+		item_poses = {**state['poses']}
+		item_actions = {}
+
+		return_actions = []
+
+		for item_id, pose in item_poses:
+			for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
+
+
+
+
+'''
+   if self.pomdp:
+            return []
+        item_names = state['item_names']
+
+        poses = state['poses']
+        actions = []
+
+        for item_id, pose in poses.items():
+            name = item_names[item_id]
+            grasps, metrics = self.dn.get_grasps(name, GRIPPER_NAME, GRASP_METRIC)
+            for idx, g in enumerate (grasps):
+                if not use_all_actions and idx >= DEFAULT_NUM_GRASPS_PER_ITEM:
+                    break
+                actions.append(Action(item_id, name, grasps[idx], metrics[idx]))
+
+        actions = self.check_collisions(state, actions)
+
+'''
+
+   
 if __name__ == "__main__":
 	#tests

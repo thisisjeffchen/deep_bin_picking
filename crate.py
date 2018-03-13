@@ -13,6 +13,7 @@ import dexnet
 import numpy as np
 
 from scene import Scene, ScenePopulator
+from action_finder import Action, ActionFinder
 
 # Import input/raw-input with python 2/3 compatibility
 try:
@@ -20,8 +21,6 @@ try:
 except NameError:
     pass
 
-
-Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
 NUM_ITEMS = 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
