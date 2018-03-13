@@ -5,7 +5,7 @@ import logging
 import math
 import random
 import pdb
-
+import utils.general as general
 import autolab_core
 
 import dexnet
@@ -32,6 +32,7 @@ GRIPPER_REL_PATH = 'data/grippers/'
 GRASP_METRIC = 'force_closure'
 DEFAULT_NUM_GRASPS_PER_ITEM = 3
 GRIPPER_Z_POS = 1
+FC_90_THRESHOLD = 0.010809481366594122
 
 
 ACTION_DIMS = 4
@@ -80,10 +81,14 @@ class CrateMDP(object):
 
     def encode_action (self, action, state):
         #TODO: make more precise, right now uses the placement of the object
+        pdb.set_trace ()
         g = action.grasp
+        x_axis = g.T_grasp_obj.x_axis
+        angle = general.angle_between (x_axis, [1,0,0])
+
         xyz = state['poses'][action.item_id][0]
 
-        return [xyz[0], xyz[1], GRIPPER_Z_POS - xyz[2], g.approach_angle] 
+        return [xyz[0], xyz[1], GRIPPER_Z_POS - xyz[2], angle] 
 
     def encode_action_choices (self, action_choices, state):
         #encode action_choices into x,y,d,theta
@@ -97,9 +102,9 @@ class CrateMDP(object):
             encoded[idx] = self.encode_action(a, state)
             mask [idx] = True
 
-        #print "encoding actions"
-        #print encoded
-        #print mask
+        print "encoding actions"
+        print encoded
+        print mask
         return encoded, mask
 
 
@@ -265,11 +270,15 @@ def random_baseline(state):
 
 def highest_first_baseline(state):
     item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
+    if (len(item_heights) == 0):
+        return None
     item_id = max(item_heights, key=item_heights.get)
     return Action(item_id, state['item_names'][item_id], None, 1.0)
 
 def lowest_first_baseline(state):
     item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
+    if (len(item_heights) == 0):
+        return None
     item_id = min(item_heights, key=item_heights.get)
     return Action(item_id, state['item_names'][item_id], None, 1.0)
 
@@ -290,6 +299,9 @@ def main():
         while True:
             # action = random_baseline(state)
             action = lowest_first_baseline(state)
+            if action == None:
+                done = True
+                break
             # action = highest_first_baseline(state)
             logging.info('Attempting to remove item {}...'.format(action.item_id))
             (state, reward, done) = env.step(action)
