@@ -102,7 +102,7 @@ class HighestFirstBaseline(Policy):
         item_id = max(item_heights, key=item_heights.get)
         return Action(item_id, state['item_names'][item_id], None, 1.0)
 
-def LowestFirstBaseline(Policy):
+class LowestFirstBaseline(Policy):
     def choose_action(self, state):
         item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
         if len(item_heights) == 0:
