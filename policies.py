@@ -136,7 +136,9 @@ def test_policy(policy_name, Policy,
     """Run a policy on the CrateMDP environment."""
     scene = Scene(show_gui=False)
     scene_populator = ScenePopulator(scene)
-    env = CrateMDP(scene, scene_populator)
+    simple_done = (policy_name == 'baseline_lowest' or
+                   policy_name == 'baseline_highest')
+    env = CrateMDP(scene, scene_populator, simple_done=simple_done)
     policy = Policy(env, *policy_factory_args, **policy_factory_kwargs)
     policy_runner = PolicyRunner(scene, scene_populator, env, policy)
     if not os.path.exists('results/{}'):
