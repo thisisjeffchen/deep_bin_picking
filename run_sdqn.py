@@ -25,11 +25,11 @@ tf.app.flags.DEFINE_integer ("lr_nsteps", -1, "Initially set to -1, but later co
 tf.app.flags.DEFINE_integer ("eps_begin", 1, "")
 tf.app.flags.DEFINE_float   ("eps_end", 0.1, "")
 tf.app.flags.DEFINE_integer ("eps_nsteps", 100, "")
-tf.app.flags.DEFINE_integer ("learning_start", 100, "")
+tf.app.flags.DEFINE_integer ("learning_start", 20, "") #needs to be at least 1 episode
 tf.app.flags.DEFINE_bool    ("grad_clip", False, "")
 tf.app.flags.DEFINE_integer ("clip_val", 10, "")
 
-tf.app.flags.DEFINE_integer ("num_episodes_test", 10, "")
+tf.app.flags.DEFINE_integer ("num_episodes_test", 1, "")
 tf.app.flags.DEFINE_integer ("saving_freq", 200, "")
 tf.app.flags.DEFINE_integer ("log_freq", 1, "")
 tf.app.flags.DEFINE_integer ("eval_freq", 200, "")

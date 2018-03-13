@@ -81,7 +81,6 @@ class Scene(object):
         """Add the specified item in the specified pose."""
         logging.info('Adding item "{}"'.format(name))
         print "Adding"
-        print name
         file_path = os.path.join(URDF_DIR, name, name + '.urdf')
         item_id = pb.loadURDF(file_path, position, orientation,
                               physicsClientId=self.client_id)

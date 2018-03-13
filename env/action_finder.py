@@ -13,6 +13,7 @@ DEFAULT_NUM_GRASPS_PER_ITEM = 3
 GRIPPER_Z_POS = 1
 FC_90_THRESHOLD = 0.010809481366594122
 MAX_PROB = 0.9
+FC_PRUNE_THRESHOLD = 0.001
 
 ACTION_COLLISION_CHECK_MAX_SOFT = 3
 ACTION_COLLISION_CHECK_MAX_HARD = 10
@@ -106,8 +107,7 @@ class ActionFinder (object):
         for item_id, pose in item_poses.iteritems ():
             name = state['item_names'][item_id]
             grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
-
-            for idx in reversed(range(len(grasps))):
+            for idx in reversed (range(len(grasps))):
                 if (not self._is_collision_free (gcc, name,
                                             graspables[item_id], 
                                             grasps[idx], 
@@ -141,12 +141,22 @@ class ActionFinder (object):
         for item_id, pose in item_poses.iteritems ():
             name = state['item_names'][item_id]
             grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
+
+            #TODO: slow, should cache these grasps instead of pruning all the time
+            for idx in reversed (range (len(grasps))):
+                if metrics[idx] < FC_PRUNE_THRESHOLD:
+                    del metrics[idx]
+                    del grasps[idx]
+
             added = False
             item_actions[item_id] = {"grasps": grasps,
                                      "metrics": metrics}
 
+            checked_idxes = []
+
             for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
                 idx = (i * ACTION_SKIP_RATE) % len (grasps)
+                checked_idxes.append (idx)
                 if self._is_collision_free (gcc, state['item_names'][item_id],
                                             graspables[item_id], 
                                             grasps[idx], 
@@ -156,19 +166,17 @@ class ActionFinder (object):
                     return_actions.append (action)
                     break
 
+            #Remove checked idxes
+            for idx in reversed (checked_idxes):
+                del grasps[idx]
+                del metrics[idx]
+
+
         if len (return_actions) >= MIN_RETURN_ACTIONS:
             return return_actions #early return
 
         for action in return_actions:
             del item_poses[action.item_id]
-
-        #remove grasps already checked
-        for item_id, pose in item_poses.iteritems ():
-            idxes = ACTION_SKIP_RATE  * range (0, ACTION_COLLISION_CHECK_MAX_SOFT)
-            idxes.reverse ()
-            for idx in idxes:
-                del item_actions[item_id]["grasps"][idx]
-                del item_actions[item_id]["metrics"][idx]
 
 
         unlikely_item_poses = item_poses
