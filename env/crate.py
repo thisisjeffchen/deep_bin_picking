@@ -42,7 +42,7 @@ class CrateMDP(object):
         self.encoded_observation_shape = [self.scene_populator.max_items,
                                           len (self.scene_populator.item_database) + 7]
         self._current_candidate_actions = None
-        
+
     def encode_state(self, state):
         one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
                                     len(self.scene_populator.item_database)])
@@ -152,7 +152,7 @@ class CrateMDP(object):
         self._current_candidate_actions = None
         return self._observe_current()
 
-    def step(self, action, check_next = True):
+    def step(self, action):
         """Take an action on the environment."""
         success_probability = self._get_success_probability(action)
         success = np.random.binomial(1, success_probability)
@@ -162,13 +162,9 @@ class CrateMDP(object):
             reward += PENALTY_FOR_COLIFT * len(bounds_removed_items)  # Penalize for knocking other items out
         observation = self._observe_current()   # may need to change for POMDP
         done = (len(self.scene.item_ids) == 0)
-        if check_next:
-            actions = self.get_actions(observation) # make sure there are still further actions to be executed
-            self._current_candidate_actions = actions
-            if len(actions) == 0:
-                #if actions is the empty space, then get all actions to double check
-                #TODO: this takes a while, so we should have a way to just check one action and return immediately
-                done = True
+        self._current_candidate_actions = self.get_actions(observation)
+        if not self._current_candidate_actions:
+            done = True
 
         return (observation, reward, done)
 
@@ -180,64 +176,7 @@ class CrateMDP(object):
         if len (actions) == 0:
             print "Prunning got rid of all actions, now using all actions..."
             actions = self._get_actions (state, use_all_actions = True)
-        
+
         #will only return a certain number of actions
         return actions[0:self.get_action_choices_max()]
 
-
-def random_baseline(state):
-    (item_id, item_name) = random.choice(list(state['poses'].items()))
-    return Action(item_id, item_name, None, None)
-
-def highest_first_baseline(state):
-    item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
-    if (len(item_heights) == 0):
-        return None
-    item_id = max(item_heights, key=item_heights.get)
-    return Action(item_id, state['item_names'][item_id], None, 1.0)
-
-def lowest_first_baseline(state):
-    item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
-    if (len(item_heights) == 0):
-        return None
-    item_id = min(item_heights, key=item_heights.get)
-    return Action(item_id, state['item_names'][item_id], None, 1.0)
-
-
-def main():
-    """Run a baseline heuristic policy on the CrateMDP environment."""
-    scene = Scene(show_gui=True)
-    scene_populator = ScenePopulator(scene)
-    env = CrateMDP(scene, scene_populator)
-    discount = 0.9
-    num_episodes = 5
-    average_discounted_return = 0
-    for episode in range(num_episodes):
-        state = env.reset()
-        logging.info('Starting episode {}'.format(episode))
-        discounted_return = 0
-        step = 0
-        while True:
-            # action = random_baseline(state)
-            action = lowest_first_baseline(state)
-            if action == None:
-                done = True
-                break
-            # action = highest_first_baseline(state)
-            logging.info('Attempting to remove item {}...'.format(action.item_id))
-            (state, reward, done) = env.step(action)
-            logging.info('Received reward {}'.format(reward))
-            discounted_return += math.pow(discount, step) * reward
-            step += 1
-            if done:
-                break
-        logging.info('Episode {} accumulated a discounted return of {}'
-                     .format(episode, discounted_return))
-        average_discounted_return += discounted_return / num_episodes
-    logging.info('Average discounted return over {} episodes is {}'
-                 .format(num_episodes, average_discounted_return))
-    input('Press any key to end...')
-
-
-if __name__ == '__main__':
-    main()
