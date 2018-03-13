@@ -381,7 +381,7 @@ class SingleDQN():
                 max_q_values.append(max(q_values))
                 q_values += list(q_values)
 
-                state, reward, done = self.env.step(action, check_next = False)
+                state, reward, done = self.env.step(action)
 
                 replay_buffer.store_effect(idx, encoded_actions[action_idx], reward, done)
 
@@ -488,7 +488,7 @@ class SingleDQN():
 
                 action = action_choices[best_action_idx]
 
-                state, reward, done = self.env.step(action, check_next = False)
+                state, reward, done = self.env.step(action)
 
                 # count reward
                 total_reward += reward
