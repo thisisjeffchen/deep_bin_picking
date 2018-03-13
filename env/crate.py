@@ -24,15 +24,6 @@ except NameError:
 
 NUM_ITEMS = 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
-DEX_NET_PATH = '../dex-net/'
-DB_NAME = 'dexnet_2.hdf5'
-GRIPPER_NAME = 'yumi_metal_spline'
-GRIPPER_REL_PATH = 'data/grippers/'
-GRASP_METRIC = 'force_closure'
-DEFAULT_NUM_GRASPS_PER_ITEM = 3
-GRIPPER_Z_POS = 1
-FC_90_THRESHOLD = 0.010809481366594122
-
 
 ACTION_DIMS = 4
 ACTION_CHOICES_MAX = 5
@@ -50,16 +41,6 @@ class CrateMDP(object):
         self.sim_remove_velocity = sim_remove_velocity
         self.sim_position_delta_threshold = sim_position_delta_threshold
         self.sim_angle_delta_threshold = sim_angle_delta_threshold
-        self.dn = dexnet.DexNet()
-        self.dn.open_database(DEX_NET_PATH + DB_NAME, create_db=True)
-        self.dn.open_dataset('3dnet')
-        self.gripper_name = GRIPPER_NAME
-        self.gripper = dexnet.grasping.gripper.RobotGripper.load(
-            GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH
-        )
-        self.gripper_pose = ([0, 0, GRIPPER_Z_POS], [1, 0, 0, 0])
-        self.cc_approach_dist = 1.0
-        self.cc_delta_approach = 0.1    # may need tuning
         self.encoded_observation_shape = [self.scene_populator.max_items,
                                           len (self.scene_populator.item_database) + 7]
         self._current_candidate_actions = None
@@ -157,30 +138,6 @@ class CrateMDP(object):
         except KeyError:
             pass
         return bounds_removed_items
-
-    def _get_actions(self, state, use_all_actions = False):
-        """Get all actions given the current state.
-
-        This can only be used in mdp mode.
-        """
-        if self.pomdp:
-            return []
-        item_names = state['item_names']
-
-        poses = state['poses']
-        actions = []
-
-        for item_id, pose in poses.items():
-            name = item_names[item_id]
-            grasps, metrics = self.dn.get_grasps(name, GRIPPER_NAME, GRASP_METRIC)
-            for idx, g in enumerate (grasps):
-                if not use_all_actions and idx >= DEFAULT_NUM_GRASPS_PER_ITEM:
-                    break
-                actions.append(Action(item_id, name, grasps[idx], metrics[idx]))
-
-        actions = self.check_collisions(state, actions)
-
-        return actions
 
     def get_action_dims (self):
         return ACTION_DIMS

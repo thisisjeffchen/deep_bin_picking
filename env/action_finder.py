@@ -19,6 +19,16 @@ Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'met
 class ActionFinder (object):
 	def __init__ (self):
 		self.gcc = None
+		self.dn = dexnet.DexNet()
+        self.dn.open_database(DEX_NET_PATH + DB_NAME, create_db=True)
+        self.dn.open_dataset('3dnet')
+        self.gripper_name = GRIPPER_NAME
+        self.gripper = dexnet.grasping.gripper.RobotGripper.load(
+            GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH
+        )
+        self.gripper_pose = ([0, 0, GRIPPER_Z_POS], [1, 0, 0, 0])
+        self.cc_approach_dist = 1.0
+        self.cc_delta_approach = 0.1    # may need tuning
 		pass
 
  	def _check_collisions(self, state, actions):
@@ -83,7 +93,13 @@ class ActionFinder (object):
 
 
 '''
-   if self.pomdp:
+
+ def _get_actions(self, state, use_all_actions = False):
+        """Get all actions given the current state.
+
+        This can only be used in mdp mode.
+        """
+        if self.pomdp:
             return []
         item_names = state['item_names']
 
@@ -99,6 +115,8 @@ class ActionFinder (object):
                 actions.append(Action(item_id, name, grasps[idx], metrics[idx]))
 
         actions = self.check_collisions(state, actions)
+
+        return actions
 
 '''
 
