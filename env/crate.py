@@ -5,6 +5,7 @@ import random
 import pdb
 import utils.general as general
 import autolab_core
+from action_finder import ActionFinder
 
 
 import numpy as np
@@ -34,7 +35,12 @@ class CrateMDP(object):
         self.encoded_observation_shape = [self.scene_populator.max_items,
                                           len (self.scene_populator.item_database) + 7]
         self._current_candidate_actions = None
+<<<<<<< HEAD
+        self.af = ActionFinder()
+        
+=======
 
+>>>>>>> e8eb1ebe719162992e6aa1db7cdddb3b9ebc361e
     def encode_state(self, state):
         one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
                                     len(self.scene_populator.item_database)])
@@ -163,12 +169,17 @@ class CrateMDP(object):
 
     def get_actions (self, state):
         if self._current_candidate_actions is None:
-            self._current_candidate_actions = self._get_actions(state)
+            self._current_candidate_actions = self.af.find(state)
         actions = self._current_candidate_actions
         if len (actions) == 0:
             print "Prunning got rid of all actions, now using all actions..."
+<<<<<<< HEAD
+            actions = self.af.find (state)
+        
+=======
             actions = self._get_actions (state, use_all_actions = True)
 
+>>>>>>> e8eb1ebe719162992e6aa1db7cdddb3b9ebc361e
         #will only return a certain number of actions
         return actions[0:self.get_action_choices_max()]
 
