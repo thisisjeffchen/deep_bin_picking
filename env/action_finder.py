@@ -188,7 +188,7 @@ class ActionFinder (object):
                and len (unlikely_item_poses) > 0 
                and give_up_iter < ACTION_COLLISION_CHECK_MAX_HARD):
 
-            print "Enter while loop to search for an action"
+            #print "Enter while loop to search for an action"
             for item_id, pose in unlikely_item_poses.iteritems():
                 grasps = item_actions[item_id]["grasps"]
                 metrics = item_actions[item_id]["metrics"]
@@ -214,8 +214,8 @@ class ActionFinder (object):
 
             give_up_iter += 1
 
-        print "Exit while loop to search for an action"
-        print "Actions Length: " + str(len(return_actions))
+        #print "Exit while loop to search for an action"
+        #print "Actions Length: " + str(len(return_actions))
         
 
         return return_actions

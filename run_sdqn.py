@@ -31,7 +31,7 @@ tf.app.flags.DEFINE_integer ("clip_val", 10, "")
 
 tf.app.flags.DEFINE_integer ("num_episodes_test", 1, "")
 tf.app.flags.DEFINE_integer ("saving_freq", 200, "")
-tf.app.flags.DEFINE_integer ("log_freq", 1, "")
+tf.app.flags.DEFINE_integer ("log_freq", 100, "")
 tf.app.flags.DEFINE_integer ("eval_freq", 200, "")
 tf.app.flags.DEFINE_integer ("record_freq", 200, "")
 tf.app.flags.DEFINE_float   ("soft_epsilon", 0.05, "")
