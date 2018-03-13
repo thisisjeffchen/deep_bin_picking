@@ -62,6 +62,7 @@ class CrateMDP(object):
         self.cc_delta_approach = 0.1    # may need tuning
         self.encoded_observation_shape = [self.scene_populator.max_items,
                                           len (self.scene_populator.item_database) + 7]
+        self._current_candidate_actions = None
         
     def encode_state(self, state):
         one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
@@ -79,14 +80,15 @@ class CrateMDP(object):
         return np.ndarray.flatten(np.hstack([poses, one_hot_item_ids]))
 
     def encode_action (self, action, state):
-        #TODO: make more precise, right now uses the placement of the object
         g = action.grasp
         item_id = action.item_id
         obj_pose = state['poses'][item_id]
-        angle = general.compute_gripper_angle (obj_pose, g.T_grasp_obj)
-        xyz = state['poses'][action.item_id][0]
-
-        return [xyz[0], xyz[1], GRIPPER_Z_POS - xyz[2], angle] 
+        g_to_w = general.grasp_to_world(obj_pose, g.T_grasp_obj)
+        axis = g_to_w.x_axis
+        angle = general.angle_between(np.array([1, 0, 0]), axis)
+        grasp_loc_world = g_to_w.inverse().translation
+        pdb.set_trace()
+        return [grasp_loc_world[0], grasp_loc_world[1], grasp_loc_world[2], angle] 
 
     def encode_action_choices (self, action_choices, state):
         #encode action_choices into x,y,d,theta
@@ -193,6 +195,7 @@ class CrateMDP(object):
         """Reset environment to state sampled from distribution of initial states."""
         self.scene.remove_all_items()
         self.scene_populator.add_items(num_items=NUM_ITEMS)
+        self._current_candidate_actions = None
         return self._observe_current()
 
     def step(self, action, check_next = True):
@@ -207,6 +210,7 @@ class CrateMDP(object):
         done = (len(self.scene.item_ids) == 0)
         if check_next:
             actions = self.get_actions(observation) # make sure there are still further actions to be executed
+            self._current_candidate_actions = actions
             if len(actions) == 0:
                 #if actions is the empty space, then get all actions to double check
                 #TODO: this takes a while, so we should have a way to just check one action and return immediately
@@ -216,7 +220,9 @@ class CrateMDP(object):
 
 
     def get_actions (self, state):
-        actions = self._get_actions (state)
+        if self._current_candidate_actions is None:
+            self._current_candidate_actions = self._get_actions(state)
+        actions = self._current_candidate_actions
         if len (actions) == 0:
             print "Prunning got rid of all actions, now using all actions..."
             actions = self._get_actions (state, use_all_actions = True)

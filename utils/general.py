@@ -8,14 +8,12 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import autolab_core
 
-def compute_gripper_angle (objectInWorld, graspToObj):
+def grasp_to_world (objectInWorld, graspToObj):
     rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(objectInWorld[1])
-    world_to_obj = autolab_core.RigidTransform(rot_obj, np.zeros(3), 'world', 'obj')
+    world_to_obj = autolab_core.RigidTransform(rot_obj, objectInWorld[0], 'world', 'obj')
     obj_to_world = world_to_obj.inverse()
-    grasp_to_world = obj_to_world.dot(graspToObj)
-    axis = grasp_to_world.x_axis
-    gripper_angle = angle_between(np.array([1, 0, 0]), axis)
-    return gripper_angle
+    g_to_w = obj_to_world.dot(graspToObj)
+    return g_to_w
 
 
 def unit_vector(vector):

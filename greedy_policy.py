@@ -7,9 +7,9 @@ import logging
 import math
 import pdb
 
-from crate import CrateMDP, random_baseline, highest_first_baseline, lowest_first_baseline, Action
+from env.crate import CrateMDP, random_baseline, highest_first_baseline, lowest_first_baseline, Action
 
-from scene import Scene, ScenePopulator
+from env.scene import Scene, ScenePopulator
 
 
 SAVE_FILE = "results_lowest.txt"

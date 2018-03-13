@@ -3,8 +3,8 @@ import math
 import os
 
 from utils.general import get_logger
-from crate import CrateMDP
-from scene import Scene, ScenePopulator
+from env.crate import CrateMDP
+from env.scene import Scene, ScenePopulator
 from models.schedule import LinearExploration, LinearSchedule
 from models.single_dqn import SingleDQN
 
