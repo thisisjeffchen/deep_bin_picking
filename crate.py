@@ -81,11 +81,10 @@ class CrateMDP(object):
 
     def encode_action (self, action, state):
         #TODO: make more precise, right now uses the placement of the object
-        pdb.set_trace ()
         g = action.grasp
-        x_axis = g.T_grasp_obj.x_axis
-        angle = general.angle_between (x_axis, [1,0,0])
-
+        item_id = action.item_id
+        obj_pose = state['poses'][item_id]
+        angle = general.compute_gripper_angle (obj_pose, g.T_grasp_obj)
         xyz = state['poses'][action.item_id][0]
 
         return [xyz[0], xyz[1], GRIPPER_Z_POS - xyz[2], angle] 

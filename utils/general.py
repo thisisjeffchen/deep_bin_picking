@@ -6,11 +6,16 @@ from collections import deque
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
+import autolab_core
 
-def gripper_to_world (objectInWorld, gripperInObject, from = "from", to = "to"):
+def compute_gripper_angle (objectInWorld, graspToObj):
     rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(objectInWorld[1])
-    autolab_core.RigidTransform(rot_obj, gripperInObject[0], 'world', 'obj')
-     obj_to_world = world_to_obj.inverse()
+    world_to_obj = autolab_core.RigidTransform(rot_obj, np.zeros(3), 'world', 'obj')
+    obj_to_world = world_to_obj.inverse()
+    grasp_to_world = obj_to_world.dot(graspToObj)
+    axis = grasp_to_world.x_axis
+    gripper_angle = angle_between(np.array([1, 0, 0]), axis)
+    return gripper_angle
 
 
 def unit_vector(vector):
