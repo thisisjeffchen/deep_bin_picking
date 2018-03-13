@@ -16,8 +16,8 @@ from action_finder import Action, ActionFinder
 NUM_ITEMS = 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
 
-ACTION_DIMS = 4
-ACTION_CHOICES_MAX = 5
+ACTION_DIMS = 5
+ACTION_CHOICES_MAX = 10
 
 
 class CrateMDP(object):
@@ -62,12 +62,11 @@ class CrateMDP(object):
         axis = g_to_w.x_axis
         angle = general.angle_between(np.array([1, 0, 0]), axis)
         grasp_loc_world = g_to_w.inverse().translation
-        return [grasp_loc_world[0], grasp_loc_world[1], grasp_loc_world[2], angle] 
+        return [grasp_loc_world[0], grasp_loc_world[1], grasp_loc_world[2], angle, action.metric] 
 
     def encode_action_choices (self, action_choices, state):
         #encode action_choices into x,y,d,theta
         #returns action_choices and mask
-
         count = len (action_choices)
         assert count <= self.get_action_choices_max ()
         encoded = np.zeros ([self.get_action_choices_max (), self.get_action_dims ()])

@@ -58,7 +58,7 @@ class ActionFinder (object):
                 grasp, self.cc_approach_dist, self.cc_delta_approach, item_name)
 
         if grasp_collide or approach_collide:
-            print "collision detected " + item_name
+            #print "collision detected " + item_name
             return False
 
         return True
@@ -90,14 +90,47 @@ class ActionFinder (object):
 
         Prob scales from 0 -> FC_90_THRESHOLD linearly.
         """
-        fc_adjusted = max (ferrari_canny, FC_90_THRESHOLD)
+        fc_adjusted = min (ferrari_canny, FC_90_THRESHOLD)
         return (fc_adjusted / FC_90_THRESHOLD) * MAX_PROB
+
+    def _check_total_valid (self, state):
+        """
+        For debug only
+        """
+        print "num items" + str(len(state['poses']))
+        gcc, graspables = self._create_grasp_collision_checker (state)
+        item_poses = state['poses'].copy () #shallow copy
+        valid_grasps = []
+        valid_metrics = []
+
+        for item_id, pose in item_poses.iteritems ():
+            name = state['item_names'][item_id]
+            grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
+
+            for idx in reversed(range(len(grasps))):
+                if (not self._is_collision_free (gcc, name,
+                                            graspables[item_id], 
+                                            grasps[idx], 
+                                            item_poses[item_id])):
+                    del grasps[idx]
+                    del metrics[idx]
+            print str(len(grasps)) + " valid grasps for item " + state['item_names'][item_id] + " z pos: " + str(item_poses[item_id][0][2])
+
+            valid_grasps += grasps
+            valid_metrics += metrics
+
+        assert (len(valid_grasps) == len(valid_metrics))
+        print "total valid grasps: " + str (len (valid_grasps))
 
 
     def find (self, state):
         """
         Finds actions for the state
         """
+        #self._check_total_valid (state) #Debug only
+
+        min_return_actions = min (MIN_RETURN_ACTIONS, len(state['poses']))
+
         gcc, graspables = self._create_grasp_collision_checker (state)
 
         item_poses = state['poses'].copy () #shallow copy
@@ -111,7 +144,6 @@ class ActionFinder (object):
             added = False
             item_actions[item_id] = {"grasps": grasps,
                                      "metrics": metrics}
-            print metrics
 
             for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
                 idx = (i * ACTION_SKIP_RATE) % len (grasps)
@@ -124,7 +156,7 @@ class ActionFinder (object):
                     return_actions.append (action)
                     break
 
-        if len (return_actions) > MIN_RETURN_ACTIONS:
+        if len (return_actions) >= MIN_RETURN_ACTIONS:
             return return_actions #early return
 
         for action in return_actions:
@@ -171,6 +203,8 @@ class ActionFinder (object):
                     del unlikely_item_poses[action.item_id]
                 except KeyError:
                     pass
+
+            give_up_iter += 1
 
         print "Exit while loop to search for an action"
         print "Actions Length: " + str(len(return_actions))
