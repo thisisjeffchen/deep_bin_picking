@@ -44,19 +44,22 @@ class PolicyRunner(object):
         return self.discounted_return
 
 class ReturnsLogger(object):
-    def __init__(self, filepath, description=None):
+    def __init__(self, filepath=None, description=None):
         self.filepath = filepath
         self.description = description
         self.file = None
 
     def __enter__(self):
+        if self.filepath is None:
+            return
         self.file = open(self.filepath, 'w')
         self.file.write('Discounted returns in episodes\n')
         if self.description is not None:
             self.file.write('{}\n'.format(description))
 
     def __exit__(self, *args):
-        self.file.close()
+        if self.file is not None:
+            self.file.close()
 
     def log_returns(self, episode, discounted_return, average_discounted_returns):
         logging.info('Episode {} accumulated a discounted return of {}'.format(
