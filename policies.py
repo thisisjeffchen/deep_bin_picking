@@ -3,6 +3,7 @@ import contextlib
 import logging
 import os
 import math
+import operator
 import random
 import argparse
 import pdb
@@ -15,8 +16,14 @@ class Policy(object):
     def __init__(self, env):
         self.env = env
 
+    def choose_current_action(self, state):
+        raise NotImplementedError
+
     def choose_action(self, state):
-        pass
+        raise NotImplementedError
+
+class InfeasiblePolicy(Policy):
+    pass
 
 class PolicyRunner(object):
     def __init__(self, scene, scene_populator, env, policy, discount=0.9):
@@ -32,7 +39,10 @@ class PolicyRunner(object):
         self.step = 0
 
     def step_episode(self):
-        action = self.policy.choose_action(self.state)
+        try:
+            action = self.policy.choose_current_action()
+        except NotImplementedError:
+            action = self.policy.choose_action(self.state)
         if action == None:
             return False
         logging.info('Attempting to remove item {}...'.format(action.item_id))
@@ -103,7 +113,7 @@ class PolicyTester(object):
         while (self.episode < self.num_episodes):
             self.run_episode()
 
-class HighestFirstBaseline(Policy):
+class HighestFirstBaseline(InfeasiblePolicy):
     def choose_action(self, state):
         item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
         if len(item_heights) == 0:
@@ -111,7 +121,7 @@ class HighestFirstBaseline(Policy):
         item_id = max(item_heights, key=item_heights.get)
         return Action(item_id, state['item_names'][item_id], None, 1.0)
 
-class LowestFirstBaseline(Policy):
+class LowestFirstBaseline(InfeasiblePolicy):
     def choose_action(self, state):
         item_heights = {item: pose[0][2] for (item, pose) in state['poses'].items()}
         if len(item_heights) == 0:
@@ -120,16 +130,20 @@ class LowestFirstBaseline(Policy):
         return Action(item_id, state['item_names'][item_id], None, 1.0)
 
 class RandomBaseline(Policy):
-    def choose_action(self, state):
-        actions = self.env.get_actions(state)
+    def choose_current_action(self):
+        actions = self.env.get_current_candidate_actions()
+        if not actions:
+            return None
         action = random.choice(actions)
         return action
 
 class GreedyBaseline(Policy):
-    def choose_action(self, state):
-        # TODO: implement a greedy baseline
-        (item_id, item_name) = random.choice(list(state['poses'].items()))
-        return Action(item_id, item_name, None, None)
+    def choose_current_action(self):
+        actions = self.env.get_current_candidate_actions()
+        if not actions:
+            return None
+        action = max(actions, key=operator.attrgetter('metric'))
+        return action
 
 
 BASELINE_POLICIES = {
@@ -145,9 +159,8 @@ def test_policy(policy_name, Policy,
     """Run a policy on the CrateMDP environment."""
     scene = Scene(show_gui=False)
     scene_populator = ScenePopulator(scene)
-    simple_done = (policy_name == 'baseline_lowest' or
-                   policy_name == 'baseline_highest')
-    env = CrateMDP(scene, scene_populator, simple_done=simple_done)
+    env = CrateMDP(scene, scene_populator,
+                   ignore_feasibility=issubclass(Policy, InfeasiblePolicy))
     policy = Policy(env, *policy_factory_args, **policy_factory_kwargs)
     policy_runner = PolicyRunner(scene, scene_populator, env, policy)
     results_dir = os.path.join('results', policy_name)

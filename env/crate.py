@@ -15,6 +15,7 @@ from action_finder import Action, ActionFinder
 
 NUM_ITEMS = 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
+CONSECUTIVE_FAILURE_DONE_THRESHOLD = 10
 
 ACTION_DIMS = 5
 ACTION_CHOICES_MAX = 10
@@ -25,7 +26,7 @@ class CrateMDP(object):
 
     def __init__(self, scene, scene_populator, pomdp=False, sim_remove_velocity=[0, 0, 2],
                  sim_position_delta_threshold=0.004, sim_angle_delta_threshold=np.pi / 32,
-                 simple_done=False):
+                 ignore_feasibility=False):
         """Store the Scene and ScenePopulator to use for managing the environment."""
         self.scene = scene
         self.scene_populator = scene_populator
@@ -37,7 +38,8 @@ class CrateMDP(object):
                                           len (self.scene_populator.item_database) + 7]
         self._current_candidate_actions = None
         self.af = ActionFinder()
-        self.simple_done = simple_done
+        self.ignore_feasibility = ignore_feasibility
+        self.consecutive_failures = 0
 
     def encode_state(self, state):
         one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
@@ -144,8 +146,10 @@ class CrateMDP(object):
         """Reset environment to state sampled from distribution of initial states."""
         self.scene.remove_all_items()
         self.scene_populator.add_items(num_items=NUM_ITEMS)
-        self._current_candidate_actions = None
-        return self._observe_current()
+        observation = self._observe_current()
+        self._current_candidate_actions = (None if self.ignore_feasibility
+                                           else self.af.find(observation))
+        return observation
 
     def step(self, action):
         """Take an action on the environment."""
@@ -155,18 +159,25 @@ class CrateMDP(object):
         if success:
             bounds_removed_items = self._remove_item(action.item_id)
             reward += PENALTY_FOR_COLIFT * len(bounds_removed_items)  # Penalize for knocking other items out
+            self.consecutive_failures = 0
+        else:
+            self.consecutive_failures += 1
         observation = self._observe_current()   # may need to change for POMDP
-        done = (len(self.scene.item_ids) == 0)
-        if not self.simple_done:
+        done = False
+        if len(self.scene.item_ids) == 0:
+            done = True
+            logging.info('Environment terminated: no remaining items.')
+        if not self.ignore_feasibility:
             self._current_candidate_actions = self.af.find(observation)
-            if not self._current_candidate_actions:
+            if len(self._current_candidate_actions) == 0:
+                logging.info('Environment terminated: no remaining candidate actions.')
                 done = True
+        if self.consecutive_failures > CONSECUTIVE_FAILURE_DONE_THRESHOLD:
+            logging.info('Environment terminated: too many consecutive failed grasp attempts.')
+            done = True
 
         return (observation, reward, done)
 
-
-    def get_actions (self, state):
-        if self._current_candidate_actions is None:
-            self._current_candidate_actions = self.af.find(state)
+    def get_current_candidate_actions(self):
         return self._current_candidate_actions
 
