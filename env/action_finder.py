@@ -4,7 +4,7 @@ DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
 GRIPPER_NAME = 'yumi_metal_spline'
 GRIPPER_REL_PATH = 'data/grippers/'
-GRASP_METRIC = 'force_closure'
+GRASP_METRIC = 'ferrari_canny'
 DEFAULT_NUM_GRASPS_PER_ITEM = 3
 GRIPPER_Z_POS = 1
 FC_90_THRESHOLD = 0.010809481366594122
@@ -19,6 +19,43 @@ class ActionFinder (object):
 		"""
 		pass
 
+    def check_collisions(self, state, actions):
+        """Filter the provided actions for actions which don't cause collisions."""
+        if self.pomdp:
+            return []
+
+        gcc = dexnet.grasping.GraspCollisionChecker(self.gripper)
+
+        # Add all objects to the world frame
+        item_names = state['item_names']
+        poses = state['poses']
+        graspables = {}
+        for item_id, pose in poses.items():
+            graspable = self.dn.dataset.graspable(item_names[item_id])
+            gcc.add_graspable_object(graspable)
+            graspables[item_id] = graspable
+
+        for idx in reversed(range(len(actions))):
+            action = actions[idx]
+            pose = poses[action.item_id]
+            rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(pose[1])
+            rot_grip = autolab_core.RigidTransform.rotation_from_quaternion(self.gripper_pose[1])
+            world_to_obj = autolab_core.RigidTransform(rot_obj, pose[0], 'world', 'obj')
+            world_to_grip = autolab_core.RigidTransform(rot_grip, self.gripper_pose[0],
+                                                        'world', 'gripper')
+            obj_to_world = world_to_obj.inverse()
+            obj_to_grip = world_to_grip.dot(obj_to_world)
+            # now have RigidTransform of gripper wrt object, so can pass to collision check
+
+            gcc.set_graspable_object(graspables[action.item_id])
+            grasp_collide = gcc.grasp_in_collision(obj_to_grip.inverse(), action.item_name)
+            approach_collide = gcc.collides_along_approach(
+                action.grasp, self.cc_approach_dist, self.cc_delta_approach, action.item_name
+            )
+            if grasp_collide or approach_collide:
+                del actions[idx]
+
+        return actions
 
 if __name__ == "__main__":
 	#tests
