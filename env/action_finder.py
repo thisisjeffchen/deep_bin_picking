@@ -2,6 +2,7 @@ import dexnet
 import collections
 import autolab_core
 import pdb
+import random
 
 DEX_NET_PATH = '../dex-net/'
 DB_NAME = 'dexnet_2.hdf5'
@@ -16,6 +17,7 @@ MAX_PROB = 0.9
 ACTION_COLLISION_CHECK_MAX_SOFT = 3
 ACTION_COLLISION_CHECK_MAX_HARD = 10
 ACTION_SKIP_RATE = 11
+MIN_RETURN_ACTIONS = 3
 
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
@@ -29,46 +31,37 @@ class ActionFinder (object):
         self.gripper = dexnet.grasping.gripper.RobotGripper.load(
             GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH
         )
-        self.gripper_pose = ([0, 0, GRIPPER_Z_POS], [1, 0, 0, 0])
+        self.gripper_rotation =  [1, 0, 0, 0]
         self.cc_approach_dist = 1.0
         self.cc_delta_approach = 0.1    # may need tuning
 
-    def _check_collisions(self, state, actions):
-        """
-        Filter the provided actions for actions
-        which don't cause collisions.
-        """
-        if self.pomdp:
-            return []
 
-        for idx in reversed(range(len(actions))):
-            action = actions[idx]
-            pose = poses[action.item_id]
-            rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(pose[1])
-            rot_grip = autolab_core.RigidTransform.rotation_from_quaternion(self.gripper_pose[1])
-            world_to_obj = autolab_core.RigidTransform(rot_obj, pose[0], 'world', 'obj')
-            world_to_grip = autolab_core.RigidTransform(rot_grip, self.gripper_pose[0],
-                                                        'world', 'gripper')
-            obj_to_world = world_to_obj.inverse()
-            obj_to_grip = world_to_grip.dot(obj_to_world)
-            # now have RigidTransform of gripper wrt object, so can pass to collision check
-
-            gcc.set_graspable_object(graspables[action.item_id])
-            grasp_collide = gcc.grasp_in_collision(obj_to_grip.inverse(), action.item_name)
-            approach_collide = gcc.collides_along_approach(
-                action.grasp, self.cc_approach_dist, self.cc_delta_approach, action.item_name
-            )
-            if grasp_collide or approach_collide:
-                del actions[idx]
-
-        return actions
-
-    def _is_collision_free (self, graspable, grasp, pose):
+    def _is_collision_free (self, gcc, item_name, graspable, grasp, pose):
         """
         Makes sure a particular graspable is collision free
         """
-        return True
+        gripper_pose = [pose[0][0], pose[0][1], GRIPPER_Z_POS]
 
+        rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(pose[1])
+        rot_grip = autolab_core.RigidTransform.rotation_from_quaternion(self.gripper_rotation)
+        world_to_obj = autolab_core.RigidTransform(rot_obj, pose[0], 'world', 'obj')
+
+        world_to_grip = autolab_core.RigidTransform(rot_grip, gripper_pose,
+                                                        'world', 'gripper')
+        obj_to_world = world_to_obj.inverse()
+        obj_to_grip = world_to_grip.dot(obj_to_world)
+        # now have RigidTransform of gripper wrt object, so can pass to collision check
+
+        gcc.set_graspable_object(graspable)
+        grasp_collide = gcc.grasp_in_collision(obj_to_grip.inverse(), item_name)
+        approach_collide = gcc.collides_along_approach(
+                grasp, self.cc_approach_dist, self.cc_delta_approach, item_name)
+
+        if grasp_collide or approach_collide:
+            print "collision detected " + item_name
+            return False
+
+        return True
 
 
     def _create_grasp_collision_checker (self, state):
@@ -107,7 +100,6 @@ class ActionFinder (object):
         """
         gcc, graspables = self._create_grasp_collision_checker (state)
 
-        unlikely_item_poses = {}
         item_poses = state['poses'].copy () #shallow copy
         item_actions = {}
 
@@ -118,15 +110,68 @@ class ActionFinder (object):
             grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
             added = False
             item_actions[item_id] = {"grasps": grasps,
-                                  "metrics": metrics}
+                                     "metrics": metrics}
 
             for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
                 idx = (i * ACTION_SKIP_RATE) % len (grasps)
-                if self._is_collision_free (graspables[item_id], grasps[idx], item_poses[item_id]):
-                    action = Action (item_id, name, grasps[idx], self._convert_to_prob (metrics[idx]))
+                if self._is_collision_free (gcc, state['item_names'][item_id],
+                                            graspables[item_id], 
+                                            grasps[idx], 
+                                            item_poses[item_id]):
+                    action = Action (item_id, name, grasps[idx], 
+                                     self._convert_to_prob (metrics[idx]))
                     return_actions.append (action)
-                    added = True
                     break
+
+        if len (return_actions) > MIN_RETURN_ACTIONS:
+            return return_actions #early return
+
+        for action in return_actions:
+            del item_poses[action.item_id]
+
+        #remove grasps already checked
+        for item_id, pose in item_poses.iteritems ():
+            idxes = ACTION_SKIP_RATE  * range (0, ACTION_COLLISION_CHECK_MAX_SOFT)
+            idxes.reverse ()
+            for idx in idxes:
+                del item_actions[item_id]["grasps"][idx]
+                del item_actions[item_id]["metrics"][idx]
+
+
+        unlikely_item_poses = item_poses
+
+        assert len (item_poses) == 0
+        assert len (unlikely_item_poses) + len (return_actions) == len (state['poses'])
+
+        give_up_iter = 0
+        while (len (return_actions) < MIN_RETURN_ACTIONS 
+               and len (unlikely_item_poses) > 0 
+               and give_up_iter < ACTION_COLLISION_CHECK_MAX_HARD):
+
+            print "Enter while loop to search for an action"
+            for item_id, pose in unlikely_item_poses.iteritems():
+                grasps = item_actions[item_id]["grasps"]
+                metrics = item_actions[item_id]["metrics"]
+                assert len (grasps) == len (metrics)
+
+                item_idx = random.randint(0, len (grasps) - 1)
+                if self._is_collision_free (gcc, state['item_names'][item_id],
+                                            graspables[item_id], 
+                                            grasps[item_idx], 
+                                            item_poses[item_id]):
+                    action = Action (item_id, name, grasps[item_idx], 
+                                     self._convert_to_prob (metrics[item_idx]))
+                    return_actions.append (action)
+                else:
+                    del grasps[item_idx]
+                    del metrics[item_idx]
+
+            for action in return_actions:
+                del unlikely_item_poses[action.item_id]
+
+
+        print "Exit while loop to search for an action"
+        print "Actions Length: " + str(len(return_actions))
         
 
         return return_actions
@@ -175,6 +220,36 @@ if __name__ == "__main__":
                 actions.append(Action(item_id, name, grasps[idx], metrics[idx]))
 
         actions = self.check_collisions(state, actions)
+
+        return actions
+
+        def _check_collisions(self, state, actions):
+        """
+        Filter the provided actions for actions
+        which don't cause collisions.
+        """
+        if self.pomdp:
+            return []
+
+        for idx in reversed(range(len(actions))):
+            action = actions[idx]
+            pose = poses[action.item_id]
+            rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(pose[1])
+            rot_grip = autolab_core.RigidTransform.rotation_from_quaternion(self.gripper_pose[1])
+            world_to_obj = autolab_core.RigidTransform(rot_obj, pose[0], 'world', 'obj')
+            world_to_grip = autolab_core.RigidTransform(rot_grip, self.gripper_pose[0],
+                                                        'world', 'gripper')
+            obj_to_world = world_to_obj.inverse()
+            obj_to_grip = world_to_grip.dot(obj_to_world)
+            # now have RigidTransform of gripper wrt object, so can pass to collision check
+
+            gcc.set_graspable_object(graspables[action.item_id])
+            grasp_collide = gcc.grasp_in_collision(obj_to_grip.inverse(), action.item_name)
+            approach_collide = gcc.collides_along_approach(
+                action.grasp, self.cc_approach_dist, self.cc_delta_approach, action.item_name
+            )
+            if grasp_collide or approach_collide:
+                del actions[idx]
 
         return actions
 
