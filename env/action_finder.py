@@ -86,7 +86,6 @@ class ActionFinder (object):
             gcc.add_graspable_object(graspable, obj_to_world)
 
             graspables[item_id] = graspable
-            pdb.set_trace()
 
         return gcc, graspables
 

@@ -168,10 +168,10 @@ class CrateMDP(object):
         if self._current_candidate_actions is None:
             self._current_candidate_actions = self.af.find(state)
         actions = self._current_candidate_actions
-        if len (actions) == 0:
+        if len(actions) == 0:
             print "Prunning got rid of all actions, now using all actions..."
             actions = self.af.find (state)
-        
+
         #will only return a certain number of actions
         return actions[0:self.get_action_choices_max()]
 
