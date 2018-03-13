@@ -12,13 +12,6 @@ import numpy as np
 from scene import Scene, ScenePopulator
 from action_finder import Action, ActionFinder
 
-# Import input/raw-input with python 2/3 compatibility
-try:
-    input = raw_input
-except NameError:
-    pass
-
-
 NUM_ITEMS = 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
 
