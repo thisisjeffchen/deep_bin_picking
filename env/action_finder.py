@@ -8,6 +8,7 @@ GRASP_METRIC = 'ferrari_canny'
 DEFAULT_NUM_GRASPS_PER_ITEM = 3
 GRIPPER_Z_POS = 1
 FC_90_THRESHOLD = 0.010809481366594122
+MAX_PROB = 0.9
 
 ACTION_COLLISION_CHECK_MAX_SOFT = 3
 ACTION_COLLISION_CHECK_MAX_HARD = 20
@@ -56,6 +57,14 @@ class ActionFinder (object):
 
         return actions
 
+    def _is_collision_free (self, graspable, grasp, pose):
+    	"""
+    	Makes sure a particular graspable is collision free
+    	"""
+    	return True
+
+
+
     def _create_grasp_collision_checker (self, state):
     	gcc = dexnet.grasping.GraspCollisionChecker(self.gripper)
 
@@ -72,6 +81,10 @@ class ActionFinder (object):
 
 
     def _convert_to_prob (self, ferrari_canny):
+    	fc_adjusted = max (ferrari_canny, FC_90_THRESHOLD)
+
+    	return (fc_adjusted / FC_90_THRESHOLD) * MAX_PROB
+
 
 	def find (self, state):
 		"""
@@ -88,17 +101,20 @@ class ActionFinder (object):
 		for item_id, pose in item_poses:
 			name = state['item_names'][item_id]
 			grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
+			added = False
 			item_actions[name] = {"grasps": grasps,
 								  "metrics": metrics}
 
 			for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
-				if 
+				idx = (i * ACTION_SKIP_RATE) % len (grasps)
+				if self._is_collision_free (graspables[item_id], grasps[idx], item_poses[item_id]):
+					action = Action (item_id, name, grasps[idx], self._convert_to_prob (metrics[idx]))
+					return_actions.append (action)
+					added = True
 
 
-		while #there are no actions:
 
-
-
+		#while #there are no actions:
 
 
 
