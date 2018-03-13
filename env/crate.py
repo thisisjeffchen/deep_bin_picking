@@ -1,5 +1,4 @@
 """Crate/bin-picking environments for running policies."""
-
 import collections
 import logging
 import math
@@ -8,11 +7,11 @@ import pdb
 import utils.general as general
 import autolab_core
 
-import dexnet
 
 import numpy as np
 
 from scene import Scene, ScenePopulator
+from action_finder import Action, ActionFinder
 
 # Import input/raw-input with python 2/3 compatibility
 try:
@@ -21,19 +20,8 @@ except NameError:
     pass
 
 
-Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
-
 NUM_ITEMS = 10
 PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
-DEX_NET_PATH = '../dex-net/'
-DB_NAME = 'dexnet_2.hdf5'
-GRIPPER_NAME = 'yumi_metal_spline'
-GRIPPER_REL_PATH = 'data/grippers/'
-GRASP_METRIC = 'force_closure'
-DEFAULT_NUM_GRASPS_PER_ITEM = 3
-GRIPPER_Z_POS = 1
-FC_90_THRESHOLD = 0.010809481366594122
-
 
 ACTION_DIMS = 4
 ACTION_CHOICES_MAX = 5
@@ -51,16 +39,6 @@ class CrateMDP(object):
         self.sim_remove_velocity = sim_remove_velocity
         self.sim_position_delta_threshold = sim_position_delta_threshold
         self.sim_angle_delta_threshold = sim_angle_delta_threshold
-        self.dn = dexnet.DexNet()
-        self.dn.open_database(DEX_NET_PATH + DB_NAME, create_db=True)
-        self.dn.open_dataset('3dnet')
-        self.gripper_name = GRIPPER_NAME
-        self.gripper = dexnet.grasping.gripper.RobotGripper.load(
-            GRIPPER_NAME, DEX_NET_PATH + GRIPPER_REL_PATH
-        )
-        self.gripper_pose = ([0, 0, GRIPPER_Z_POS], [1, 0, 0, 0])
-        self.cc_approach_dist = 1.0
-        self.cc_delta_approach = 0.1    # may need tuning
         self.encoded_observation_shape = [self.scene_populator.max_items,
                                           len (self.scene_populator.item_database) + 7]
         self._current_candidate_actions = None
@@ -158,30 +136,6 @@ class CrateMDP(object):
             pass
         return bounds_removed_items
 
-    def _get_actions(self, state, use_all_actions = False):
-        """Get all actions given the current state.
-
-        This can only be used in mdp mode.
-        """
-        if self.pomdp:
-            return []
-        item_names = state['item_names']
-
-        poses = state['poses']
-        actions = []
-
-        for item_id, pose in poses.items():
-            name = item_names[item_id]
-            grasps, metrics = self.dn.get_grasps(name, GRIPPER_NAME, GRASP_METRIC)
-            for idx, g in enumerate (grasps):
-                if not use_all_actions and idx >= DEFAULT_NUM_GRASPS_PER_ITEM:
-                    break
-                actions.append(Action(item_id, name, grasps[idx], metrics[idx]))
-
-        actions = self.check_collisions(state, actions)
-
-        return actions
-
     def get_action_dims (self):
         return ACTION_DIMS
 
@@ -218,43 +172,6 @@ class CrateMDP(object):
 
         return (observation, reward, done)
 
-    def check_collisions(self, state, actions):
-        """Filter the provided actions for actions which don't cause collisions."""
-        if self.pomdp:
-            return []
-
-        gcc = dexnet.grasping.GraspCollisionChecker(self.gripper)
-
-        # Add all objects to the world frame
-        item_names = state['item_names']
-        poses = state['poses']
-        graspables = {}
-        for item_id, pose in poses.items():
-            graspable = self.dn.dataset.graspable(item_names[item_id])
-            gcc.add_graspable_object(graspable)
-            graspables[item_id] = graspable
-
-        for idx in reversed(range(len(actions))):
-            action = actions[idx]
-            pose = poses[action.item_id]
-            rot_obj = autolab_core.RigidTransform.rotation_from_quaternion(pose[1])
-            rot_grip = autolab_core.RigidTransform.rotation_from_quaternion(self.gripper_pose[1])
-            world_to_obj = autolab_core.RigidTransform(rot_obj, pose[0], 'world', 'obj')
-            world_to_grip = autolab_core.RigidTransform(rot_grip, self.gripper_pose[0],
-                                                        'world', 'gripper')
-            obj_to_world = world_to_obj.inverse()
-            obj_to_grip = world_to_grip.dot(obj_to_world)
-            # now have RigidTransform of gripper wrt object, so can pass to collision check
-
-            gcc.set_graspable_object(graspables[action.item_id])
-            grasp_collide = gcc.grasp_in_collision(obj_to_grip.inverse(), action.item_name)
-            approach_collide = gcc.collides_along_approach(
-                action.grasp, self.cc_approach_dist, self.cc_delta_approach, action.item_name
-            )
-            if grasp_collide or approach_collide:
-                del actions[idx]
-
-        return actions
 
     def get_actions (self, state):
         if self._current_candidate_actions is None:
