@@ -149,6 +149,7 @@ class CrateMDP(object):
         observation = self._observe_current()
         self._current_candidate_actions = (None if self.ignore_feasibility
                                            else self.af.find(observation))
+        self.consecutive_failures = 0
         return observation
 
     def step(self, action):
