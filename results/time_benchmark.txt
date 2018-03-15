@@ -1,0 +1,14 @@
+INFO:root:Average episode length over past 10 episodes: 6
+
+
+time benchmark w/ zip/unzip
+
+real	8m5.948s
+user	12m35.011s
+sys	9m10.605s
+
+
+with del
+real	6m47.872s
+user	9m54.145s
+sys	7m20.090s

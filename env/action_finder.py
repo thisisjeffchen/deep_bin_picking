@@ -142,11 +142,13 @@ class ActionFinder (object):
             name = state['item_names'][item_id]
             grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
  
-            grasps_metrics = zip (grasps, metrics)
-            grasps_metrics = [(grasp, metric) for (grasp, metric) in grasps_metrics if metric > FC_PRUNE_THRESHOLD]            
-            grasps, metrics = zip (*grasps_metrics)
-            grasps = list (grasps)
-            metrics = list (metrics)
+            for idx in reversed (range (len(grasps))):
+                if metrics[idx] < FC_PRUNE_THRESHOLD:
+                    del metrics[idx]
+                    del grasps[idx]
+                else:
+                    break #metrics are sorted, early break at first failure
+
 
             item_actions[item_id] = {"grasps": grasps,
                                      "metrics": metrics}
