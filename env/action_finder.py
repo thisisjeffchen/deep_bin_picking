@@ -142,15 +142,12 @@ class ActionFinder (object):
             name = state['item_names'][item_id]
             grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
 
-            #TODO: slow, should cache these grasps instead of pruning all the time
-            for idx in reversed (range (len(grasps))):
-                if metrics[idx] < FC_PRUNE_THRESHOLD:
-                    del metrics[idx]
-                    del grasps[idx]
-                else:
-                    break #metrics are sorted
+            grasps_metrics = zip (grasps, metrics)
+            grasps_metrics = [(grasp, metric) for (grasp, metric) in grasps_metrics if metric < FC_PRUNE_THRESHOLD]            
+            grasps, metrics = zip (*grasps_metrics)
+            grasps = list (grasps)
+            metrics = list (metrics)
 
-            added = False
             item_actions[item_id] = {"grasps": grasps,
                                      "metrics": metrics}
 
@@ -196,17 +193,17 @@ class ActionFinder (object):
                 metrics = item_actions[item_id]["metrics"]
                 assert len (grasps) == len (metrics)
 
-                item_idx = random.randint(0, len (grasps) - 1)
+                grasp_idx = random.randint(0, len (grasps) - 1)
                 if self._is_collision_free (gcc, state['item_names'][item_id],
                                             graspables[item_id], 
-                                            grasps[item_idx], 
-                                            item_poses[item_id]):
-                    action = Action (item_id, name, grasps[item_idx], 
-                                     self._convert_to_prob (metrics[item_idx]))
+                                            grasps[grasp_idx], 
+                                            pose):
+                    action = Action (item_id, name, grasps[grasp_idx], 
+                                     self._convert_to_prob (metrics[grasp_idx]))
                     return_actions.append (action)
-                else:
-                    del grasps[item_idx]
-                    del metrics[item_idx]
+
+                del grasps[grasp_idx]
+                del metrics[grasp_idx]
 
             for action in return_actions:
                 try:
