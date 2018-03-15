@@ -365,6 +365,7 @@ class SingleDQN():
         while t < self.flags.nsteps_train:
             total_reward = 0
             state = self.env.reset()
+            s = 0
 
             while True:
                 t += 1
@@ -415,9 +416,10 @@ class SingleDQN():
                     print ("\rPopulating the memory {}/{}...".format(t, self.flags.learning_start))
 
                 # count reward
-                total_reward += reward * (self.flags.gamma ** t)
+                total_reward += reward * (self.flags.gamma ** s)
                 if done or t >= self.flags.nsteps_train:
                     break
+                s+=1
 
             # updates to perform at the end of an episode
             rewards.append(total_reward)          
@@ -487,6 +489,7 @@ class SingleDQN():
         for i in range(num_episodes):
             total_reward = 0
             state = env.reset()
+            s = 0
             while True:
                 action_choices = self.env.get_current_candidate_actions ()
                 if len(action_choices) == 0:
@@ -502,9 +505,10 @@ class SingleDQN():
                 state, reward, done = self.env.step(action)
 
                 # count reward
-                total_reward += reward * (self.flags.gamma ** t)
+                total_reward += reward * (self.flags.gamma ** s)
                 if done:
                     break
+                s += 1
 
             # updates to perform at the end of an episode
             rewards.append(total_reward)     
