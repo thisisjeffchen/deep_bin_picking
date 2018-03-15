@@ -24,7 +24,7 @@ ACTION_CHOICES_MAX = 10
 class CrateMDP(object):
     """An environment for the crate/bin-picking task with OpenAI gym-esque interface."""
 
-    def __init__(self, scene, scene_populator, pomdp=False, sim_remove_velocity=[0, 0, 2],
+    def __init__(self, scene, scene_populator, pomdp=False, sim_remove_velocity=[0, 0, 5],
                  sim_position_delta_threshold=0.004, sim_angle_delta_threshold=np.pi / 32,
                  ignore_feasibility=False):
         """Store the Scene and ScenePopulator to use for managing the environment."""

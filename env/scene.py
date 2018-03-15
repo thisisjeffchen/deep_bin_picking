@@ -22,7 +22,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 URDF_DIR = os.path.join(ROOT_DIR, 'meshes', 'urdf')
 GRIPPER_DIR = os.path.join(ROOT_DIR, 'meshes', 'grippers')
 GRIPPER = 'yumi_metal_spline'
-MAX_SIM_LOOP = 50
+MAX_SIM_LOOP = 20
 
 
 def compute_pose_deltas(poses, prev_poses):
@@ -45,7 +45,7 @@ class Scene(object):
     def __init__(
             self, show_gui=False, gravity=[0, 0, -40], timestep_interval=0.001,
             crate_wall_thickness=0.002, crate_wall_width=0.15, crate_wall_height=0.15,
-            bounds_height_thresholds=(-0.1, 0.35)
+            bounds_height_thresholds=(-0.1, 0.25)
     ):
         """Set up scene parameters and fixed models."""
         self.show_gui = show_gui
@@ -300,7 +300,7 @@ class ScenePopulator(object):
 
     def __init__(
             self, scene, min_items=10, max_items=20,
-            mean_position=np.array([0, 0, 0.25]), position_ranges=np.array([0.05, 0.05, 0.05]),
+            mean_position=np.array([0, 0, 0.2]), position_ranges=np.array([0.05, 0.05, 0.05]),
             min_lateral_friction=0.4, max_lateral_friction=0.6,
             min_spinning_friction=0.0, max_spinning_friction=0.01,
             min_rolling_friction=0.0, max_rolling_friction=0.01,

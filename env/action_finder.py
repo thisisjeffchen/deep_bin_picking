@@ -148,8 +148,6 @@ class ActionFinder (object):
             grasps = list (grasps)
             metrics = list (metrics)
 
-
-
             item_actions[item_id] = {"grasps": grasps,
                                      "metrics": metrics}
 

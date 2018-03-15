@@ -11,6 +11,8 @@ from collections import deque
 NN_HIDDEN_1 = 200
 NN_HIDDEN_2 = 10
 
+NN_DEEP_HIDDEN = 50
+
 class SingleDQN():
     def __init__(self, env, flags, logger=None):
         self.flags = flags
@@ -217,6 +219,15 @@ class SingleDQN():
                 layer_1 = tf.contrib.layers.fully_connected (inputs, NN_HIDDEN_1) #ReLU by default
                 layer_2 = tf.contrib.layers.fully_connected (layer_1, NN_HIDDEN_2) #ReLU by default
                 out = tf.contrib.layers.fully_connected (layer_2, 1, activation_fn = None)
+            elif self.flags.model == "nn_deep":
+                layer_1 = tf.contrib.layers.fully_connected (inputs, NN_DEEP_HIDDEN)
+                layer_2 = tf.contrib.layers.fully_connected (layer_1, NN_DEEP_HIDDEN)
+                layer_3 = tf.contrib.layers.fully_connected (layer_2, NN_DEEP_HIDDEN)
+                layer_4 = tf.contrib.layers.fully_connected (layer_3, NN_DEEP_HIDDEN)
+
+                out = tf.contrib.layers.fully_connected (layer_4, 1 activation_fn = None)
+
+
             else:
                 raise NameError ("Model flag not recognized") 
         return out
@@ -339,7 +350,7 @@ class SingleDQN():
 
         # initialize replay buffer and variables
         replay_buffer = RobotReplayBuffer(self.flags.buffer_size)
-        rewards = deque(maxlen=self.flags.num_episodes_test)
+        rewards = deque(maxlen=self.flags.running_avg_size)
         max_q_values = deque(maxlen=1000)
         q_values = deque(maxlen=1000)
         self.init_averages()
