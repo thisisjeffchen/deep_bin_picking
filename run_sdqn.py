@@ -29,9 +29,9 @@ tf.app.flags.DEFINE_integer ("learning_start", 1000, "") #needs to be at least 1
 tf.app.flags.DEFINE_bool    ("grad_clip", False, "")
 tf.app.flags.DEFINE_integer ("clip_val", 10, "")
 
-tf.app.flags.DEFINE_integer ("num_episodes_test", 100, "")
+tf.app.flags.DEFINE_integer ("num_episodes_test", 50, "")
 tf.app.flags.DEFINE_integer ("running_avg_size", 250, "")
-tf.app.flags.DEFINE_integer ("saving_freq", 2000, "")
+tf.app.flags.DEFINE_integer ("saving_freq", 100, "")
 tf.app.flags.DEFINE_integer ("log_freq", 10, "")
 tf.app.flags.DEFINE_integer ("eval_freq", 2000, "")
 tf.app.flags.DEFINE_integer ("record_freq", 200, "")
