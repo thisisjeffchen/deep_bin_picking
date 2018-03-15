@@ -415,7 +415,7 @@ class SingleDQN():
                     print ("\rPopulating the memory {}/{}...".format(t, self.flags.learning_start))
 
                 # count reward
-                total_reward += reward
+                total_reward += reward * (self.flags.gamma ** t)
                 if done or t >= self.flags.nsteps_train:
                     break
 
@@ -502,7 +502,7 @@ class SingleDQN():
                 state, reward, done = self.env.step(action)
 
                 # count reward
-                total_reward += reward
+                total_reward += reward * (self.flags.gamma ** t)
                 if done:
                     break
 
