@@ -73,7 +73,7 @@ def returns_log(filepath=None, description=None):
 
 
 class PolicyTester(object):
-    def __init__(self, policy_runner, returns_logfile, num_episodes=10):
+    def __init__(self, policy_runner, returns_logfile, num_episodes=500):
         self.policy_runner = policy_runner
         self.num_episodes = num_episodes
         self.episode = 0
