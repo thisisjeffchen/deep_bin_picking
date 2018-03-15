@@ -225,7 +225,7 @@ class SingleDQN():
                 layer_3 = tf.contrib.layers.fully_connected (layer_2, NN_DEEP_HIDDEN)
                 layer_4 = tf.contrib.layers.fully_connected (layer_3, NN_DEEP_HIDDEN)
 
-                out = tf.contrib.layers.fully_connected (layer_4, 1 activation_fn = None)
+                out = tf.contrib.layers.fully_connected (layer_4, 1, activation_fn = None)
 
 
             else:
