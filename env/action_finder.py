@@ -141,12 +141,14 @@ class ActionFinder (object):
         for item_id, pose in item_poses.iteritems ():
             name = state['item_names'][item_id]
             grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
-
+ 
             grasps_metrics = zip (grasps, metrics)
-            grasps_metrics = [(grasp, metric) for (grasp, metric) in grasps_metrics if metric < FC_PRUNE_THRESHOLD]            
+            grasps_metrics = [(grasp, metric) for (grasp, metric) in grasps_metrics if metric > FC_PRUNE_THRESHOLD]            
             grasps, metrics = zip (*grasps_metrics)
             grasps = list (grasps)
             metrics = list (metrics)
+
+
 
             item_actions[item_id] = {"grasps": grasps,
                                      "metrics": metrics}
@@ -200,8 +202,6 @@ class ActionFinder (object):
                                             pose):
                     action = Action (item_id, name, grasps[grasp_idx], 
                                      self._convert_to_prob (metrics[grasp_idx]))
-                    return_actions.append (action)
-
                 del grasps[grasp_idx]
                 del metrics[grasp_idx]
 
