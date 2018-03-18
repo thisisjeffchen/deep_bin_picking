@@ -8,7 +8,7 @@ from utils.general import get_logger, Progbar, export_plot
 from robot_replay_buffer import RobotReplayBuffer
 from collections import deque
 
-NN_HIDDEN_1 = 50
+NN_HIDDEN_1 = 200
 NN_HIDDEN_2 = 10
 
 NN_DEEP_HIDDEN = 50
