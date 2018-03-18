@@ -18,45 +18,61 @@ PENALTY_FOR_COLIFT = -10 #penalty for co-lifting other objectsre
 CONSECUTIVE_FAILURE_DONE_THRESHOLD = 10
 
 ACTION_DIMS = 5
+ACTION_DIMS_TINY = 3
 ACTION_CHOICES_MAX = 10
 
 
 class CrateMDP(object):
     """An environment for the crate/bin-picking task with OpenAI gym-esque interface."""
 
-    def __init__(self, scene, scene_populator, pomdp=False, sim_remove_velocity=[0, 0, 5],
+    def __init__(self, scene, scene_populator, flags=None, pomdp=False, sim_remove_velocity=[0, 0, 5],
                  sim_position_delta_threshold=0.004, sim_angle_delta_threshold=np.pi / 32,
                  ignore_feasibility=False):
         """Store the Scene and ScenePopulator to use for managing the environment."""
         self.scene = scene
         self.scene_populator = scene_populator
         self.pomdp = pomdp
+        self.flags=flags
         self.sim_remove_velocity = sim_remove_velocity
         self.sim_position_delta_threshold = sim_position_delta_threshold
         self.sim_angle_delta_threshold = sim_angle_delta_threshold
-        self.encoded_observation_shape = [self.scene_populator.max_items,
-                                          len (self.scene_populator.item_database) + 7]
+
+        if self.flags.tiny_space:
+            self.encoded_observation_shape = [self.scene_populator.max_items, 
+                                              len (self.scene_populator.item_database)]
+        else:
+            self.encoded_observation_shape = [self.scene_populator.max_items,
+                                              len (self.scene_populator.item_database) + 7]
+        
         self._current_candidate_actions = None
         self.af = ActionFinder()
         self.ignore_feasibility = ignore_feasibility
         self.consecutive_failures = 0
 
     def encode_state(self, state):
-        one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
+        if self.flags.tiny_space:
+            poses = np.zeros ([self.scene_populator.max_items, len(self.scene_populator.item_database)])
+            for i, item_name in enumerate (state['item_ids']):
+                item_id = state["item_ids"][item_name] 
+                item_idx = self.scene_populator.item_database.index (item_name)
+                poses[i, item_idx] = state['poses'][item_id][0][2] #just encode the z pos
+            return np.ndarray.flatten (poses)
+        else:
+            one_hot_item_ids = np.zeros([self.scene_populator.max_items, 
                                     len(self.scene_populator.item_database)])
-        for (i, item_name) in enumerate (state['item_ids']):
-            item_idx = self.scene_populator.item_database.index (item_name)
-            one_hot_item_ids[i, item_idx] = 1
-        poses = np.zeros((self.scene_populator.max_items, 7))  # 7 = position (3) + orientation (4)
-        for i, item_name in enumerate (state['item_ids']):
+            for (i, item_name) in enumerate (state['item_ids']):
+                item_idx = self.scene_populator.item_database.index (item_name)
+                one_hot_item_ids[i, item_idx] = 1
+            poses = np.zeros((self.scene_populator.max_items, 7))  # 7 = position (3) + orientation (4)
+            for i, item_name in enumerate (state['item_ids']):
 
-            item_id = state["item_ids"][item_name] 
-            poses[i, :3] = state['poses'][item_id][0]
-            poses[i, 3:] = state['poses'][item_id][1]
+                item_id = state["item_ids"][item_name] 
+                poses[i, :3] = state['poses'][item_id][0]
+                poses[i, 3:] = state['poses'][item_id][1]
 
-        return np.ndarray.flatten(np.hstack([poses, one_hot_item_ids]))
+            return np.ndarray.flatten(np.hstack([poses, one_hot_item_ids]))
 
-    def encode_action (self, action, state):
+    def encode_action (self, action, state):    
         g = action.grasp
         item_id = action.item_id
         obj_pose = state['poses'][item_id]
@@ -64,7 +80,11 @@ class CrateMDP(object):
         axis = g_to_w.x_axis
         angle = general.angle_between(np.array([1, 0, 0]), axis)
         grasp_loc_world = g_to_w.inverse().translation
-        return [grasp_loc_world[0], grasp_loc_world[1], grasp_loc_world[2], angle, action.metric] 
+
+        if self.flags.tiny_space:
+            return [grasp_loc_world[2], action.metric, obj_pose[0][2]]
+        else:
+            return [grasp_loc_world[0], grasp_loc_world[1], grasp_loc_world[2], angle, action.metric] 
 
     def encode_action_choices (self, action_choices, state):
         #encode action_choices into x,y,d,theta
@@ -134,7 +154,10 @@ class CrateMDP(object):
         return bounds_removed_items
 
     def get_action_dims (self):
-        return ACTION_DIMS
+        if self.flags.tiny_space:
+            return ACTION_DIMS_TINY
+        else:
+            return ACTION_DIMS
 
     def get_action_choices_max (self):
         return ACTION_CHOICES_MAX
@@ -148,7 +171,7 @@ class CrateMDP(object):
         self.scene_populator.add_items(num_items=NUM_ITEMS)
         observation = self._observe_current()
         self._current_candidate_actions = (None if self.ignore_feasibility
-                                           else self.af.find(observation))
+                                           else self.af.find_alt(observation))
         self.consecutive_failures = 0
         return observation
 
@@ -169,7 +192,7 @@ class CrateMDP(object):
             done = True
             logging.info('Environment terminated: no remaining items.')
         if not self.ignore_feasibility:
-            self._current_candidate_actions = self.af.find(observation)
+            self._current_candidate_actions = self.af.find_alt(observation)
             if len(self._current_candidate_actions) == 0:
                 logging.info('Environment terminated: no remaining candidate actions.')
                 done = True

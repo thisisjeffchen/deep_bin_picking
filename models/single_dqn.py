@@ -8,7 +8,7 @@ from utils.general import get_logger, Progbar, export_plot
 from robot_replay_buffer import RobotReplayBuffer
 from collections import deque
 
-NN_HIDDEN_1 = 200
+NN_HIDDEN_1 = 50
 NN_HIDDEN_2 = 10
 
 NN_DEEP_HIDDEN = 50
@@ -498,6 +498,7 @@ class SingleDQN():
 
                 encoded_actions, encoded_actions_mask = self.env.encode_action_choices (action_choices, state)
                 encoded_state = self.env.encode_state (state)
+
                 best_action_idx, q_values = self.get_best_action (encoded_state, encoded_actions[0:len(action_choices)])
 
                 action = action_choices[best_action_idx]

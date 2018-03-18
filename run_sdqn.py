@@ -39,6 +39,8 @@ tf.app.flags.DEFINE_float   ("soft_epsilon", 0.05, "")
 tf.app.flags.DEFINE_string  ("train_dir", "", "defaults to experiment_name")
 tf.app.flags.DEFINE_string("experiment_name", "tmp", "Unique name for your experiment. This will create a directory by this name in the experiments/ directory, which will hold all data related to this experiment")
 tf.app.flags.DEFINE_bool    ("record", False, "")
+tf.app.flags.DEFINE_bool    ("tiny_space", False, "Use this flag to get use a tiny action space of the z pos and the action success prob")
+
 
 
 train_path = os.path.join(EXPERIMENTS_DIR, tf.app.flags.FLAGS.experiment_name)
@@ -51,7 +53,7 @@ def main(unused_argv):
 
     scene = Scene (show_gui=False)
     scene_populator = ScenePopulator (scene)
-    env = CrateMDP (scene, scene_populator)
+    env = CrateMDP (scene, scene_populator, flags=FLAGS)
 
     # exploration strategy
     exp_schedule = LinearExploration (env, FLAGS.eps_begin, 
