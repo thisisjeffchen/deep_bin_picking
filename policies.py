@@ -7,6 +7,7 @@ import operator
 import random
 import argparse
 import pdb
+import collections
 
 from env.scene import Scene, ScenePopulator
 from env.crate import Action, CrateMDP
@@ -159,7 +160,10 @@ def test_policy(policy_name, Policy,
     """Run a policy on the CrateMDP environment."""
     scene = Scene(show_gui=False)
     scene_populator = ScenePopulator(scene)
-    env = CrateMDP(scene, scene_populator,
+    Flags = collections.namedtuple('Flags', ['tiny_space'])    
+    flags = Flags (tiny_space = True)
+
+    env = CrateMDP(scene, scene_populator, flags=flags,
                    ignore_feasibility=issubclass(Policy, InfeasiblePolicy))
     policy = Policy(env, *policy_factory_args, **policy_factory_kwargs)
     policy_runner = PolicyRunner(scene, scene_populator, env, policy)
