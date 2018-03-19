@@ -19,6 +19,7 @@ ACTION_COLLISION_CHECK_MAX_SOFT = 3
 ACTION_COLLISION_CHECK_MAX_HARD = 10
 ACTION_SKIP_RATE = 11
 MIN_RETURN_ACTIONS = 3
+FORCE_RETURN_HIGHEST_ITEMS = 2
 
 Action = collections.namedtuple('Action', ['item_id', 'item_name', 'grasp', 'metric'])
 
@@ -121,6 +122,124 @@ class ActionFinder (object):
 
         assert (len(valid_grasps) == len(valid_metrics))
         print "total valid grasps: " + str (len (valid_grasps))
+
+
+    def find_alt (self, state):
+        """
+        Will force finding actions at the highest z values subject to FORCE_RETURN_HIGHEST_ITEMS
+        """
+        min_return_actions = min (MIN_RETURN_ACTIONS, len(state['poses']))
+
+        gcc, graspables = self._create_grasp_collision_checker (state)
+
+        item_poses = state['poses'].copy () #shallow copy
+        item_actions = {}
+
+        return_actions = []
+
+        pose_list = [(k, v) for k,v in item_poses.iteritems()]
+        #sort by z pos
+        pose_list_sorted = sorted(pose_list, key=lambda id_pose: id_pose[1][0][2], reverse = True) 
+
+        for idx, id_pose in enumerate (pose_list_sorted):
+            #print "should be sorted"
+            #print id_pose[1][0][2]
+            item_id = id_pose[0]
+            pose    = id_pose[1]
+
+            name = state['item_names'][item_id]
+            grasps, metrics = self.dn.get_grasps (name, GRIPPER_NAME, GRASP_METRIC)
+ 
+            for del_idx in reversed (range (len(grasps))):
+                if metrics[del_idx] < FC_PRUNE_THRESHOLD:
+                    del metrics[del_idx]
+                    del grasps[del_idx]
+                else:
+                    break #metrics are sorted, early break at first failure
+
+
+            item_actions[item_id] = {"grasps": grasps,
+                                     "metrics": metrics}
+            checked_idxes = []
+
+            if idx < FORCE_RETURN_HIGHEST_ITEMS:
+                for grasp_idx in range (len (grasps)):
+                    checked_idxes.append (grasp_idx)
+                    if self._is_collision_free (gcc, state['item_names'][item_id],
+                                                graspables[item_id], 
+                                                grasps[grasp_idx], 
+                                                item_poses[item_id]):
+                        action = Action (item_id, name, grasps[grasp_idx], 
+                                         self._convert_to_prob (metrics[grasp_idx]))
+                        return_actions.append (action)
+                        break
+
+
+            else:
+                for i in range (ACTION_COLLISION_CHECK_MAX_SOFT):
+                    idx = (i * ACTION_SKIP_RATE) % len (grasps)
+                    checked_idxes.append (idx)
+                    if self._is_collision_free (gcc, state['item_names'][item_id],
+                                                graspables[item_id], 
+                                                grasps[idx], 
+                                                item_poses[item_id]):
+                        action = Action (item_id, name, grasps[idx], 
+                                         self._convert_to_prob (metrics[idx]))
+                        return_actions.append (action)
+                        break
+
+            #Remove checked idxes
+            for del_idx in reversed (checked_idxes):
+                del grasps[del_idx]
+                del metrics[del_idx]
+
+        if len (return_actions) >= MIN_RETURN_ACTIONS:
+            return return_actions #early return
+
+        for action in return_actions:
+            del item_poses[action.item_id]
+
+
+        unlikely_item_poses = item_poses
+
+        assert len (unlikely_item_poses) + len (return_actions) == len (state['poses'])
+
+        give_up_iter = 0
+        while (len (return_actions) < MIN_RETURN_ACTIONS 
+               and len (unlikely_item_poses) > 0 
+               and give_up_iter < ACTION_COLLISION_CHECK_MAX_HARD):
+
+            #print "Enter while loop to search for an action"
+            for item_id, pose in unlikely_item_poses.iteritems():
+                grasps = item_actions[item_id]["grasps"]
+                metrics = item_actions[item_id]["metrics"]
+                assert len (grasps) == len (metrics)
+                if len (grasps) < 1:
+                    break
+
+                grasp_idx = random.randint(0, len (grasps) - 1)
+                if self._is_collision_free (gcc, state['item_names'][item_id],
+                                            graspables[item_id], 
+                                            grasps[grasp_idx], 
+                                            pose):
+                    action = Action (item_id, name, grasps[grasp_idx], 
+                                     self._convert_to_prob (metrics[grasp_idx]))
+                del grasps[grasp_idx]
+                del metrics[grasp_idx]
+
+            for action in return_actions:
+                try:
+                    del unlikely_item_poses[action.item_id]
+                except KeyError:
+                    pass
+
+            give_up_iter += 1
+
+        #print "Exit while loop to search for an action"
+        #print "Actions Length: " + str(len(return_actions))
+        
+
+        return return_actions
 
 
     def find (self, state):

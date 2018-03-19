@@ -148,7 +148,7 @@ class CrateMDP(object):
         self.scene_populator.add_items(num_items=NUM_ITEMS)
         observation = self._observe_current()
         self._current_candidate_actions = (None if self.ignore_feasibility
-                                           else self.af.find(observation))
+                                           else self.af.find_alt(observation))
         self.consecutive_failures = 0
         return observation
 
@@ -169,7 +169,7 @@ class CrateMDP(object):
             done = True
             logging.info('Environment terminated: no remaining items.')
         if not self.ignore_feasibility:
-            self._current_candidate_actions = self.af.find(observation)
+            self._current_candidate_actions = self.af.find_alt(observation)
             if len(self._current_candidate_actions) == 0:
                 logging.info('Environment terminated: no remaining candidate actions.')
                 done = True
