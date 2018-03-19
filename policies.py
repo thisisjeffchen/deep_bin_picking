@@ -146,12 +146,21 @@ class GreedyBaseline(Policy):
         action = max(actions, key=operator.attrgetter('metric'))
         return action
 
+class GreedyHeightBaseline (Policy):
+    print "Performing Greedy Height Baseline"
+    def choose_current_action(self):
+        actions = self.env.get_current_candidate_actions ()
+        if not actions:
+            return None
+        self.env.encode_action_choices ()
+
 
 BASELINE_POLICIES = {
     'baseline_highest': HighestFirstBaseline,
     'baseline_lowest': LowestFirstBaseline,
     'baseline_random': RandomBaseline,
-    'baseline_greedy': GreedyBaseline
+    'baseline_greedy': GreedyBaseline,
+    'baseline_greedy_height': GreedyHeightBaseline,
 }
 
 
