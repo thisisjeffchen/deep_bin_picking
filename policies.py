@@ -12,6 +12,10 @@ from env.scene import Scene, ScenePopulator
 from env.crate import Action, CrateMDP
 from env.action_finder import Action, ActionFinder
 
+class flag(object):
+    def __init__(self, ts):
+        self.tiny_space = ts
+
 class Policy(object):
     def __init__(self, env):
         self.env = env
@@ -145,12 +149,22 @@ class GreedyBaseline(Policy):
         action = max(actions, key=operator.attrgetter('metric'))
         return action
 
+class GreedyHighest(Policy):
+    def choose_current_action(self):
+        actions = self.env.get_current_candidate_actions()
+        if not actions:
+            return None
+        # first action should already be highest, actions are sorted based on 
+        action = actions[0]
+        return action
+
 
 BASELINE_POLICIES = {
     'baseline_highest': HighestFirstBaseline,
     'baseline_lowest': LowestFirstBaseline,
     'baseline_random': RandomBaseline,
-    'baseline_greedy': GreedyBaseline
+    'baseline_greedy': GreedyBaseline,
+    'greedy_highest': GreedyHighest
 }
 
 
@@ -159,7 +173,8 @@ def test_policy(policy_name, Policy,
     """Run a policy on the CrateMDP environment."""
     scene = Scene(show_gui=False)
     scene_populator = ScenePopulator(scene)
-    env = CrateMDP(scene, scene_populator,
+    f = flag(True)
+    env = CrateMDP(scene, scene_populator, flags=f,
                    ignore_feasibility=issubclass(Policy, InfeasiblePolicy))
     policy = Policy(env, *policy_factory_args, **policy_factory_kwargs)
     policy_runner = PolicyRunner(scene, scene_populator, env, policy)
